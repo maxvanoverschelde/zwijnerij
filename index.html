@@ -415,7 +415,11 @@ const joeg=(t='JOEGNEE!',sub='')=>{let j=document.getElementById('jg');if(!j){j=
   j.innerHTML=`<div class="jt">${t}</div>${sub?`<div class="js">${sub}</div>`:''}`;j.classList.remove('go');void j.offsetWidth;j.classList.add('go')};
 const G={
  bom:{i(){const n=nightDeck('bom',withC('bom',BOM));$('#gc').textContent='';
-   const start=()=>{beep(220,.05,.01);const total=25000+Math.random()*45000,t0=Date.now();
+   const LEN={kort:[12000,18000,'Kort','±12 tot 30 sec'],normaal:[25000,45000,'Normaal','±25 sec tot ruim 1 min'],lang:[60000,60000,'Lang','±1 tot 2 min']};let len=localStorage.getItem('kp_bomlen')||'normaal';if(!LEN[len])len='normaal';
+   const choose=()=>{clr();$('#ov').classList.remove('ticking');scr(`<div class="mono">Hoe lang tikt de bom?</div><div class="pr" style="font-size:clamp(34px,5vw,60px)">Kaboom</div>
+     <div class="row">${Object.entries(LEN).map(([k,v])=>`<button class="btn ${k===len?'':'ghost'}" data-len="${k}">${v[2]}<span class="small" style="display:block;margin-top:4px;text-transform:none;letter-spacing:0">${v[3]}</span></button>`).join('')}</div>`);
+     st.querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{len=b.dataset.len;try{localStorage.setItem('kp_bomlen',len)}catch(e){}start()})};
+   const start=()=>{beep(220,.05,.01);const total=LEN[len][0]+Math.random()*LEN[len][1],t0=Date.now();
      const show=()=>scr(`<div class="pulse" id="pu"></div><div class="pr" style="font-size:clamp(36px,5.4vw,70px)">${n()}</div><div class="hint">Voorlezen en doorgeven aan wie het best past.</div><button class="btn" id="nx">Volgende</button>`);
      show();$('#nx').onclick=nxt;
      function nxt(){show();$('#nx').onclick=nxt;sp()}
@@ -424,9 +428,9 @@ const G={
      const tickLoop=()=>{const el=Date.now()-t0;if(el>=total)return;const left=1-el/total,iv=Math.max(110,left*1000);beep(1200,.03,.12);sp();timers.push(setTimeout(tickLoop,iv))};
      tickLoop();
      timers.push(setTimeout(()=>{clr();boomSnd();joeg('JOEGNEE!','Wie hem vasthoudt, drinkt');$('#ov').classList.remove('ticking');const o=$('#ov');o.classList.remove('boom');void o.offsetWidth;o.classList.add('boom');st.classList.add('shake');
-       scr(`<div class="timer" style="color:#ff3b3b">BOEM</div><div class="pr" style="font-size:clamp(30px,4vw,48px)">Wie de iPad vasthoudt, drinkt</div><button class="btn" id="ag">Nog een ronde</button>`);
-       setTimeout(()=>st.classList.remove('shake'),600);$('#ag').onclick=start},total))};
-   start()}},
+       scr(`<div class="timer" style="color:#ff3b3b">BOEM</div><div class="pr" style="font-size:clamp(30px,4vw,48px)">Wie de iPad vasthoudt, drinkt</div><div class="row"><button class="btn ghost" id="al">Andere lengte</button><button class="btn" id="ag">Nog een ronde</button></div>`);
+       setTimeout(()=>st.classList.remove('shake'),600);$('#ag').onclick=start;$('#al').onclick=choose},total))};
+   choose()}},
  hl:{i(){const V={A:14,J:11,Q:12,K:13},R=['2','3','4','5','6','7','8','9','10','J','Q','K','A'],S=[['♠',0],['♥',1],['♦',1],['♣',0]];
    let dk,cur,streak=0;const val=r=>V[r]||+r;
    const card=c=>`<div class="card ${c[2]?'red':''}"><div>${c[0]}${c[1]}</div><div class="mid">${c[1]}</div><div class="br">${c[0]}${c[1]}</div></div>`;
@@ -754,7 +758,7 @@ function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl!=='solo'
   document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g));
   bindChaos();bindComp();
   $('#pla').onclick=()=>openPL();
-  $('#rnd').onclick=()=>{const l=META.filter(m=>m.lvl===lvSel),m=l[Math.random()*l.length|0];beep(660,.05,.1,'triangle');openGame(m.k)}}
+  $('#rnd').onclick=()=>{const l0=META.filter(m=>m.lvl===lvSel),l=l0.length>1?l0.filter(m=>m.k!==window._lastRnd):l0,m=l[Math.random()*l.length|0];window._lastRnd=m.k;beep(660,.05,.1,'triangle');openGame(m.k)}}
 const openGame=k=>{clr();plBar();const m=META.find(x=>x.k===k);$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="ic" style="width:84px;height:84px;margin:0;border-radius:22px"><svg viewBox="0 0 24 24" style="width:42px;height:42px">${IC[m.ic]}</svg></div>
     ${PL?`<div class="mono" style="color:var(--acct)">Spellenavond · spel ${PL.i+1} van ${PL.list.length}</div>`:''}<div class="pr">${m.n}</div><div class="meta"><span>${LV[m.lvl].n}</span><span>${m.p}</span><span>${m.s}</span></div>
@@ -1138,7 +1142,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794936127';
+const APPVER='1794936300';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);

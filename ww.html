@@ -74,6 +74,7 @@ details summary::-webkit-details-marker{display:none}
 .youare{font-size:20px;margin-top:8px;cursor:pointer}.youare b{display:inline-block}
 .opts{width:min(560px,100%)}.optgrid{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:center;margin-top:14px;text-align:left}
 .rtg{cursor:pointer;opacity:.45}.rtg.ron{opacity:1;border-color:var(--acc);color:var(--acc)}
+@keyframes fl{0%{box-shadow:inset 0 0 0 9999px rgba(212,255,58,.35)}100%{box-shadow:inset 0 0 0 9999px transparent}}body.flash{animation:fl 1.2s ease-out 2}
 </style>
 </head>
 <body>
@@ -89,6 +90,7 @@ const ls={get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v)
 const rid=()=>Math.random().toString(36).slice(2,10);
 const say=t=>{try{const u=new SpeechSynthesisUtterance(t);u.lang='nl-BE';u.rate=.92;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
 let actx;const beep=(f=660,d=.08)=>{try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.15,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+d)}catch(e){}};
+const flash=()=>{document.body.classList.remove('flash');void document.body.offsetWidth;document.body.classList.add('flash')};
 const buzz=()=>{try{navigator.vibrate&&navigator.vibrate([80,60,80])}catch(e){}};
 let wl=null;const wake=async()=>{try{if('wakeLock' in navigator&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>wl=null)}}catch(e){}};document.addEventListener('click',wake);
 
@@ -189,8 +191,9 @@ const privAll=()=>H.order.forEach(priv);
 const onHostMsg=async m=>{
   if(m.t==='join'){const ex=H.players[m.pid];
     if(!ex){if(H.phase!=='lobby'){send({t:'reject',to:m.pid,why:'Het spel is al bezig. Wacht op het volgende spel.'});return}
-      H.players[m.pid]={n:m.n.slice(0,16),pub:m.pub,alive:true,role:null};H.order.push(m.pid);beep(880)}
-    else{if(ex.pub!==m.pub){ex.pub=m.pub;delete H.keyCache[m.pid]}ex.n=m.n.slice(0,16)}
+      let nn=m.n.slice(0,16),k=2;const taken=x=>Object.entries(H.players).some(([id,p])=>id!==m.pid&&p.n.toLowerCase()===x.toLowerCase());while(taken(nn))nn=m.n.slice(0,14)+' '+(k++);
+      H.players[m.pid]={n:nn,pub:m.pub,alive:true,role:null};H.order.push(m.pid);beep(880)}
+    else{if(ex.pub!==m.pub){ex.pub=m.pub;delete H.keyCache[m.pid]}}
     broadcast();priv(m.pid);return}
   if(m.t==='act'&&H.players[m.pid]){let a;try{a=await dec(await pkey(m.pid),m)}catch(e){return}hostAct(m.pid,a)}
   if(m.t==='hello'){send(pub());priv(m.pid)}};
@@ -221,7 +224,7 @@ const startHost=async(resume)=>{IS_HOST=true;
     app.innerHTML=`<div style="font-size:80px">🐺</div><div class="h1">Nieuwe lobby</div><div class="hint">Jij maakt de lobby en speelt gewoon mee.</div><input class="f" id="nm" maxlength="16" placeholder="Je naam" autocomplete="off" value="${esc(ls.get('ww_name',''))}"><button class="btn" id="ok">Maak lobby</button>`;
     $('#ok').onclick=go;$('#nm').onkeydown=e=>{if(e.key==='Enter')go()};return}
   startHost2()};
-const startHost2=async()=>{Pl.code=H.code;ls.set('ww_hostme',{pid:Pl.pid,keys:Pl.keys,n:Pl.n});$('#me').textContent=Pl.n;
+const startHost2=async()=>{wake();Pl.code=H.code;ls.set('ww_hostme',{pid:Pl.pid,keys:Pl.keys,n:Pl.n});$('#me').textContent=Pl.n;
   if(!H.players[Pl.pid]){H.players[Pl.pid]={n:Pl.n,pub:Pl.keys.pub,alive:true,role:null};H.order.unshift(Pl.pid)}
   app.innerHTML=`<div class="h2">Lobby maken…</div>`;
   await join(H.code,Pl.pid,{n:Pl.n},onHostMsg,st=>{H.online={};Object.keys(st).forEach(k=>H.online[k]=true);if(H.phase==='lobby'&&Pl.state)renderPlayer()});
@@ -328,7 +331,7 @@ const askName=()=>{app.innerHTML=`<div class="mono">Lobby ${esc(Pl.code)}</div><
   const go=()=>{const v=$('#nm').value.trim();if(!v)return;Pl.n=v;ls.set('ww_name',v);startPlayer(Pl.code)};$('#ok').onclick=go;$('#nm').onkeydown=e=>{if(e.key==='Enter')go()};$('#nm').focus()};
 const onPlayerMsg=async m=>{
   if(m.t==='state'){const first=!Pl.state;Pl.state=m;if(!Pl.key||Pl.hostPub!==m.hostPub){Pl.hostPub=m.hostPub;Pl.key=await derive(Pl.keys.priv,m.hostPub)}if(first)toHost({t:'join',pid:Pl.pid,n:Pl.n,pub:Pl.keys.pub});renderPlayer();return}
-  if(m.t==='priv'&&m.to===Pl.pid&&Pl.key){try{const prev=Pl.mine;Pl.mine=await dec(Pl.key,m);if(!prev||prev.phase!==Pl.mine.phase){Pl.sel=null;Pl.sel2=null;Pl.heal=false;buzz()}renderPlayer()}catch(e){}return}
+  if(m.t==='priv'&&m.to===Pl.pid&&Pl.key){try{const prev=Pl.mine;Pl.mine=await dec(Pl.key,m);if(!prev||prev.phase!==Pl.mine.phase){Pl.sel=null;Pl.sel2=null;Pl.heal=false;buzz()}else if(prev.wait&&!Pl.mine.wait){buzz();flash()}renderPlayer()}catch(e){}return}
   if(m.t==='reject'&&m.to===Pl.pid){app.innerHTML=`<div class="h2">${esc(m.why)}</div><button class="btn" onclick="location.href=location.pathname">Terug</button>`}};
 const act=async o=>{const e=await enc(Pl.key,o);toHost({t:'act',pid:Pl.pid,...e});beep(880)};
 const R=r=>r==='mayor'?MAYOR:r==='nar'?NAR:ROLES[r];
@@ -364,6 +367,7 @@ const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
     app.innerHTML=`<div class="mono">Laat de anderen scannen of de code invullen</div><div class="code-big">${H.code}</div><div id="qr" style="background:#fff;padding:10px;border-radius:12px"></div>
       <div class="plist">${H.order.map(p=>`<span class="pchip"><span class="dot ${H.online[p]||p===Pl.pid?'':'off'}"></span>${esc(nm(p))}${p===Pl.pid?' (jij)':`<span class="x" data-kick="${p}">✕</span>`}</span>`).join('')}</div>
       <div class="hint">${n>=4?`Met ${n} spelers: <b style="color:var(--fg)">${compText(n)}</b>, de rest burgers.`:'Minstens 4 spelers nodig.'} De rollen worden verdeeld zodra je start, ook die van jou.</div>
+      <div class="small" style="color:#ffd23f">⚠️ Het spel draait op jouw toestel: laat deze pagina open en je scherm aan tot het spel gedaan is.</div>
       ${optsUI(n)}<button class="btn" id="go" ${n<4?'disabled':''}>Start (${n} spelers${n<4?', min. 4':''})</button>${rolesBtn()}`;
     bindOpts();
     try{new QRCode($('#qr'),{text:url,width:200,height:200,correctLevel:QRCode.CorrectLevel.M})}catch(e){$('#qr').innerHTML='<div style="color:#000">QR niet geladen</div>'}
@@ -391,9 +395,9 @@ const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
         <button class="btn" id="cf" style="background:#ff7eb6" ${Pl.sel2.length===2?'':'disabled'}>💘 Schiet de pijlen</button>`;
       bindCommon();app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const id=b.dataset.c;Pl.sel2=Pl.sel2.includes(id)?Pl.sel2.filter(x=>x!==id):Pl.sel2.concat([id]).slice(-2);renderPlayer()});
       $('#cf').onclick=()=>{if(Pl.sel2.length===2)act({kind:'cupid',a:Pl.sel2[0],b:Pl.sel2[1]})};return}
-    if(me.role==='wolf'&&me.wait){app.innerHTML=`${peekBtn}${hidden}<div style="font-size:60px">💘</div><div class="h2">Wacht even…</div><div class="hint">Cupido kiest eerst de geliefden. Daarna kiezen jullie een slachtoffer.</div>`;bindCommon();return}
+    if(me.role==='wolf'&&me.wait){app.innerHTML=`${peekBtn}${hidden}<div style="font-size:60px">💘</div><div class="h2">Wacht even…</div><div class="hint">Cupido kiest eerst de geliefden. Daarna kiezen jullie een slachtoffer.</div><div class="small">Je gsm trilt en je scherm licht op zodra het jullie beurt is.</div>`;bindCommon();return}
     if(me.role==='witch'){
-      if(me.wait){app.innerHTML=`${peekBtn}${hidden}<div style="font-size:60px">🧪</div><div class="h2">Wacht even…</div><div class="hint">De weerwolven kiezen nog. Zodra ze klaar zijn, zie je hier wie werd aangevallen.</div>`;bindCommon();return}
+      if(me.wait){app.innerHTML=`${peekBtn}${hidden}<div style="font-size:60px">🧪</div><div class="h2">Wacht even…</div><div class="hint">De weerwolven kiezen nog. Zodra ze klaar zijn, zie je hier wie werd aangevallen.</div><div class="small">Je gsm trilt en je scherm licht op zodra het jouw beurt is.</div>`;bindCommon();return}
       const P=me.potions||{};
       app.innerHTML=`${peekBtn}${hidden}<div class="mono">Nacht ${s.round}</div><div class="h2">${me.victim?`De wolven vallen <span style="color:var(--wolf)">${esc(me.victim)}</span> aan`:'De wolven vielen niemand aan'}</div>
         ${P.heal&&me.victim?`<button class="choice ${Pl.heal?'sel':''}" id="wh" style="width:min(420px,100%)">❤️ Red ${esc(me.victim)} (levenselixer)</button>`:'<div class="small">Levenselixer: '+(P.heal?'niemand te redden':'al gebruikt')+'</div>'}
@@ -455,7 +459,7 @@ const landing=()=>{app.innerHTML=`<div style="font-size:80px">🐺</div><div cla
       $('#rs').onclick=()=>startHost(true);$('#nw').onclick=()=>startHost(false);return}
     startHost(!!(s&&s.phase==='lobby'&&Date.now()-s.t<3.6e6));return}
   if(q.get('c'))return startPlayer(q.get('c'));landing()})();
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Pl.pid&&ch&&!IS_HOST)send({t:'hello',pid:Pl.pid})});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){wl=null;wake()}if(document.visibilityState==='visible'&&Pl.pid&&ch&&!IS_HOST)send({t:'hello',pid:Pl.pid})});
 </script>
 </body>
 </html>
