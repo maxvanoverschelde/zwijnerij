@@ -441,11 +441,11 @@ const G={
      if((b>a?1:-1)===g){streak++;view(who+`Juist. ${old[0]} → ${nx[0]}. Streak loopt door.`)}
      else{const s=Math.max(1,streak);streak=0;view(who+`Fout. ${old[0]} → ${nx[0]}. Drink ${s} ${s>1?'slokken':'slok'}.`)}};
    go()}},
- cat:{i(){const n=nightDeck('cat',CAT);$('#gc').textContent='';
+ cat:{i(){const n=nightDeck('cat',CAT);$('#gc').textContent='';let SEC=+(localStorage.getItem('kp_catsec')||5);
    const pick=()=>{clr();const c=n();scr(`<div class="mono">Categorie</div><div class="pr">${c}</div><div class="hint">Om beurten iets noemen. Tik bij elke beurt op de knop. Klokt hij af? Drinken.</div>
-     <div id="tg"></div><div class="timer" id="tm">5</div><div class="row"><button class="btn ghost" id="nw">Nieuwe categorie</button><button class="btn" id="bt">Beurt</button></div>`);
-     $('#nw').onclick=pick;$('#bt').onclick=turn};
-   const turn=()=>{clr();T.next();$('#tg').innerHTML=T.tag();let s=5;const tm=$('#tm');tm.style.color='';tm.textContent=s;beep(660,.05,.12);
+     <div id="tg"></div><div class="timer" id="tm">${SEC}</div><div class="row"><button class="tbtn" id="sec">⏱ ${SEC} seconden · wissel</button></div><div class="row"><button class="btn ghost" id="nw">Nieuwe categorie</button><button class="btn" id="bt">Beurt</button></div>`);
+     $('#nw').onclick=pick;$('#bt').onclick=turn;$('#sec').onclick=()=>{clr();SEC=SEC===5?10:5;try{localStorage.setItem('kp_catsec',SEC)}catch(e){}$('#sec').textContent='⏱ '+SEC+' seconden · wissel';const tm=$('#tm');tm.style.color='';tm.textContent=SEC}};
+   const turn=()=>{clr();T.next();$('#tg').innerHTML=T.tag();let s=SEC;const tm=$('#tm');tm.style.color='';tm.textContent=s;beep(660,.05,.12);
      timers.push(setInterval(()=>{s--;if(s>0){tm.textContent=s;beep(s<=2?990:660,.05,.12)}else{clr();tm.textContent='0';tm.style.color='#ff3b3b';boomSnd();joeg('TE LAAT!','Joegnee, drinken')}},1000))};
    pick()}},
  nooit:{i(){const n=nightDeck('nooit',withC('nooit',NOOIT));let c=0;const s=()=>{c++;$('#gc').textContent=String(c).padStart(2,'0');
@@ -729,7 +729,7 @@ const META=[
  {k:'wie',lvl:'chill',n:'Wie Van Ons',s:'Wijzen op drie',ic:'user',p:'4+ spelers',r:["Lees de stelling voor.","Tel af en op drie wijst iedereen naar wie het best past.","Wie de meeste vingers krijgt, drinkt evenveel slokken als vingers."]},
  {k:'dod',lvl:'chill',n:'Dit of Dat',s:'Liever… of…?',ic:'split',p:'3+ spelers',r:["Lees beide opties voor.","Op drie kiest iedereen tegelijk: hand omhoog = de eerste, omlaag = de tweede.","De minderheid drinkt. Gelijkspel? Iedereen drinkt."]},
  {k:'hl',lvl:'hard',n:'Hi-Lo',s:'Bouw je streak',ic:'updown',p:'Om beurten',r:["Raad of de volgende kaart hoger of lager is.","Elke juiste gok verlengt de streak.","Fout? Drink evenveel slokken als de streak (min. 1). De streak begint opnieuw.","Zelfde kaart? Deel slokken uit."]},
- {k:'cat',lvl:'chill',n:'Vijf Seconden',s:'Categorieën onder druk',ic:'clock',p:'3+ spelers',r:["Er verschijnt een categorie, bv. ‘Biermerken’.","Om beurten noem je iets dat erbij hoort. Tik bij elke beurt op Beurt: je hebt 5 seconden.","Te laat of iets herhaald? Drinken en nieuwe categorie."]},
+ {k:'cat',lvl:'chill',n:'Vijf Seconden',s:'Categorieën onder druk',ic:'clock',p:'3+ spelers',r:["Er verschijnt een categorie, bv. ‘Biermerken’.","Om beurten noem je iets dat erbij hoort. Tik bij elke beurt op Beurt: je hebt 5 seconden (of 10, kies je zelf).","Te laat of iets herhaald? Drinken en nieuwe categorie."]},
  {k:'rad',lvl:'hard',n:'Wheel of Doom',s:'Eén draai, geen discussie',ic:'wheel',p:'Om beurten',r:["Om beurten draai je aan het rad.","Waar het pijltje stopt, gebeurt het. Geen onderhandelingen."]},
  {k:'quiz',lvl:'chill',n:'Kotquiz',s:'Algemene kennis · Gent · voetbal',ic:'quiz',tag:'Nieuw',p:'2+ spelers',r:["Om de beurt krijgt iemand een meerkeuzevraag.","Juist? Deel 1 slok uit. Fout? Neem zelf 1 slok.","Geen vraag komt twee keer op één avond."]},
  {k:'kop',lvl:'chill',n:'Op Je Kop',s:'iPad op je voorhoofd · raden',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie. De speler die aan de beurt is, houdt de iPad tegen zijn voorhoofd, met het scherm naar de groep.","De groep legt het woord uit zonder het te zeggen. Uitbeelden mag.","Geraden? Tik rechts op het scherm. Te moeilijk? Tik links om te passen.","60 seconden. Minder dan 5 geraden is 1 slok, meer dan 10 betekent 2 slokken uitdelen."]},
@@ -1138,7 +1138,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794936082';
+const APPVER='1794936127';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
