@@ -212,6 +212,34 @@
   textarea.cq{width:min(820px,90vw);min-height:220px;background:var(--card);border:1px solid var(--line2);border-radius:16px;color:var(--fg);font:inherit;font-size:18px;padding:16px;outline:none;line-height:1.5}
   body.night{--acc:#ff8a4c;--fg:#e9d6c8;--muted:#7c6a5e}
   body.night::after{content:"";position:fixed;inset:0;background:rgba(40,10,0,.28);pointer-events:none;z-index:50;mix-blend-mode:multiply}
+  body{padding-bottom:150px!important}
+  .fact .k{font-size:clamp(28px,3.2vw,40px);overflow-wrap:anywhere;hyphens:auto}
+  .hbtns{display:flex;gap:10px;justify-content:flex-end;margin-bottom:10px}.hbtns .thm{margin:0}
+  header,#clock,.brand{transition:font-size .25s ease}
+  body.compact header{padding-bottom:14px}
+  body.compact .brand{font-size:clamp(30px,4vw,44px)}
+  body.compact #clock{font-size:clamp(36px,5vw,56px)}
+  body.compact header .mono[style]{display:none}
+  body.compact .hbtns{margin-bottom:6px}
+  .qa{padding:0;border-radius:50%;transition:transform .1s}.qa:active{transform:scale(.9)}
+  .qhint{margin-left:8px;align-self:center}
+  .hstrip{align-items:center}
+  #qs{position:fixed;inset:0;z-index:9;background:rgba(0,0,0,.45);display:none;align-items:flex-start;justify-content:center;padding-top:110px}
+  #qs.open{display:flex}
+  .qsb{width:min(560px,92vw);background:var(--bg);border:1px solid var(--line2);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:14px;align-items:center;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);animation:fi .2s ease}
+  #jg{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0}
+  #jg.go{animation:jg 1.6s cubic-bezier(.2,.9,.2,1) forwards}
+  #jg .jt{font-family:'Anton',sans-serif;font-size:clamp(90px,17vw,220px);color:var(--acc);text-transform:uppercase;line-height:.9;-webkit-text-stroke:3px #000;text-shadow:0 10px 40px rgba(0,0,0,.5);transform:rotate(-6deg)}
+  #jg .js{margin-top:16px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.14em;background:#000;color:var(--acc);padding:8px 16px;border-radius:999px}
+  @keyframes jg{0%{opacity:0;transform:scale(.4)}15%{opacity:1;transform:scale(1.08)}25%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(1.05)}}
+  #ov.ticking::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(255,40,40,calc(.12 + var(--hot,0)*.35)),transparent 70%);animation:pl var(--sp,1s) infinite}
+  #ov.ticking .pulse{width:28px;height:28px}
+  .surprise{width:100%;display:flex;align-items:center;gap:16px;border:1px solid var(--acc);border-radius:22px;padding:18px 22px;margin-bottom:14px;text-align:left;background:color-mix(in srgb,var(--acc) 8%,var(--card))}
+  .surprise b{font-family:'Anton',sans-serif;font-weight:400;font-size:34px;text-transform:uppercase;flex:1}
+  .surprise .ar{font-size:30px;color:var(--acct)}
+  .music a{min-height:min(22vh,200px)!important}
+  .music .lg{width:56px!important;height:56px!important}
+  .music .nm{font-size:clamp(30px,3.6vw,46px)!important}
   @media(max-width:900px){.mrow,.stats{grid-template-columns:1fr 1fr}}
   @media(max-width:760px){#nav{gap:2px;padding:6px}#nav button{padding:14px 16px}#nav button span{display:none}}
   @media(max-width:700px){.games{grid-template-columns:1fr}}
@@ -225,7 +253,7 @@
     <div class="brand">Zwijn<i>erij</i></div>
     <div class="hstrip" id="hs"></div>
   </div>
-  <div><button class="thm" id="thm" aria-label="Licht of donker"></button><div id="clock">--:--</div><div id="date" class="mono"></div></div>
+  <div><div class="hbtns"><button class="thm" id="snd" aria-label="Geluid"></button><button class="thm" id="thm" aria-label="Licht of donker"></button></div><div id="clock">--:--</div><div id="date" class="mono"></div></div>
 </header>
 
 <main>
@@ -364,24 +392,28 @@ const CAT=["Biermerken","Voetbalclubs in Europa","Dingen in een koelkast","Rappe
 "Hoofdsteden","Pizza-toppings","Disney-films","Kledingmerken","Dingen die rood zijn","Sporten met een bal","Studierichtingen","Spelers van Real Madrid"];
 
 let timers=[];const clr=()=>{timers.forEach(t=>{clearTimeout(t);clearInterval(t)});timers=[]};
-let ac;const beep=(f=880,d=.06,v=.2,type='square')=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
+let MUTE=false;try{MUTE=localStorage.getItem('kp_mute')==='1'}catch(e){}
+try{if(navigator.audioSession)navigator.audioSession.type='ambient'}catch(e){}
+let ac;const beep=(f=880,d=.06,v=.2,type='square')=>{if(MUTE)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
   o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}};
-const boomSnd=()=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const len=ac.sampleRate*1.2,b=ac.createBuffer(1,len,ac.sampleRate),d=b.getChannelData(0);
+const boomSnd=()=>{if(MUTE)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const len=ac.sampleRate*1.2,b=ac.createBuffer(1,len,ac.sampleRate),d=b.getChannelData(0);
   for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.5);const s=ac.createBufferSource(),f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=900;
   s.buffer=b;s.connect(f);f.connect(ac.destination);s.start()}catch(e){}};
 
 const scr=(h)=>{st.innerHTML=h};
+const joeg=(t='JOEGNEE!',sub='')=>{let j=document.getElementById('jg');if(!j){j=document.createElement('div');j.id='jg';document.body.appendChild(j)}
+  j.innerHTML=`<div class="jt">${t}</div>${sub?`<div class="js">${sub}</div>`:''}`;j.classList.remove('go');void j.offsetWidth;j.classList.add('go')};
 const G={
  bom:{i(){const n=nightDeck('bom',withC('bom',BOM));$('#gc').textContent='';
    const start=()=>{beep(220,.05,.01);const total=25000+Math.random()*45000,t0=Date.now();
      const show=()=>scr(`<div class="pulse" id="pu"></div><div class="pr" style="font-size:clamp(36px,5.4vw,70px)">${n()}</div><div class="hint">Voorlezen en doorgeven aan wie het best past.</div><button class="btn" id="nx">Volgende</button>`);
      show();$('#nx').onclick=nxt;
      function nxt(){show();$('#nx').onclick=nxt;sp()}
-     function sp(){const left=1-(Date.now()-t0)/total,s=Math.max(.15,left)*1.1;const p=$('#pu');if(p)p.style.setProperty('--sp',s+'s')}
+     function sp(){const left=1-(Date.now()-t0)/total,s=Math.max(.15,left)*1.1;const p=$('#pu');if(p)p.style.setProperty('--sp',s+'s');const o=$('#ov');o.classList.add('ticking');o.style.setProperty('--sp',s+'s');o.style.setProperty('--hot',(1-left).toFixed(2))}
      sp();
      const tickLoop=()=>{const el=Date.now()-t0;if(el>=total)return;const left=1-el/total,iv=Math.max(110,left*1000);beep(1200,.03,.12);sp();timers.push(setTimeout(tickLoop,iv))};
      tickLoop();
-     timers.push(setTimeout(()=>{clr();boomSnd();const o=$('#ov');o.classList.remove('boom');void o.offsetWidth;o.classList.add('boom');st.classList.add('shake');
+     timers.push(setTimeout(()=>{clr();boomSnd();joeg('JOEGNEE!','Wie hem vasthoudt, drinkt');$('#ov').classList.remove('ticking');const o=$('#ov');o.classList.remove('boom');void o.offsetWidth;o.classList.add('boom');st.classList.add('shake');
        scr(`<div class="timer" style="color:#ff3b3b">BOEM</div><div class="pr" style="font-size:clamp(30px,4vw,48px)">Wie de iPad vasthoudt, drinkt</div><button class="btn" id="ag">Nog een ronde</button>`);
        setTimeout(()=>st.classList.remove('shake'),600);$('#ag').onclick=start},total))};
    start()}},
@@ -404,7 +436,7 @@ const G={
      <div id="tg"></div><div class="timer" id="tm">5</div><div class="row"><button class="btn ghost" id="nw">Nieuwe categorie</button><button class="btn" id="bt">Beurt</button></div>`);
      $('#nw').onclick=pick;$('#bt').onclick=turn};
    const turn=()=>{clr();T.next();$('#tg').innerHTML=T.tag();let s=5;const tm=$('#tm');tm.style.color='';tm.textContent=s;beep(660,.05,.12);
-     timers.push(setInterval(()=>{s--;if(s>0){tm.textContent=s;beep(s<=2?990:660,.05,.12)}else{clr();tm.textContent='0';tm.style.color='#ff3b3b';boomSnd()}},1000))};
+     timers.push(setInterval(()=>{s--;if(s>0){tm.textContent=s;beep(s<=2?990:660,.05,.12)}else{clr();tm.textContent='0';tm.style.color='#ff3b3b';boomSnd();joeg('TE LAAT!','Joegnee, drinken')}},1000))};
    pick()}},
  nooit:{i(){const n=nightDeck('nooit',withC('nooit',NOOIT));let c=0;const s=()=>{c++;$('#gc').textContent=String(c).padStart(2,'0');
    scr(`<div class="mono">Ik heb nog nooit…</div><div class="pr">${n()}</div><div class="hint">Wel gedaan? Drinken.</div><button class="btn" id="nx">Volgende</button>`);$('#nx').onclick=s};s()}},
@@ -421,7 +453,7 @@ const G={
    const dw=()=>{if(!dk.length){scr(`<div class="pr">Stapel leeg</div><button class="btn" id="rs">Opnieuw</button>`);$('#rs').onclick=go;return}
      const[r,s,red]=dk.pop();if(r==='K')k++;T.next();const end=r==='K'&&k===4,x=KR[r];$('#gc').textContent=String(dk.length).padStart(2,'0');
      scr(`${T.tag('Trok')}${kb()}<div class="card ${red?'red':''}"><div>${r}${s}</div><div class="mid">${s}</div><div class="br">${r}${s}</div></div>
-       <div class="pr" style="font-size:clamp(36px,5vw,60px)">${end?'Vierde king':x[0]}</div><div class="hint">${end?'Drink de cup leeg. Einde spel.':x[1]}${(r==='5'||r==='6')&&active().length?'<br><b style="color:var(--fg)">'+(active().filter(a=>a.g===(r==='5'?'m':'v')).map(a=>esc(a.n)).join(', ')||'Niemand. Geluk gehad.')+'</b>':''}</div>
+       <div class="pr" style="font-size:clamp(36px,5vw,60px)">${end?(joeg('KING\'S CUP!','Ad fundum, joegnee'),'Vierde king'):x[0]}</div><div class="hint">${end?'Drink de cup leeg. Einde spel.':x[1]}${(r==='5'||r==='6')&&active().length?'<br><b style="color:var(--fg)">'+(active().filter(a=>a.g===(r==='5'?'m':'v')).map(a=>esc(a.n)).join(', ')||'Niemand. Geluk gehad.')+'</b>':''}</div>
        <button class="btn" id="${end?'rs':'dr'}">${end?'Nieuw spel':'Volgende'}</button>`);
      end?$('#rs').onclick=go:$('#dr').onclick=dw};go()}},
  rad:{i(){$('#gc').textContent='';const n=RAD.length,Z=600,c=Z/2;let v=`<svg id="wh" viewBox="0 0 ${Z} ${Z}">`;
@@ -514,7 +546,7 @@ Object.assign(G,{
    const answer=a=>{if(!dk.length)dk=fullDeck();const c=dk.pop();
      if(check(c,a)){hand.push(c);step++;beep(880,.06,.1,'triangle');view('Juist.')}
      else{const s=step+1;hand=[];step=0;tries++;beep(140,.25,.15,'sawtooth');
-       scr(`${cardH(c)}<div class="pr" style="color:#ff4d4d">Fout</div><div class="hint">Drink ${s} ${s>1?'slokken':'slok'} en begin opnieuw.</div><button class="btn" id="rt">Opnieuw</button>`);$('#rt').onclick=()=>view()}};
+       scr(`${cardH(c)}<div class="pr" style="color:#ff4d4d">Fout</div>${(joeg('JOEGNEE!','Terug naar af'),'')}<div class="hint">Drink ${s} ${s>1?'slokken':'slok'} en begin opnieuw.</div><button class="btn" id="rt">Opnieuw</button>`);$('#rt').onclick=()=>view()}};
    const go=()=>{dk=fullDeck();hand=[];step=0;tries=1;T.next();view()};go()}},
  derby:{i(){let pos,dk,win=null;const H=[['♠',0],['♥',1],['♦',1],['♣',0]],L=8;
    const view=(last)=>{scr(`<div class="track">${H.map((h,i)=>`<div class="lane ${h[1]?'red':''}">${[...Array(L+1)].map((_,j)=>`<div>${j===pos[i]?'A'+h[0]:(j===L?'🏁':'')}</div>`).join('')}</div>`).join('')}</div>
@@ -538,7 +570,7 @@ Object.assign(G,{
      const finish=()=>{clr();timers.push(setTimeout(()=>{st.style.position='';const ok=order.filter(o=>o.t>=0).sort((a,b)=>a.t-b.t),bad=order.filter(o=>o.t<0);
        if(ok.length){const f=ok[0],a=active()[f.i%Math.max(1,active().length)];if(a){const cur=STATS.reflex[a.id];if(!cur||f.t<cur){STATS.reflex[a.id]=f.t;saveS()}}}
        const loser=bad.length?bad.map(o=>pname(o.i)).join(' & '):pname(ok[ok.length-1].i);
-       scr(`<div class="mono">Drinkt</div><div class="pr">${loser}</div><div class="hint">${ok.length?'Snelste: '+pname(ok[0].i)+' ('+ok[0].t+' ms)':''}</div><div class="row"><button class="btn ghost" id="pk">Spelers</button><button class="btn" id="ag">Opnieuw</button></div>`);
+       joeg('JOEGNEE!',loser+' drinkt');scr(`<div class="mono">Drinkt</div><div class="pr">${loser}</div><div class="hint">${ok.length?'Snelste: '+pname(ok[0].i)+' ('+ok[0].t+' ms)':''}</div><div class="row"><button class="btn ghost" id="pk">Spelers</button><button class="btn" id="ag">Opnieuw</button></div>`);
        $('#ag').onclick=run;$('#pk').onclick=pick},900))}};
    pick()}}
 });
@@ -576,7 +608,7 @@ Object.assign(G,{
        <div class="qgrid">${opts.map(o=>`<button class="qo" data-o="${esc(o)}">${o}</button>`).join('')}</div>`);
      st.querySelectorAll('.qo').forEach(b=>b.onclick=()=>{const good=b.dataset.o===ok;if(good&&T.p)bump('quiz',T.p.id);st.querySelectorAll('.qo').forEach(x=>{x.disabled=true;if(x.dataset.o===ok)x.classList.add('ok');else if(x===b)x.classList.add('no')});
        beep(good?880:160,good?.08:.25,.12,good?'triangle':'sawtooth');
-       st.insertAdjacentHTML('beforeend',`<div class="hint" style="color:${good?'#b9f27a':'#ff8a65'}">${good?'Juist. Deel 1 slok uit.':'Fout. Neem 1 slok.'}</div><button class="btn" id="nx">Volgende vraag</button>`);$('#nx').onclick=ask})};
+       st.insertAdjacentHTML('beforeend',`<div class="hint" style="color:${good?'#b9f27a':'#ff8a65'}">${good?'Juist. Deel 1 slok uit.':(joeg('JOEGNEE!','Fout, 1 slok'),'Fout. Neem 1 slok.')}</div><button class="btn" id="nx">Volgende vraag</button>`);$('#nx').onclick=ask})};
    ask()}},
  kop:{i(){let cat=null,score=0,log=[],left=60,next;
    const pick=()=>{clr();T.next();scr(`${T.tag('Raadt')}<div class="pr" style="font-size:clamp(34px,5vw,60px)">Kies een categorie</div>
@@ -632,10 +664,11 @@ let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function renderGames(){$('#gn').textContent=String(META.length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
-  $('#gl').outerHTML=`<div id="gl"><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
+  $('#gl').outerHTML=`<div id="gl"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
   document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{lvSel=b.dataset.lv;try{localStorage.setItem('kp_lv',lvSel)}catch(e){}renderGames()});
-  document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g))}
+  document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g));
+  $('#rnd').onclick=()=>{const l=META.filter(m=>m.lvl===lvSel),m=l[Math.random()*l.length|0];beep(660,.05,.1,'triangle');openGame(m.k)}}
 const openGame=k=>{clr();const m=META.find(x=>x.k===k);$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="ic" style="width:84px;height:84px;margin:0;border-radius:22px"><svg viewBox="0 0 24 24" style="width:42px;height:42px">${IC[m.ic]}</svg></div>
     <div class="pr">${m.n}</div><div class="meta"><span>${LV[m.lvl].n}</span><span>${m.p}</span><span>${m.s}</span></div>
@@ -643,10 +676,10 @@ const openGame=k=>{clr();const m=META.find(x=>x.k===k);$('#gt').textContent=m.n;
   $('#sg').onclick=()=>{bump('games',k);try{wake()}catch(e){}try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}G[k].i()}};
 renderGames();
 
-$('#bk').onclick=()=>{clr();$('#ov').classList.remove('open','boom');st.innerHTML=''};
+$('#bk').onclick=()=>{clr();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
 
 /* ===== tabs ===== */
-const showTab=t=>{document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
+const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   if(t==='count')renderCount();if(t==='players')renderPlayers();try{localStorage.setItem('kp_tab',t)}catch(e){};window.scrollTo(0,0)};
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
@@ -722,7 +755,7 @@ function renderPlayers(){const el=$('#t-players'),P=active();
   $('#pall').onclick=()=>{ACT.ids=ACC.map(a=>a.id);saveA();renderPlayers();renderHead()};
   $('#pnone').onclick=e=>{const b=e.currentTarget;if(b.dataset.sure){ACT.ids=[];CNT={};STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{}};saveS();saveC();saveA();try{Object.keys(localStorage).filter(k=>k.startsWith('kp_used_')).forEach(k=>localStorage.removeItem(k))}catch(x){}renderPlayers();renderHead()}
     else{b.dataset.sure=1;b.textContent='Wist selectie, teller, statistieken en vragen. Zeker?'}};}
-function renderHead(){const P=active();$('#hs').innerHTML=P.length?P.map(a=>av(a,30)).join(''):'<span class="mono">Geen spelers geselecteerd</span>'}
+function renderHead(){const P=active();$('#hs').innerHTML=P.length?P.map(a=>`<button class="qa" data-q="${a.id}">${av(a,34)}</button>`).join('')+'<span class="mono qhint">Tik op iemand voor +1</span>':'<span class="mono">Geen spelers geselecteerd</span>'}
 
 setInterval(()=>{if($('#t-count').classList.contains('on')&&!$('#ov').classList.contains('open')&&document.activeElement.id!=='cn')renderCount()},60000);
 
@@ -814,7 +847,17 @@ const applyTheme=()=>{document.body.classList.toggle('light',theme==='light');$(
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=theme==='light'?'#f3f2ec':'#070707';applyNight()};
 $('#thm').onclick=()=>{theme=theme==='light'?'dark':'light';try{localStorage.setItem('kp_theme',theme)}catch(e){}applyTheme()};
 applyTheme();
-renderHead();$('#hs').onclick=()=>showTab('players');
+renderHead();
+$('#hs').onclick=e=>{const q=e.target.closest('[data-q]');if(!q){showTab('players');return}openQuick(q.dataset.q)};
+const openQuick=id=>{const a=ACC.find(x=>x.id===id);if(!a)return;let s=document.getElementById('qs');if(!s){s=document.createElement('div');s.id='qs';document.body.appendChild(s)}
+  const draw=msg=>{const p=prof(id),b=bacOf(p,a);s.innerHTML=`<div class="qsb"><div class="row" style="justify-content:space-between;align-items:center;width:100%">${av(a,44)}<div style="flex:1;text-align:left;margin-left:12px"><div class="nmx" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;line-height:1">${esc(a.n)}</div><div class="small">${p.d.length} ${p.d.length===1?'drankje':'drankjes'} · ${b.toFixed(2).replace('.',',')}‰ geschat</div></div><button class="tbtn" id="qx">Sluit</button></div>
+    <div class="dr" style="width:100%">${DRINKS.map((d,i)=>`<button data-qd="${i}"><b>+</b>${d.k}<span class="small">${d.s}</span></button>`).join('')}</div>
+    ${msg?`<div class="small" style="color:var(--acct)">${msg}</div>`:''}<div class="row"><button class="tbtn" id="qu">Laatste ongedaan</button><button class="tbtn" id="qt">Naar teller</button></div></div>`;
+    s.querySelectorAll('[data-qd]').forEach(b=>b.onclick=()=>{const d=DRINKS[+b.dataset.qd];prof(id).d.push({t:Date.now(),g:d.g});saveC();beep(700,.04,.08,'triangle');draw('+1 '+d.k.toLowerCase()+' genoteerd')});
+    $('#qx').onclick=()=>s.classList.remove('open');$('#qu').onclick=()=>{prof(id).d.pop();saveC();draw('Laatste drankje verwijderd')};$('#qt').onclick=()=>{s.classList.remove('open');showTab('count')}};
+  draw();s.classList.add('open');s.onclick=e=>{if(e.target===s)s.classList.remove('open')}};
+const SPK='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',SPX='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+const drawSnd=()=>{$('#snd').innerHTML=MUTE?SPX:SPK};$('#snd').onclick=()=>{MUTE=!MUTE;try{localStorage.setItem('kp_mute',MUTE?'1':'0')}catch(e){}drawSnd();if(!MUTE)beep(880,.06,.1,'triangle')};drawSnd();
 try{const t=localStorage.getItem('kp_tab');if(!active().length)showTab('players');else if(t)showTab(t)}catch(e){}
 </script>
 </body>
