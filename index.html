@@ -829,7 +829,7 @@ async function shareCard(){const byId=id=>ACC.find(a=>a.id===id),top=o=>{const e
   x.fillStyle='#070707';x.fillRect(0,0,W,Hh);x.strokeStyle='#d4ff3a';x.lineWidth=16;x.strokeRect(8,8,W-16,Hh-16);
   const ph=tonight(await photoAll()).slice(-3);let y=90;
   x.textBaseline='alphabetic';x.font='120px Anton, Impact, sans-serif';x.fillStyle='#ededed';x.fillText('ZWIJN',70,y+100);const w1=x.measureText('ZWIJN').width;x.fillStyle='#d4ff3a';x.fillText('ERIJ',70+w1,y+100);
-  x.font='30px "JetBrains Mono", monospace';x.fillStyle='#8a8a8a';x.fillText(new Date().toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long'}).toUpperCase()+' · '+ACT.ids.length+' SPELERS',74,y+160);y+=230;
+  x.font='30px "JetBrains Mono", monospace';x.fillStyle='#8a8a8a';x.fillText(new Date().toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long'}).toUpperCase()+(ACT.ids.length?' · '+ACT.ids.length+' SPELERS':''),74,y+160);y+=230;
   if(ph.length){const pw=(W-140-(ph.length-1)*20)/ph.length,phh=Math.min(300,pw*.75);for(let i=0;i<ph.length;i++){const im=await new Promise(r=>{const m=new Image();m.onload=()=>r(m);m.onerror=()=>r(null);m.src=URL.createObjectURL(ph[i].blob)});
       if(im){const sx=70+i*(pw+20),s=Math.max(pw/im.width,phh/im.height),sw=pw/s,sh=phh/s;x.drawImage(im,(im.width-sw)/2,(im.height-sh)/2,sw,sh,sx,y,pw,phh)}}y+=phh+50}
   const rh=Math.min(110,(Hh-y-80)/Math.max(rows.length,1));
@@ -1292,7 +1292,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794951029';
+const APPVER='1794951182';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
