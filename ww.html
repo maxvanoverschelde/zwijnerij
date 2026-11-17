@@ -72,6 +72,8 @@ details summary::-webkit-details-marker{display:none}
 .leftbox>div{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .lchip{border:1px solid var(--c);color:var(--c);border-radius:999px;padding:6px 12px;font-weight:700;font-size:15px}
 .youare{font-size:20px;margin-top:8px;cursor:pointer}.youare b{display:inline-block}
+.opts{width:min(560px,100%)}.optgrid{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:center;margin-top:14px;text-align:left}
+.rtg{cursor:pointer;opacity:.45}.rtg.ron{opacity:1;border-color:var(--acc);color:var(--acc)}
 </style>
 </head>
 <body>
@@ -129,7 +131,7 @@ const toHost=p=>IS_HOST?onHostMsg(p):send(p);
    SPELLEIDER (iPad = gedeeld scherm, rekent alles uit)
    ============================================================ */
 const H={code:null,keys:null,players:{},order:[],keyCache:{},phase:'lobby',round:0,cfg:{wolves:0,witch:true,mayor:true,cupid:true,seer:false,doc:false,hunter:false,nar:true,talk:180},
-  night:{},votes:{},log:[],timerEnd:0,winner:null,online:{},mayor:null,nar:null,potions:{heal:true,poison:true},victim:null,lovers:null,hunterPid:null,hunterNext:null,pending:[]};
+  opt:{nar:'auto',wolves:0,r:{}},night:{},votes:{},log:[],timerEnd:0,winner:null,online:{},mayor:null,nar:null,potions:{heal:true,poison:true},victim:null,lovers:null,hunterPid:null,hunterNext:null,pending:[]};
 const saveH=()=>{const c={...H};delete c.keyCache;delete c.online;c.t=Date.now();ls.set('ww_host',c)};
 const pkey=async pid=>H.keyCache[pid]||(H.keyCache[pid]=await derive(H.keys.priv,H.players[pid].pub));
 const inGame=()=>H.order.filter(p=>H.players[p]&&H.players[p].role!=='nar');
@@ -224,8 +226,14 @@ const startHost2=async()=>{Pl.code=H.code;ls.set('ww_hostme',{pid:Pl.pid,keys:Pl
   app.innerHTML=`<div class="h2">Lobby maken…</div>`;
   await join(H.code,Pl.pid,{n:Pl.n},onHostMsg,st=>{H.online={};Object.keys(st).forEach(k=>H.online[k]=true);if(H.phase==='lobby'&&Pl.state)renderPlayer()});
   broadcast();privAll();if(H.phase==='day')tickTalk()};
-const comp=n=>{const nar=n>=6,p=nar?n-1:n;const w=p<=6?1:p<=10?2:p<=15?3:p<=20?4:Math.floor(p/5);
-  const r={wolf:w,witch:p>=5,cupid:p>=6,seer:p>=7,hunter:p>=9,doc:p>=11,mayor:p>=4,nar};return r};
+const autoW=p=>p<=6?1:p<=10?2:p<=15?3:p<=20?4:Math.floor(p/5);
+const AUTOR={witch:p=>p>=5,cupid:p=>p>=6,seer:p=>p>=7,hunter:p=>p>=9,doc:p=>p>=11,mayor:p=>p>=4};
+const comp=n=>{const O=H.opt||{};const nar=O.nar==='on'?n>=5:O.nar==='off'?false:n>=6,p=nar?n-1:n;
+  const r={nar,mayor:O.r&&O.r.mayor!=null?O.r.mayor:AUTOR.mayor(p)};
+  ['witch','cupid','seer','hunter','doc'].forEach(k=>r[k]=O.r&&O.r[k]!=null?O.r[k]:AUTOR[k](p));
+  r.wolf=Math.max(1,Math.min(O.wolves||autoW(p),Math.floor((p-1)/2)||1));
+  ['doc','hunter','seer','cupid','witch'].forEach(k=>{const sp=['witch','cupid','seer','hunter','doc'].filter(x=>r[x]).length;if(r[k]&&r.wolf+sp>p)r[k]=false});
+  return r};
 const compText=n=>{const c=comp(n);return [`${c.wolf} ${c.wolf>1?'weerwolven':'weerwolf'}`].concat(c.witch?['heks']:[],c.cupid?['cupido']:[],c.seer?['ziener']:[],c.hunter?['jager']:[],c.doc?['beschermer']:[],c.mayor?['burgemeester']:[],c.nar?['verteller']:[]).join(' · ')};
 const talkTime=()=>{const a=alive().length;return a<=5?120:a<=9?180:240};
 const assign=()=>{const C=comp(H.order.length);Object.assign(H.cfg,{wolves:C.wolf,witch:C.witch,cupid:C.cupid,seer:C.seer,hunter:C.hunter,doc:C.doc,mayor:C.mayor,nar:C.nar});let ids=shuf(H.order);H.nar=null;
@@ -356,7 +364,8 @@ const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
     app.innerHTML=`<div class="mono">Laat de anderen scannen of de code invullen</div><div class="code-big">${H.code}</div><div id="qr" style="background:#fff;padding:10px;border-radius:12px"></div>
       <div class="plist">${H.order.map(p=>`<span class="pchip"><span class="dot ${H.online[p]||p===Pl.pid?'':'off'}"></span>${esc(nm(p))}${p===Pl.pid?' (jij)':`<span class="x" data-kick="${p}">✕</span>`}</span>`).join('')}</div>
       <div class="hint">${n>=4?`Met ${n} spelers: <b style="color:var(--fg)">${compText(n)}</b>, de rest burgers.`:'Minstens 4 spelers nodig.'} De rollen worden verdeeld zodra je start, ook die van jou.</div>
-      <button class="btn" id="go" ${n<4?'disabled':''}>Start (${n} spelers${n<4?', min. 4':''})</button>${rolesBtn()}`;
+      ${optsUI(n)}<button class="btn" id="go" ${n<4?'disabled':''}>Start (${n} spelers${n<4?', min. 4':''})</button>${rolesBtn()}`;
+    bindOpts();
     try{new QRCode($('#qr'),{text:url,width:200,height:200,correctLevel:QRCode.CorrectLevel.M})}catch(e){$('#qr').innerHTML='<div style="color:#000">QR niet geladen</div>'}
     app.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{const id=b.dataset.kick;delete H.players[id];H.order=H.order.filter(x=>x!==id);send({t:'reject',to:id,why:'Je werd uit de lobby verwijderd.'});broadcast()});
     $('#go').onclick=()=>{if(H.order.length<4)return;assign();H.phase='roles';broadcast();privAll()};bindCommon();return}
@@ -410,6 +419,18 @@ const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
   if(s.phase==='end'){const won=s.winner==='lovers'?!!me.lover:(s.winner==='village')===(me.role!=='wolf');app.innerHTML=`<div style="font-size:80px">${s.winner==='village'?'🏡':s.winner==='lovers'?'💘':'🐺'}</div><div class="h1">${s.winner==='village'?'Het dorp wint':s.winner==='lovers'?'De geliefden winnen':'De weerwolven winnen'}</div>
     ${roleCard(me.role,true)}<div class="h2" style="color:${won?'var(--acc)':'var(--wolf)'}">${won?'Gewonnen!':'Verloren'}</div>`;return}};
 
+const optsUI=n=>{const O=H.opt=H.opt||{nar:'auto',wolves:0,r:{}};O.r=O.r||{};const c=comp(Math.max(n,4));
+  const seg=(key,opts,cur)=>`<div class="seg">${opts.map(([v,l])=>`<button class="${String(cur)===String(v)?'on':''}" data-o="${key}" data-v="${v}">${l}</button>`).join('')}</div>`;
+  const RN={witch:'🧪 Heks',cupid:'💘 Cupido',seer:'🔮 Ziener',hunter:'🎯 Jager',doc:'🛡️ Beschermer',mayor:'🎖️ Burgemeester'};
+  return `<details class="opts" ${Pl.optsOpen?'open':''}><summary class="peek" style="list-style:none">⚙️ Instellingen ${O.nar==='auto'&&!O.wolves&&!Object.keys(O.r).length?'(automatisch)':'(aangepast)'}</summary>
+  <div class="optgrid"><span class="mono">Verteller</span>${seg('nar',[['auto','Auto'],['on','Ja'],['off','Nee']],O.nar)}
+  <span class="mono">Weerwolven</span>${seg('wolves',[[0,'Auto'],[1,'1'],[2,'2'],[3,'3'],[4,'4'],[5,'5']],O.wolves||0)}
+  <span class="mono">Rollen</span><div class="plist" style="justify-content:flex-start">${Object.keys(RN).map(k=>`<button class="pchip rtg ${c[k]?'ron':''}" data-rt="${k}">${RN[k]}${O.r[k]!=null?' •':''}</button>`).join('')}</div>
+  <span></span><button class="tbtn" data-o="reset">Alles automatisch</button></div>
+  <div class="small">• = zelf gekozen. Te weinig spelers voor alle rollen? Dan valt er automatisch een af.</div></details>`};
+const bindOpts=()=>{const d=app.querySelector('details.opts');if(d)d.ontoggle=()=>{Pl.optsOpen=d.open};
+  app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const O=H.opt;if(b.dataset.o==='reset')H.opt={nar:'auto',wolves:0,r:{}};else if(b.dataset.o==='nar')O.nar=b.dataset.v;else O.wolves=+b.dataset.v;broadcast()});
+  app.querySelectorAll('[data-rt]').forEach(b=>b.onclick=()=>{const k=b.dataset.rt,c=comp(Math.max(H.order.length,4));H.opt.r[k]=!c[k];broadcast()})};
 const hostBar=s=>{if(!IS_HOST||Pl.showRoles)return;const m=Pl.mine||{};if(m.role==='nar')return;
   const b=s.phase==='end'?[['again','Nieuw spel, zelfde groep']]:H.nar?[]:({roles:[['startNight','Start de nacht']],night:[['morning','Forceer ochtend']],day:[['plus','+1 minuut'],['vote','Nu stemmen']],vote:[['closeVote','Sluit stemming']],reveal:[['next','Verder: nacht']]}[s.phase]||[]);
   if(!b.length)return;app.insertAdjacentHTML('beforeend',`<div class="row hostbar">${b.map(([c,l])=>`<button class="${c==='plus'?'tbtn':'btn'}" data-hc="${c}">${l}</button>`).join('')}</div>${H.nar?'':'<div class="small">Jij maakte de lobby, dus jij bedient de knoppen.</div>'}`);

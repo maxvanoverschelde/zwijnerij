@@ -301,6 +301,7 @@
   .music .lg{width:56px!important;height:56px!important}
   .music .nm{font-size:clamp(30px,3.6vw,46px)!important}
   @media(max-width:900px){.mrow,.stats{grid-template-columns:1fr 1fr}}
+  @media(max-width:1100px){#nav button{padding:14px 15px;gap:7px;font-size:12px;letter-spacing:.06em}}
   @media(max-width:760px){#nav{gap:2px;padding:6px}#nav button{padding:14px 16px}#nav button span{display:none}}
   @media(max-width:700px){.games{grid-template-columns:1fr}}
   @media(max-width:720px){.music{grid-template-columns:1fr}.music a{border-right:0;border-bottom:1px solid var(--line)}}
@@ -349,6 +350,7 @@
  <button data-t="music" class="on"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span>Muziek</span></button>
  <button data-t="games"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r=".8"/><circle cx="18" cy="13" r=".8"/></svg><span>Spellen</span></button>
  <button data-t="count"><svg viewBox="0 0 24 24"><path d="M6 3h12l-1.5 17a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2z"/><path d="M6.5 8h11"/></svg><span>Teller</span></button>
+ <button data-t="ww" id="navww"><svg viewBox="0 0 24 24"><path d="M5 4l3 5M19 4l-3 5"/><path d="M5 4c-1 5 0 9 2 12l5 4 5-4c2-3 3-7 2-12"/><circle cx="9.5" cy="12" r=".9"/><circle cx="14.5" cy="12" r=".9"/></svg><span>Weerwolven</span></button>
  <button data-t="info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>Info</span></button>
 </nav>
 
@@ -737,13 +739,13 @@ const META=[
  {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
  {k:'kara',lvl:'chill',n:'Karaoke',s:'Rad · uitdaging · jury',ic:'mic',tag:'Nieuw',p:'2+ spelers',r:["Het rad kiest wie er moet zingen. Met teams aan zingt het hele team samen.","Je krijgt een categorie (bv. ‘Een Belgische klassieker’) en een uitdaging (bv. ‘met een West-Vlaams accent’).","Tik het nummer in en open de karaoke-versie op YouTube: dan staat de tekst op het scherm. Bluetooth-box aan, en gaan.","Na het nummer beslist de jury: 🔥 ster (deel 3 slokken uit), 👍 prima of 💀 vals (zanger drinkt 2). Weigeren = ad fundum."]},
  {k:'wbi',lvl:'chill',n:'Wie Ben Ik?',s:'Naam op je kop · ja/nee',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie: Bekende Belgen, voetballers, filmpersonages, artiesten, iemand hier aan tafel of een mix.","Hou de iPad op je voorhoofd met het scherm naar de groep. Je ziet de naam niet, de rest wel.","Stel ja/nee-vragen. De groep antwoordt enkel met ja of nee. Je hebt 2 minuten.","Geraden? Hoe sneller, hoe meer slokken je uitdeelt. Opgeven of tijd op: 2 slokken."]},
- {k:'ww',lvl:'chill',n:'Weerwolven',s:'Met jullie gsm\'s · lobby met code',ic:'wolf',tag:'Groot spel',p:'5-30 spelers',r:["Eén iemand maakt de lobby en speelt gewoon mee. Die krijgt een code en een QR-code, de rest scant die met zijn gsm en komt zo in de lobby.","Het spel kiest zelf hoeveel weerwolven en welke rollen er meedoen, afhankelijk van het aantal spelers. Vanaf 6 spelers is er ook een verteller die op zijn gsm de tekst en de knoppen krijgt.","’s Nachts kiest iedereen op zijn gsm. Ook de burgers tikken iets aan, zodat niemand opvalt.","Overdag discussiëren jullie met een timer. Elke weerwolf krijgt een geheime opdracht die hij moet uitvoeren. Betrap ze!","Stemmen gebeurt op de gsm. De burgemeester telt dubbel. Via 📖 Rollen ziet iedereen wat elke rol doet."]},
+ {k:'ww',lvl:'solo',n:'Weerwolven',s:'Met jullie gsm\'s · lobby met code',ic:'wolf',tag:'Groot spel',p:'5-30 spelers',r:["Eén iemand maakt de lobby en speelt gewoon mee. Die krijgt een code en een QR-code, de rest scant die met zijn gsm en komt zo in de lobby.","Het spel kiest zelf hoeveel weerwolven en welke rollen er meedoen, afhankelijk van het aantal spelers. Vanaf 6 spelers is er ook een verteller die op zijn gsm de tekst en de knoppen krijgt.","’s Nachts kiest iedereen op zijn gsm. Ook de burgers tikken iets aan, zodat niemand opvalt.","Overdag discussiëren jullie met een timer. Elke weerwolf krijgt een geheime opdracht die hij moet uitvoeren. Betrap ze!","Stemmen gebeurt op de gsm. De burgemeester telt dubbel. Via 📖 Rollen ziet iedereen wat elke rol doet."]},
  {k:'wvo',lvl:'chill',n:'Durf Je',s:'Truth or dare',ic:'flame',p:'3+ spelers',r:["Kies Truth of Dare.","Beantwoord eerlijk of voer de opdracht uit.","Weigeren = drinken. Daarna is de volgende aan de beurt."]}];
 
 const LV={chill:{n:'Chill',s:'Rustig aan · af en toe een slok',d:1},hard:{n:'Full Send',s:'Er wordt constant gedronken',d:3}};
 let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
-function renderGames(){$('#gn').textContent=String(META.length).padStart(2,'0')+' spellen';
+function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl!=='solo').length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
   $('#gl').outerHTML=`<div id="gl">${chaosUI()}${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
@@ -764,7 +766,7 @@ $('#bk').onclick=()=>{clr();PL=null;plBar();$('#ov').classList.remove('open','bo
 const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   if(t==='count')renderCount();if(t==='players')renderPlayers();try{localStorage.setItem('kp_tab',t)}catch(e){};window.scrollTo(0,0)};
-document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>b.dataset.t==='ww'?(location.href='ww.html'):showTab(b.dataset.t));
 
 /* ===== teller ===== */
 const DRINKS=[{k:'Pint',s:'25cl · 5,2%',g:10.3},{k:'Speciaal',s:'33cl · 8%',g:20.8},{k:'Wijn',s:'15cl · 12%',g:14.2},{k:'Shot',s:'3cl · 40%',g:9.5},{k:'Long',s:'4cl sterk',g:12.6}];
@@ -990,7 +992,7 @@ let PL=null;
 const PRESETS=[{k:'warm',n:'Opwarmer',s:'3 chill, daarna 2 full send',f:()=>shuf(META.filter(m=>m.lvl==='chill'&&!['lot','wed'].includes(m.k))).slice(0,3).concat(shuf(META.filter(m=>m.lvl==='hard'&&m.k!=='pong')).slice(0,2))},
  {k:'chill',n:'Rustige avond',s:'5 chill-spellen',f:()=>shuf(META.filter(m=>m.lvl==='chill'&&!['lot','wed'].includes(m.k))).slice(0,5)},
  {k:'hard',n:'Full send',s:'5 full send-spellen',f:()=>shuf(META.filter(m=>m.lvl==='hard'&&m.k!=='pong')).slice(0,5)},
- {k:'mix',n:'Grote mix',s:'8 spellen, chill en full send door elkaar',f:()=>shuf(META.filter(m=>!['lot','wed','pong'].includes(m.k))).slice(0,8)}];
+ {k:'mix',n:'Grote mix',s:'8 spellen, chill en full send door elkaar',f:()=>shuf(META.filter(m=>m.lvl!=='solo'&&!['lot','wed','pong'].includes(m.k))).slice(0,8)}];
 const plBar=()=>{const b=$('#pln');b.style.display=PL?'':'none';b.onclick=()=>plNext();savePL()};
 const savePL=()=>{try{localStorage.setItem('kp_pl',JSON.stringify(PL?{...PL,t:Date.now()}:null))}catch(e){}};
 const plNext=()=>{if(!PL)return;clr();PL.i++;savePL();if(PL.i>=PL.list.length){PL=null;plBar();joeg('KLAAR!','Joegnee, wat een avond');$('#ov').classList.remove('open','ticking');return}
@@ -1001,9 +1003,7 @@ const plNext=()=>{if(!PL)return;clr();PL.i++;savePL();if(PL.i>=PL.list.length){P
 const openPL=()=>{clr();$('#gt').textContent='Spellenavond';$('#gc').textContent='';$('#ov').classList.add('open');PL=null;plBar();
   scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Kies je avond</div><div class="hint">De spellen komen automatisch na elkaar. Met <b style="color:var(--fg)">Volgend spel →</b> rechtsboven ga je verder.</div>
    <div class="qgrid">${PRESETS.map(p=>`<button class="qo" data-pl="${p.k}"><b style="font-family:'Anton',sans-serif;font-weight:400;font-size:26px;text-transform:uppercase">${p.n}</b><br><span class="small">${p.s}</span></button>`).join('')}</div>`);
-  st.insertAdjacentHTML('beforeend',`<button class="tbtn" id="plww" style="${window._plww?'background:var(--wolf,#ff4d6d);color:#000':''}">🐺 Met Weerwolven als afsluiter ${window._plww?'✓':''}</button>`);
-  $('#plww').onclick=()=>{window._plww=!window._plww;openPL()};
-  st.querySelectorAll('[data-pl]').forEach(b=>b.onclick=()=>{const p=PRESETS.find(x=>x.k===b.dataset.pl);PL={list:p.f().filter(m=>m.k!=='ww').map(m=>m.k).concat(window._plww?['ww']:[]),i:0};savePL();
+  st.querySelectorAll('[data-pl]').forEach(b=>b.onclick=()=>{const p=PRESETS.find(x=>x.k===b.dataset.pl);PL={list:p.f().filter(m=>m.k!=='ww').map(m=>m.k),i:0};savePL();
     scr(`<div class="mono">${p.n}</div><div class="pr" style="font-size:clamp(30px,4.4vw,52px)">Vanavond op het menu</div><ol class="rules">${PL.list.map(k=>`<li><span>${META.find(m=>m.k===k).n}</span></li>`).join('')}</ol>
       <div class="row"><button class="tbtn" id="pr2">Opnieuw husselen</button><button class="btn" id="ps">Start</button></div>`);
     $('#pr2').onclick=()=>b.onclick();$('#ps').onclick=()=>openGame(PL.list[0])})};
@@ -1137,7 +1137,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794935801';
+const APPVER='1794936006';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
