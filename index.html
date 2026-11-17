@@ -771,6 +771,7 @@ const IC={
  quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 16.5v.5"/>',head:'<path d="M12 3a7 7 0 0 0-7 7c0 2.5 1 4 2 5v5h7v-3h2a2 2 0 0 0 2-2v-2l2-1-2-3a7 7 0 0 0-6-6z"/>',
  bottle:'<path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3z"/><path d="M8 13h8"/>',lot:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 6v12M3 12h5"/>',ball:'<circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 5h-5L8 10z"/>',cup:'<path d="M6 4h12l-2 16H8z"/><path d="M6.5 9h11"/>',vs:'<path d="M4 5l4 14 4-14M20 7a3 3 0 0 0-3-2h-1a3 3 0 0 0 0 6h1a3 3 0 0 1 0 6h-1a3 3 0 0 1-3-2"/>',
  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/>',
+ wolf:'<path d="M4 4l4 5h8l4-5v9l-3 5-5 3-5-3-3-5z"/><circle cx="9.5" cy="12" r=".8"/><circle cx="14.5" cy="12" r=".8"/>',
  flame:'<path d="M12 22c4 0 7-3 7-7 0-5-5-7-5-12-3 2-4 5-4 7-1-1-2-2-2-4-2 2-3 5-3 9 0 4 3 7 7 7z"/>'};
 const META=[
  {k:'bom',lvl:'hard',n:'Kaboom',s:'Lees · geef door · boem',ic:'bomb',p:'3+ spelers',r:["Tik op Start. De bom begint te tikken, maar niemand weet hoe lang hij heeft: ergens tussen 25 en 70 seconden.","Lees de stelling luidop voor (bv. ‘Wie liegt het best?’).","Geef de iPad aan de persoon op wie de stelling het best past. Discussie mag, maar de tijd loopt.","Die tikt op Volgende, leest de nieuwe stelling voor en geeft weer door.","Het tikken versnelt. Bij de knal drinkt wie de iPad vasthoudt."]},
@@ -795,6 +796,7 @@ const META=[
  {k:'pong',lvl:'hard',n:'Beerpong',s:'Scorebord · teams',ic:'cup',tag:'Teams',p:'2 teams',r:["Zet in Spelers 2 teams aan, of speel met Team A en Team B.","Elk team heeft 10 bekers in een driehoek.","Raak je een beker van de tegenstander? Tik hem weg op het scherm. Zij drinken hem leeg.","Eerste team zonder bekers verliest."]},
  {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
  {k:'kara',lvl:'chill',n:'Karaoke',s:'Rad · uitdaging · jury',ic:'mic',tag:'Nieuw',p:'2+ spelers',r:["Het rad kiest wie er moet zingen. Met teams aan zingt het hele team samen.","Je krijgt een categorie (bv. ‘Een Belgische klassieker’) en een uitdaging (bv. ‘met een West-Vlaams accent’).","Tik het nummer in en open de karaoke-versie op YouTube: dan staat de tekst op het scherm. Bluetooth-box aan, en gaan.","Na het nummer beslist de jury: 🔥 ster (deel 3 slokken uit), 👍 prima of 💀 vals (zanger drinkt 2). Weigeren = ad fundum."]},
+ {k:'ww',lvl:'chill',n:'Weerwolven',s:'Met jullie gsm\'s · lobby met code',ic:'wolf',tag:'Groot spel',p:'4-20 spelers',r:["De iPad is de spelleider: hij toont een code en een QR-code. Iedereen scant hem met zijn eigen gsm en komt zo in de lobby.","Iedereen krijgt in het geheim zijn rol op zijn gsm: weerwolf, ziener, dokter, jager of burger.","’s Nachts kiest iedereen op zijn gsm. Ook de burgers tikken iets aan, zodat niemand opvalt.","Overdag discussiëren jullie met een timer. Elke weerwolf krijgt een geheime opdracht (bv. ‘zeg twee keer eerlijk gezegd’) die hij moet uitvoeren. Betrap ze!","Stemmen gebeurt op de gsm. Wie opgehangen of verscheurd wordt, drinkt. Het verliezende kamp: ad fundum."]},
  {k:'wvo',lvl:'chill',n:'Durf Je',s:'Truth or dare',ic:'flame',p:'3+ spelers',r:["Kies Truth of Dare.","Beantwoord eerlijk of voer de opdracht uit.","Weigeren = drinken. Daarna is de volgende aan de beurt."]}];
 
 const LV={chill:{n:'Chill',s:'Rustig aan · af en toe een slok',d:1},hard:{n:'Full Send',s:'Er wordt constant gedronken',d:3}};
@@ -1074,6 +1076,7 @@ const KCAT=['Een Nederlandstalige meezinger','Een hit uit de jaren 2000','Een Di
 const KCH=['met een zwaar West-Vlaams accent','fluisterend, maar met volle overtuiging','als opera','met je ogen dicht','als duet met {b}','met een pen als microfoon en een choreo','in slow motion dansend','als nieuwslezer','met de rest als backing vocals','terwijl {b} het in gebarentaal vertaalt','als boze leraar','alsof je op een groot festival staat','met elke zin hoger','op één been','zonder tekst: alleen nananana','als romantisch serenade voor {b}','en bij elk refrein drinkt de hele groep','gewoon normaal, maar dan perfect','met je rug naar het publiek','alsof je net gedumpt bent'];
 const KJURY=[{k:'ster',e:'🔥',n:'Sterrenstatus',d:'Deel 3 slokken uit',s:()=>SB[3].f()},{k:'ok',e:'👍',n:'Prima',d:'Niemand drinkt',s:()=>SB[4].f()},{k:'vals',e:'💀',n:'Vals',d:'De zanger drinkt 2',s:()=>SB[5].f()}];
 Object.assign(G,{
+ ww:{i(){location.href='ww.html?host=1'}},
  kara:{i(){const nc=nightDeck('kcat',KCAT),nh=nightDeck('kch',KCH);let cur=null;
    const spin=()=>{clr();const U=units();if(!U.length)return needPlayers(1);T.next();const who=T.p;let k=0,steps=18;
      const others=active().filter(a=>!(who.ids||[who.id]).includes(a.id));const b=others.length?others[Math.random()*others.length|0]:null;
@@ -1144,7 +1147,7 @@ if(CH.on)chSchedule();drawRule();
 
 renderGames();
 /* ===== automatisch updaten ===== */
-const APPVER='1794921833';
+const APPVER='1794933636';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
