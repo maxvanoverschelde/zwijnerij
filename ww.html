@@ -61,6 +61,12 @@ input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;tex
 .seg{display:flex;border:1px solid #2c2c2c;border-radius:999px;overflow:hidden}.seg button{padding:10px 14px;font-size:14px;color:var(--muted)}.seg button.on{background:#ededed;color:#000}
 .log{font-size:15px;color:var(--muted);max-width:640px;line-height:1.6}
 .err{color:var(--wolf)}
+.rlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;width:100%;max-width:900px;text-align:left}
+.rc{border:1px solid color-mix(in srgb,var(--c) 50%,#222);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--c) 6%,#0a0a0a)}
+.rc b{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase;color:var(--c)}.rc span{font-size:14px;color:#bdbdbd;line-height:1.4}
+.script{border:1px solid #333;border-radius:20px;padding:16px 20px;max-width:560px;text-align:left;display:flex;flex-direction:column;gap:10px;font-size:18px;line-height:1.45;background:#0d0d0d}
+.wrow2{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #222;padding:10px 4px;text-align:left}.wrow2.dead{opacity:.4;text-decoration:line-through}
+details summary::-webkit-details-marker{display:none}
 @media(max-width:760px){.lobby{grid-template-columns:1fr;justify-items:center}}
 </style>
 </head>
@@ -91,13 +97,17 @@ const dec=async(key,m)=>JSON.parse(new TextDecoder().decode(await crypto.subtle.
 
 /* ===== rollen & opdrachten ===== */
 const ROLES={
- wolf:{n:'Weerwolf',e:'🐺',c:'#ff4d6d',d:'Elke nacht kies je met de andere weerwolven een slachtoffer. Overdag doe je alsof je een gewone burger bent, en voer je stiekem je geheime opdracht uit.'},
- seer:{n:'Ziener',e:'🔮',c:'#b388ff',d:'Elke nacht mag je bij één speler kijken of het een weerwolf is. Gebruik die kennis slim, zonder jezelf te verraden.'},
- doc:{n:'Dokter',e:'🩺',c:'#3cff8a',d:'Elke nacht kies je iemand om te beschermen. Wordt die aangevallen, dan overleeft hij. Jezelf beschermen mag, maar niet twee nachten na elkaar dezelfde persoon.'},
- hunter:{n:'Jager',e:'🎯',c:'#ffb703',d:'Ga je dood, dan mag je meteen nog één iemand meenemen in je val.'},
+ wolf:{n:'Weerwolf',e:'🐺',c:'#ff4d6d',k:'wolf',d:'Elke nacht kiezen de weerwolven samen een slachtoffer. Overdag doe je alsof je een gewone burger bent en voer je stiekem je geheime opdracht uit.'},
+ witch:{n:'Heks',e:'🧪',c:'#c77dff',d:'Je hebt twee drankjes, elk één keer te gebruiken: een levensdrankje om het slachtoffer van de wolven te redden, en een gifdrankje om ’s nachts iemand te doden.'},
+ seer:{n:'Ziener',e:'🔮',c:'#b388ff',d:'Elke nacht mag je bij één speler kijken of het een weerwolf is.'},
+ doc:{n:'Beschermer',e:'🛡️',c:'#3cff8a',d:'Elke nacht bescherm je iemand tegen de wolven. Niet twee nachten na elkaar dezelfde persoon.'},
+ hunter:{n:'Jager',e:'🎯',c:'#ffb703',d:'Ga je dood, dan mag je meteen nog één speler meenemen in je val.'},
  vil:{n:'Burger',e:'🧑‍🌾',c:'#7aa2ff',d:'Geen speciale kracht, wel een stem. Let goed op: de weerwolven moeten overdag een geheime opdracht uitvoeren. Betrap ze.'}};
-const TASKS=["Zeg minstens twee keer ‘eerlijk gezegd’","Beschuldig iemand zonder enige reden, met volle overtuiging","Raak drie keer je oor aan terwijl iemand anders praat","Gebruik ‘joegnee’ in een zin","Neem een slok telkens iemand jouw naam zegt","Verdedig de persoon die het meest verdacht wordt","Stel minstens twee vragen aan dezelfde persoon","Zeg ‘dat vind ik verdacht’ over iemand die niets zegt","Lach één keer heel hard om iets dat niet grappig is","Zit vanaf nu met gekruiste armen","Noem iemand bij een verkeerde naam","Begin een zin met ‘Als ik weerwolf was…’","Zeg een voetbalclub in een zin die er niets mee te maken heeft","Kijk de hele ronde niemand recht aan","Herhaal het laatste woord van iemand anders, als een echo","Doe alsof je heel zeker bent van wie de weerwolf is, maar noem geen naam","Gebruik het woord ‘eigenlijk’ minstens drie keer","Wijs naar iemand als je praat","Zeg dat je gisteren slecht geslapen hebt","Stel voor om op de stilste persoon te stemmen"];
+const MAYOR={n:'Burgemeester',e:'🎖️',c:'#ffd23f',d:'Een extra titel bovenop je rol, en iedereen weet wie het is. Bij het stemmen telt de stem van de burgemeester dubbel. Sterft de burgemeester, dan wordt er een nieuwe aangeduid.'};
+const NAR={n:'Verteller',e:'🎙️',c:'#d4ff3a',d:'Je speelt niet mee, maar leidt het spel. Op je gsm zie je wat je moet voorlezen, wie welke rol heeft en de knoppen om verder te gaan.'};
+const TASKS=["Zeg minstens twee keer ‘eerlijk gezegd’","Beschuldig iemand zonder enige reden, met volle overtuiging","Raak drie keer je oor aan terwijl iemand anders praat","Gebruik ‘joegnee’ in een zin","Verdedig de persoon die het meest verdacht wordt","Stel minstens twee vragen aan dezelfde persoon","Zeg ‘dat vind ik verdacht’ over iemand die niets zegt","Lach één keer heel hard om iets dat niet grappig is","Zit de hele ronde met gekruiste armen","Noem iemand één keer bij een verkeerde naam","Begin een zin met ‘Als ik weerwolf was…’","Noem een voetbalclub in een zin die er niets mee te maken heeft","Kijk de hele ronde niemand recht aan","Herhaal het laatste woord van iemand anders, als een echo","Gebruik het woord ‘eigenlijk’ minstens drie keer","Wijs naar iemand telkens als je praat","Zeg dat je gisteren slecht geslapen hebt","Stel voor om op de stilste persoon te stemmen","Zucht luid wanneer iemand jou beschuldigt","Zeg ‘ik zeg het maar’ na een beschuldiging"];
 const VTIPS=["De weerwolven hebben elk een geheime opdracht. Let op rare zinnen en tics.","Wie zegt opvallend vaak hetzelfde woord?","Wie verdedigt plots iemand die heel verdacht is?","Let op wie zijn oren, neus of armen aanraakt.","Stilte kan verdacht zijn, maar praatjesmakers ook."];
+const fmt=s=>{s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 
 /* ===== realtime ===== */
 const sb=window.supabase?window.supabase.createClient(SB_URL,SB_KEY,{realtime:{params:{eventsPerSecond:20}}}):null;
@@ -109,180 +119,241 @@ const join=(code,pid,meta,onMsg,onSync)=>new Promise(res=>{ch=sb.channel('ww-'+c
 const send=p=>ch&&ch.send({type:'broadcast',event:'m',payload:p});
 
 /* ============================================================
-   SPELLEIDER (iPad)
+   SPELLEIDER (iPad = gedeeld scherm, rekent alles uit)
    ============================================================ */
-const H={code:null,keys:null,players:{},order:[],keyCache:{},phase:'lobby',round:0,cfg:{wolves:0,seer:true,doc:true,hunter:false,talk:180},night:{},votes:{},lastSave:null,log:[],timerEnd:0,winner:null,online:{}};
-const saveH=()=>ls.set('ww_host',{code:H.code,keys:H.keys,players:H.players,order:H.order,phase:H.phase,round:H.round,cfg:H.cfg,night:H.night,votes:H.votes,lastSave:H.lastSave,log:H.log,timerEnd:H.timerEnd,winner:H.winner,t:Date.now()});
+const H={code:null,keys:null,players:{},order:[],keyCache:{},phase:'lobby',round:0,cfg:{wolves:0,witch:true,mayor:true,seer:false,doc:false,hunter:false,nar:true,talk:180},
+  night:{},votes:{},log:[],timerEnd:0,winner:null,online:{},mayor:null,nar:null,potions:{heal:true,poison:true},victim:null,hunterPid:null,hunterNext:null,pending:[]};
+const saveH=()=>{const c={...H};delete c.keyCache;delete c.online;c.t=Date.now();ls.set('ww_host',c)};
 const pkey=async pid=>H.keyCache[pid]||(H.keyCache[pid]=await derive(H.keys.priv,H.players[pid].pub));
-const alive=()=>H.order.filter(p=>H.players[p]&&H.players[p].alive);
-const pub=()=>({t:'state',phase:H.phase,round:H.round,hostPub:H.keys.pub,code:H.code,players:H.order.map(p=>({id:p,n:H.players[p].n,alive:H.players[p].alive,role:(H.phase==='end'||!H.players[p].alive)?H.players[p].role:null})),
-  timerEnd:H.timerEnd,winner:H.winner,lastNews:H.log.slice(-1)[0]||null,votesIn:Object.keys(H.votes).length,nightIn:Object.keys(H.night).length});
+const inGame=()=>H.order.filter(p=>H.players[p]&&H.players[p].role!=='nar');
+const alive=()=>inGame().filter(p=>H.players[p].alive);
+const nm=p=>H.players[p]?.n||'?';
+const rolesInGame=()=>{const s=new Set(inGame().map(p=>H.players[p].role).filter(Boolean));return ['wolf','witch','seer','doc','hunter','vil'].filter(r=>s.has(r)).concat(H.cfg.mayor?['mayor']:[]).concat(H.nar?['nar']:[])};
+const cfgRoles=()=>['wolf','vil'].concat(H.cfg.witch?['witch']:[],H.cfg.seer?['seer']:[],H.cfg.doc?['doc']:[],H.cfg.hunter?['hunter']:[],H.cfg.mayor?['mayor']:[],H.cfg.nar?['nar']:[]);
+const pub=()=>({t:'state',phase:H.phase,round:H.round,hostPub:H.keys.pub,code:H.code,mayor:H.mayor,nar:H.nar,
+  players:H.order.map(p=>({id:p,n:nm(p),alive:H.players[p].alive,nar:H.players[p].role==='nar',role:(H.phase==='end'||(!H.players[p].alive&&H.players[p].role!=='nar'))?H.players[p].role:null})),
+  roles:H.phase==='lobby'?cfgRoles():rolesInGame(),timerEnd:H.timerEnd,winner:H.winner,lastNews:H.log.slice(-1)[0]||null,votesIn:Object.keys(H.votes).length,nightIn:Object.keys(H.night).length,need:alive().length});
 const broadcast=()=>{send(pub());saveH();renderHost()};
+const wolvesDone=()=>alive().filter(p=>H.players[p].role==='wolf').every(p=>H.night[p]);
+const calcVictim=()=>{const wv={};Object.values(H.night).filter(v=>v.kind==='wolf').forEach(v=>wv[v.target]=(wv[v.target]||0)+1);
+  const max=Math.max(0,...Object.values(wv)),c=Object.keys(wv).filter(k=>wv[k]===max);return c.length?c[Math.random()*c.length|0]:null};
 const priv=async pid=>{const p=H.players[pid];if(!p||!p.pub)return;const k=await pkey(pid);
-  const a=alive(),others=a.filter(x=>x!==pid).map(x=>({id:x,n:H.players[x].n}));
-  const o={role:p.role,alive:p.alive,phase:H.phase,round:H.round};
-  if(p.role==='wolf'){o.mates=H.order.filter(x=>x!==pid&&H.players[x].role==='wolf').map(x=>H.players[x].n);o.task=p.task}
+  const a=alive(),others=a.filter(x=>x!==pid).map(x=>({id:x,n:nm(x)}));
+  const o={role:p.role,alive:p.alive,phase:H.phase,round:H.round,mayor:H.mayor===pid};
+  if(p.role==='nar'){o.all=inGame().map(x=>({n:nm(x),role:H.players[x].role,alive:H.players[x].alive,task:H.players[x].task,mayor:H.mayor===x}));
+    o.night=Object.entries(H.night).map(([k,v])=>({by:nm(k),kind:v.kind,to:v.target?nm(v.target):null,heal:v.heal,poison:v.poison?nm(v.poison):null}));
+    o.votes=Object.entries(H.votes).map(([k,v])=>({by:nm(k),to:nm(v)}));o.timerEnd=H.timerEnd;o.potions=H.potions}
+  if(p.role==='wolf'){o.mates=inGame().filter(x=>x!==pid&&H.players[x].role==='wolf').map(nm);o.task=p.task}
   if(p.role==='seer')o.seen=p.seen||[];
-  if(H.phase==='night'&&p.alive){o.choices=p.role==='wolf'?a.filter(x=>H.players[x].role!=='wolf').map(x=>({id:x,n:H.players[x].n})):p.role==='doc'?a.filter(x=>x!==p.lastDoc).map(x=>({id:x,n:H.players[x].n})):others;
-    o.done=!!H.night[pid];if(p.role==='wolf'){o.wolfVotes=Object.entries(H.night).filter(([k,v])=>v.kind==='wolf').map(([k,v])=>({by:H.players[k].n,to:H.players[v.target]?.n}))}}
-  if(H.phase==='vote'&&p.alive){o.choices=others;o.done=!!H.votes[pid]}
-  if(H.phase==='hunter'&&p.role==='hunter'&&H.hunterPid===pid){o.hunt=true;o.choices=others}
+  if(p.role==='witch')o.potions=H.potions;
+  if(H.phase==='night'&&p.alive&&p.role!=='nar'){o.done=!!H.night[pid];
+    if(p.role==='wolf'){o.choices=a.filter(x=>H.players[x].role!=='wolf').map(x=>({id:x,n:nm(x)}));o.wolfVotes=Object.entries(H.night).filter(([k,v])=>v.kind==='wolf').map(([k,v])=>({by:nm(k),to:nm(v.target)}))}
+    else if(p.role==='doc')o.choices=a.filter(x=>x!==p.lastDoc).map(x=>({id:x,n:nm(x)}));
+    else if(p.role==='witch'){o.wait=!wolvesDone();if(!o.wait){o.victim=H.victim?nm(H.victim):null;o.choices=others}}
+    else o.choices=others}
+  if(H.phase==='vote'&&p.alive&&p.role!=='nar'){o.choices=others;o.done=!!H.votes[pid]}
+  if(H.phase==='hunter'&&H.hunterPid===pid){o.hunt=true;o.choices=others}
   send({t:'priv',to:pid,...await enc(k,o)})};
 const privAll=()=>H.order.forEach(priv);
 const onHostMsg=async m=>{
   if(m.t==='join'){const ex=H.players[m.pid];
-    if(!ex){if(H.phase!=='lobby'){send({t:'reject',to:m.pid,why:'Het spel is al bezig. Wacht op de volgende ronde.'});return}
+    if(!ex){if(H.phase!=='lobby'){send({t:'reject',to:m.pid,why:'Het spel is al bezig. Wacht op het volgende spel.'});return}
       H.players[m.pid]={n:m.n.slice(0,16),pub:m.pub,alive:true,role:null};H.order.push(m.pid);beep(880)}
     else{if(ex.pub!==m.pub){ex.pub=m.pub;delete H.keyCache[m.pid]}ex.n=m.n.slice(0,16)}
     broadcast();priv(m.pid);return}
   if(m.t==='act'&&H.players[m.pid]){let a;try{a=await dec(await pkey(m.pid),m)}catch(e){return}hostAct(m.pid,a)}
   if(m.t==='hello'){send(pub());priv(m.pid)}};
+const narCmd=c=>{({startNight:goNight,morning:resolveNight,vote:goVote,closeVote:resolveVote,next:()=>afterDeaths('night',H.pending),plus:()=>{H.timerEnd+=60000;broadcast();priv(H.nar)}}[c]||(()=>{}))()};
 const hostAct=(pid,a)=>{const p=H.players[pid];
-  if(H.phase==='night'&&p.alive&&a.kind==='night'){H.night[pid]={kind:p.role==='wolf'?'wolf':p.role,target:a.target};beep(700);
-    if(p.role==='seer'&&H.players[a.target]){p.seen=(p.seen||[]).concat([{n:H.players[a.target].n,wolf:H.players[a.target].role==='wolf'}])}
-    if(p.role==='wolf')H.order.filter(x=>H.players[x].role==='wolf').forEach(priv);else priv(pid);
-    broadcast();if(nightDone())timers.night=setTimeout(resolveNight,1500);return}
-  if(H.phase==='vote'&&p.alive&&a.kind==='vote'){H.votes[pid]=a.target;beep(700);priv(pid);broadcast();if(Object.keys(H.votes).length>=alive().length)setTimeout(resolveVote,1200);return}
-  if(H.phase==='hunter'&&pid===H.hunterPid&&a.kind==='hunt'){const t=H.players[a.target];if(t&&t.alive){t.alive=false;H.log.push(`🎯 ${p.n} schiet ${t.n} neer. ${t.n} was ${ROLES[t.role].n}. Drink!`);say(`De jager neemt ${t.n} mee in zijn val.`)}
-    H.hunterPid=null;afterDeaths(H.hunterNext)}};
+  if(a.kind==='nar'&&p.role==='nar'){narCmd(a.cmd);return}
+  if(H.phase==='night'&&p.alive&&p.role!=='nar'){
+    if(p.role==='witch'){if(a.kind!=='witch'||!wolvesDone())return;
+      const heal=!!a.heal&&H.potions.heal&&!!H.victim,poison=a.poison&&H.potions.poison?a.poison:null;
+      if(heal)H.potions.heal=false;if(poison)H.potions.poison=false;H.night[pid]={kind:'witch',heal,poison}}
+    else if(a.kind==='night'){H.night[pid]={kind:p.role==='wolf'?'wolf':p.role,target:a.target};
+      if(p.role==='seer'&&H.players[a.target])p.seen=(p.seen||[]).concat([{n:nm(a.target),wolf:H.players[a.target].role==='wolf'}])}
+    else return;
+    beep(700);if(p.role==='wolf'&&wolvesDone()){H.victim=calcVictim();privAll()}else if(p.role==='wolf')inGame().filter(x=>H.players[x].role==='wolf').forEach(priv);else priv(pid);
+    if(H.nar)priv(H.nar);broadcast();if(alive().every(x=>H.night[x]))timers.night=setTimeout(resolveNight,1200);return}
+  if(H.phase==='vote'&&p.alive&&a.kind==='vote'){H.votes[pid]=a.target;beep(700);priv(pid);if(H.nar)priv(H.nar);broadcast();if(Object.keys(H.votes).length>=alive().length)setTimeout(resolveVote,1000);return}
+  if(H.phase==='hunter'&&pid===H.hunterPid&&a.kind==='hunt'){const t=H.players[a.target];const extra=[];if(t&&t.alive){t.alive=false;extra.push(a.target);H.log.push(`🎯 ${p.n} neemt ${t.n} mee in zijn val. ${t.n} was ${ROLES[t.role].n}.`)}
+    H.hunterPid=null;afterDeaths(H.hunterNext,extra)}};
 const timers={};
-const nightDone=()=>alive().every(p=>H.night[p]);
 const makeCode=()=>Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
 const startHost=async(resume)=>{
   const s=ls.get('ww_host',null);
-  if(resume&&s&&Date.now()-s.t<6*3.6e6){Object.assign(H,s);H.keyCache={}}else{H.code=makeCode();H.keys=await genKeys();H.players={};H.order=[];H.phase='lobby';H.log=[];H.round=0;H.winner=null}
-  $('#me').textContent='Spelleider';
+  if(resume&&s&&Date.now()-s.t<6*3.6e6){Object.assign(H,s);H.keyCache={};H.online={}}else{H.code=makeCode();H.keys=await genKeys();H.players={};H.order=[];H.phase='lobby';H.log=[];H.round=0;H.winner=null}
+  $('#me').textContent='Spelscherm';
   await join(H.code,'host',{host:true},onHostMsg,st=>{H.online={};Object.keys(st).forEach(k=>H.online[k]=true);renderHost()});
-  broadcast();privAll()};
-const assign=()=>{const ids=shuf(H.order),n=ids.length;let w=H.cfg.wolves||Math.max(1,Math.round(n/4.5));
-  const roles=[];for(let i=0;i<w;i++)roles.push('wolf');if(H.cfg.seer&&n>=4)roles.push('seer');if(H.cfg.doc&&n>=5)roles.push('doc');if(H.cfg.hunter&&n>=6)roles.push('hunter');while(roles.length<n)roles.push('vil');
-  const tasks=shuf(TASKS);ids.forEach((id,i)=>{const p=H.players[id];p.role=roles[i];p.alive=true;p.seen=[];p.lastDoc=null;p.task=p.role==='wolf'?tasks[i%tasks.length]:null})};
-const goNight=()=>{H.phase='night';H.round++;H.night={};H.votes={};document.body.classList.add('night');
-  say(`Nacht ${H.round}. Iedereen ogen dicht. Weerwolven, ziener en dokter: kies op je gsm. Burgers: tik ook iets aan, zodat niemand iets merkt.`);broadcast();privAll()};
-const resolveNight=()=>{clearTimeout(timers.night);if(H.phase!=='night')return;
-  const wv={};Object.values(H.night).filter(v=>v.kind==='wolf').forEach(v=>wv[v.target]=(wv[v.target]||0)+1);
-  const max=Math.max(0,...Object.values(wv)),cands=Object.keys(wv).filter(k=>wv[k]===max);const victim=cands.length?cands[Math.random()*cands.length|0]:null;
-  const docE=Object.entries(H.night).find(([k,v])=>v.kind==='doc');const saved=docE?docE[1].target:null;if(docE)H.players[docE[0]].lastDoc=saved;
-  const deaths=[];let news;
-  if(victim&&victim!==saved){H.players[victim].alive=false;deaths.push(victim);news=`☠️ ${H.players[victim].n} is vannacht verscheurd. Rol: ${ROLES[H.players[victim].role].n}. Drink een ad fundum ter ere van ${H.players[victim].n}.`}
-  else if(victim){news=`🩺 De weerwolven sloegen toe, maar de dokter was er op tijd bij. Niemand dood. De dokter mag 2 slokken uitdelen.`}
-  else news='🌙 Een rustige nacht. Niemand werd aangevallen.';
-  H.log.push(news);document.body.classList.remove('night');
-  say(news.replace(/[☠️🩺🌙]/g,''));afterDeaths('day',deaths)};
-const afterDeaths=(next,deaths=[])=>{const h=deaths.find(d=>H.players[d].role==='hunter');
-  if(h&&H.cfg.hunter){H.phase='hunter';H.hunterPid=h;H.hunterNext=next;broadcast();privAll();return}
+  broadcast();privAll();if(H.phase==='day')tickTalk()};
+const assign=()=>{let ids=shuf(H.order);H.nar=null;
+  if(H.cfg.nar&&ids.length>=5){H.nar=ids.shift();H.players[H.nar].role='nar';H.players[H.nar].alive=false}
+  const n=ids.length;let w=H.cfg.wolves||Math.max(1,Math.round(n/4.5));
+  const roles=[];for(let i=0;i<w;i++)roles.push('wolf');
+  if(H.cfg.witch&&n>=4)roles.push('witch');if(H.cfg.seer&&n>=5)roles.push('seer');if(H.cfg.doc&&n>=6)roles.push('doc');if(H.cfg.hunter&&n>=6)roles.push('hunter');
+  while(roles.length<n)roles.push('vil');
+  const tasks=shuf(TASKS);ids.forEach((id,i)=>{const p=H.players[id];p.role=roles[i];p.alive=true;p.seen=[];p.lastDoc=null;p.task=p.role==='wolf'?tasks[i%tasks.length]:null});
+  H.mayor=H.cfg.mayor?ids[Math.random()*ids.length|0]:null;H.potions={heal:true,poison:true};H.log=[]};
+const goNight=()=>{if(H.phase==='night')return;H.phase='night';H.round++;H.night={};H.votes={};H.victim=null;document.body.classList.add('night');broadcast();privAll()};
+const resolveNight=()=>{clearTimeout(timers.night);if(H.phase!=='night')return;if(H.victim==null&&wolvesDone())H.victim=calcVictim();
+  const victim=H.victim;const docE=Object.entries(H.night).find(([k,v])=>v.kind==='doc');const prot=docE?docE[1].target:null;if(docE)H.players[docE[0]].lastDoc=prot;
+  const wE=Object.values(H.night).find(v=>v.kind==='witch');const healed=wE&&wE.heal;const poisoned=wE&&wE.poison;
+  const deaths=[],parts=[];
+  if(victim&&victim!==prot&&!healed){deaths.push(victim)}
+  else if(victim){parts.push('De weerwolven sloegen toe, maar hun slachtoffer werd gered.')}
+  if(poisoned&&H.players[poisoned]?.alive&&!deaths.includes(poisoned))deaths.push(poisoned);
+  deaths.forEach(d=>{H.players[d].alive=false;parts.unshift(`☠️ ${nm(d)} werd vannacht dood teruggevonden. Rol: ${ROLES[H.players[d].role].n}.`)});
+  if(!victim&&!deaths.length)parts.push('🌙 Een rustige nacht. Niemand werd aangevallen.');
+  if(!deaths.length&&victim)parts.unshift('🌙 Niemand is gestorven.');
+  H.log.push(parts.join(' '));document.body.classList.remove('night');afterDeaths('day',deaths)};
+const mayorCheck=deaths=>{if(H.mayor&&deaths.includes(H.mayor)){const a=alive();const nw=a.length?a[Math.random()*a.length|0]:null;const old=nm(H.mayor);H.mayor=nw;if(nw)H.log[H.log.length-1]+=` 🎖️ Burgemeester ${old} is dood: ${nm(nw)} is de nieuwe burgemeester.`}};
+const afterDeaths=(next,deaths=[])=>{mayorCheck(deaths);const h=deaths.find(d=>H.players[d].role==='hunter');
+  if(h){H.phase='hunter';H.hunterPid=h;H.hunterNext=next;broadcast();privAll();return}
   if(checkWin())return;if(next==='day'){H.phase='day';H.timerEnd=Date.now()+H.cfg.talk*1000;broadcast();privAll();tickTalk()}else goNight()};
 const tickTalk=()=>{clearInterval(timers.talk);timers.talk=setInterval(()=>{if(H.phase!=='day'){clearInterval(timers.talk);return}const l=Math.round((H.timerEnd-Date.now())/1000);
-  const t=$('#ht');if(t)t.textContent=fmt(l);if(l===30)say('Nog dertig seconden.');if(l<=0){clearInterval(timers.talk);goVote()}},500)};
-const fmt=s=>{s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
-const goVote=()=>{clearInterval(timers.talk);H.phase='vote';H.votes={};say('Tijd om te stemmen. Kies op je gsm wie je ophangt.');broadcast();privAll()};
-const resolveVote=()=>{if(H.phase!=='vote')return;const c={};Object.values(H.votes).forEach(v=>c[v]=(c[v]||0)+1);const max=Math.max(0,...Object.values(c)),top=Object.keys(c).filter(k=>c[k]===max);
-  let news,deaths=[];
-  if(top.length!==1){news=`⚖️ Gelijkstand (${top.map(t=>H.players[t].n).join(' en ')}). Niemand wordt opgehangen. Iedereen die stemde op ${top.map(t=>H.players[t].n).join(' of ')} drinkt 1.`}
+  const t=$('#ht');if(t)t.textContent=fmt(l);if(l<=0){clearInterval(timers.talk);goVote()}},500)};
+const goVote=()=>{if(H.phase!=='day')return;clearInterval(timers.talk);H.phase='vote';H.votes={};broadcast();privAll()};
+const resolveVote=()=>{if(H.phase!=='vote')return;const c={};Object.entries(H.votes).forEach(([by,v])=>c[v]=(c[v]||0)+(by===H.mayor?2:1));
+  const max=Math.max(0,...Object.values(c)),top=Object.keys(c).filter(k=>c[k]===max);let news,deaths=[];
+  if(top.length!==1){news=`⚖️ Gelijkstand tussen ${top.map(nm).join(' en ')||'niemand'}. Niemand wordt opgehangen.`}
   else{const v=top[0],p=H.players[v];p.alive=false;deaths.push(v);
-    news=p.role==='wolf'?`🐺 ${p.n} werd opgehangen en was een WEERWOLF! Ad fundum voor ${p.n}. Opdracht was: “${p.task}”.`:`😬 ${p.n} werd opgehangen, maar was ${ROLES[p.role].n}. Iedereen die op ${p.n} stemde, drinkt 2.`}
-  H.log.push(news);say(news.replace(/[⚖️🐺😬]/g,'').replace(/[“”]/g,''));H.phase='reveal';broadcast();privAll();H.pendingDeaths=deaths};
+    news=p.role==='wolf'?`🐺 ${p.n} werd opgehangen en was een WEERWOLF! Geheime opdracht: “${p.task}”.`:`😬 ${p.n} werd opgehangen, maar was ${ROLES[p.role].n}.`}
+  H.log.push(news);H.phase='reveal';H.pending=deaths;broadcast();privAll()};
 const checkWin=()=>{const a=alive(),w=a.filter(p=>H.players[p].role==='wolf').length,v=a.length-w;
-  if(w===0){H.winner='village'}else if(w>=v){H.winner='wolves'}else return false;
-  H.phase='end';document.body.classList.remove('night');say(H.winner==='village'?'Het dorp wint! Alle weerwolven zijn gevonden. Weerwolven: ad fundum.':'De weerwolven winnen! Het dorp is opgegeten. Burgers: ad fundum.');broadcast();privAll();return true};
-const renderHost=()=>{const P=H.order.map(id=>({id,...H.players[id]}));
-  const chips=P.map(p=>`<span class="pchip ${p.alive||H.phase==='lobby'?'':'dead'}"><span class="dot ${H.online[p.id]?'':'off'}"></span>${esc(p.n)}${(H.phase==='end'||(!p.alive&&H.phase!=='lobby'))&&p.role?' · '+ROLES[p.role].e:''}${H.phase==='lobby'?`<span class="x" data-kick="${p.id}">✕</span>`:''}</span>`).join('');
-  const url=location.origin+location.pathname+'?c='+H.code;
-  if(H.phase==='lobby'){const n=P.length,w=H.cfg.wolves||Math.max(1,Math.round(n/4.5));
+  if(w===0)H.winner='village';else if(w>=v)H.winner='wolves';else return false;
+  H.phase='end';document.body.classList.remove('night');broadcast();privAll();return true};
+const chip=p=>{const pl=H.players[p];return `<span class="pchip ${pl.role==='nar'||pl.alive||H.phase==='lobby'?'':'dead'}"><span class="dot ${H.online[p]?'':'off'}"></span>${H.mayor===p?'🎖️ ':''}${pl.role==='nar'?'🎙️ ':''}${esc(pl.n)}${(H.phase==='end'||(!pl.alive&&pl.role!=='nar'&&H.phase!=='lobby'))&&pl.role&&pl.role!=='nar'?' · '+ROLES[pl.role].e:''}${H.phase==='lobby'?`<span class="x" data-kick="${p}">✕</span>`:''}</span>`};
+const roleCards=list=>`<div class="rlist">${list.map(r=>{const R=r==='mayor'?MAYOR:r==='nar'?NAR:ROLES[r];return `<div class="rc" style="--c:${R.c}"><b>${R.e} ${R.n}</b><span>${R.d}</span></div>`}).join('')}</div>`;
+const renderHost=()=>{const chips=H.order.map(chip).join('');const url=location.origin+location.pathname+'?c='+H.code;
+  const narLine=H.nar?`<div class="small">🎙️ Verteller: <b style="color:var(--acc)">${esc(nm(H.nar))}</b>, die volgt alles op zijn gsm.</div>`:'';
+  const ctrl=(btns)=>H.nar?`<div class="small">De verteller gaat verder via zijn gsm.</div><details><summary class="small">Knoppen op dit scherm</summary><div class="row" style="margin-top:10px">${btns}</div></details>`:`<div class="row">${btns}</div>`;
+  if(H.phase==='lobby'){const n=H.order.length,np=H.cfg.nar&&n>=5?n-1:n,w=H.cfg.wolves||Math.max(1,Math.round(np/4.5));
     app.innerHTML=`<div class="lobby"><div><div id="qr"></div><div class="small" style="margin-top:10px">Scan met je gsm</div></div>
       <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start;text-align:left"><div class="mono">Ga naar de lobby met code</div><div class="code-big">${H.code}</div>
       <div class="small">Of open <b>${esc(location.host+location.pathname)}</b> op je gsm en vul de code in.</div>
       <div class="plist" style="justify-content:flex-start">${chips||'<span class="small">Nog niemand binnen…</span>'}</div></div></div>
-      <div class="row"><span class="mono">Weerwolven</span><div class="seg">${[0,1,2,3].map(k=>`<button data-w="${k}" class="${H.cfg.wolves===k?'on':''}">${k===0?'Auto ('+w+')':k}</button>`).join('')}</div></div>
-      <div class="row"><span class="mono">Rollen</span>${['seer','doc','hunter'].map(r=>`<button class="tbtn" data-r="${r}" style="${H.cfg[r]?'background:#ededed;color:#000':''}">${ROLES[r].e} ${ROLES[r].n}</button>`).join('')}
+      <div class="row"><span class="mono">Weerwolven</span><div class="seg">${[0,1,2,3].map(k=>`<button data-w="${k}" class="${H.cfg.wolves===k?'on':''}">${k===0?'Auto ('+w+')':k}</button>`).join('')}</div>
         <span class="mono" style="margin-left:10px">Praattijd</span><div class="seg">${[120,180,300].map(s=>`<button data-t="${s}" class="${H.cfg.talk===s?'on':''}">${s/60} min</button>`).join('')}</div></div>
+      <div class="row"><span class="mono">Rollen</span>${[['witch',ROLES.witch],['mayor',MAYOR],['nar',NAR],['seer',ROLES.seer],['doc',ROLES.doc],['hunter',ROLES.hunter]].map(([k,R])=>`<button class="tbtn" data-r="${k}" style="${H.cfg[k]?'background:#ededed;color:#000':''}">${R.e} ${R.n}</button>`).join('')}</div>
+      <div class="small">Het spel kiest zelf wie welke rol krijgt${H.cfg.nar?' en wie de verteller is (vanaf 5 spelers)':''}.</div>
       <button class="btn" id="go" ${n<4?'disabled':''}>Start (${n} spelers${n<4?', min. 4':''})</button>`;
     try{new QRCode($('#qr'),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){$('#qr').innerHTML='<div style="color:#000;padding:20px">QR niet geladen</div>'}
     app.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{H.cfg.wolves=+b.dataset.w;broadcast()});
     app.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{H.cfg[b.dataset.r]=!H.cfg[b.dataset.r];broadcast()});
     app.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{H.cfg.talk=+b.dataset.t;broadcast()});
     app.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{const id=b.dataset.kick;delete H.players[id];H.order=H.order.filter(x=>x!==id);send({t:'reject',to:id,why:'Je werd uit de lobby verwijderd.'});broadcast()});
-    $('#go').onclick=()=>{assign();H.phase='roles';say('De rollen zijn verdeeld. Bekijk stiekem je gsm.');broadcast();privAll()};return}
-  if(H.phase==='roles'){app.innerHTML=`<div class="h1">Bekijk je rol</div><div class="hint">Iedereen kijkt stiekem op zijn eigen gsm. Weerwolven zien wie hun maten zijn en krijgen een geheime opdracht voor elke dagronde.</div><div class="plist">${chips}</div><button class="btn" id="n">Iedereen klaar: de nacht valt</button>`;$('#n').onclick=goNight;return}
+    $('#go').onclick=()=>{assign();H.phase='roles';broadcast();privAll()};return}
+  if(H.phase==='roles'){app.innerHTML=`<div class="h1">Bekijk je rol</div><div class="hint">Iedereen kijkt stiekem op zijn eigen gsm.${H.mayor?` 🎖️ <b style="color:#ffd23f">${esc(nm(H.mayor))}</b> is burgemeester.`:''}</div>${narLine}
+      ${roleCards(rolesInGame())}<div class="plist">${chips}</div>${ctrl('<button class="btn" id="n">Start de nacht</button>')}`;const b=$('#n');if(b)b.onclick=goNight;return}
   if(H.phase==='night'){const need=alive().length,inn=Object.keys(H.night).length;
     app.innerHTML=`<div style="font-size:80px">🌙</div><div class="h1">Nacht ${H.round}</div><div class="hint">Iedereen ogen dicht, behalve om je gsm te bedienen. Ook burgers tikken iets aan, zodat niemand opvalt.</div>
-      <div class="bar"><i style="width:${need?inn/need*100:0}%"></i></div><div class="mono">${inn} / ${need} gekozen</div><button class="tbtn" id="f">Forceer ochtend</button>`;$('#f').onclick=resolveNight;return}
-  if(H.phase==='hunter'){app.innerHTML=`<div style="font-size:80px">🎯</div><div class="h1">De jager valt…</div><div class="hint">${esc(H.players[H.hunterPid].n)} was de jager en kiest nu op zijn gsm wie hij meeneemt.</div>`;return}
+      <div class="bar"><i style="width:${need?inn/need*100:0}%"></i></div><div class="mono">${inn} / ${need} klaar</div>${ctrl('<button class="tbtn" id="f">Forceer ochtend</button>')}`;const f=$('#f');if(f)f.onclick=resolveNight;return}
+  if(H.phase==='hunter'){app.innerHTML=`<div style="font-size:80px">🎯</div><div class="h1">De jager valt…</div><div class="hint">${esc(nm(H.hunterPid))} was de jager en kiest op zijn gsm wie hij meeneemt.</div>`;return}
   if(H.phase==='day'){const l=Math.round((H.timerEnd-Date.now())/1000);
     app.innerHTML=`<div class="mono">Dag ${H.round}</div><div class="h2" style="max-width:900px">${esc(H.log.slice(-1)[0]||'')}</div><div class="timer" id="ht">${fmt(l)}</div>
-      <div class="hint">Discussieer: wie is de weerwolf? <b style="color:var(--wolf)">${esc(VTIPS[H.round%VTIPS.length])}</b></div><div class="plist">${chips}</div>
-      <div class="row"><button class="tbtn" id="ex">+1 minuut</button><button class="btn" id="v">Nu stemmen</button></div>`;
-    $('#ex').onclick=()=>{H.timerEnd+=60000;broadcast()};$('#v').onclick=goVote;return}
+      <div class="hint">Wie is de weerwolf? <b style="color:var(--wolf)">${esc(VTIPS[H.round%VTIPS.length])}</b></div><div class="plist">${chips}</div>
+      ${ctrl('<button class="tbtn" id="ex">+1 minuut</button><button class="btn" id="v">Nu stemmen</button>')}`;
+    const ex=$('#ex'),v=$('#v');if(ex)ex.onclick=()=>{H.timerEnd+=60000;broadcast()};if(v)v.onclick=goVote;return}
   if(H.phase==='vote'){const need=alive().length,inn=Object.keys(H.votes).length;
-    app.innerHTML=`<div style="font-size:70px">🗳️</div><div class="h1">Stemmen</div><div class="hint">Iedereen stemt op zijn gsm. Het resultaat komt pas als iedereen gestemd heeft.</div>
-      <div class="bar"><i style="width:${need?inn/need*100:0}%"></i></div><div class="mono">${inn} / ${need} stemmen</div><button class="tbtn" id="f">Stemming afsluiten</button>`;$('#f').onclick=resolveVote;return}
-  if(H.phase==='reveal'){app.innerHTML=`<div class="h2" style="max-width:900px">${esc(H.log.slice(-1)[0])}</div><div class="plist">${chips}</div><button class="btn" id="n">Verder</button>`;
-    $('#n').onclick=()=>afterDeaths('night',H.pendingDeaths||[]);return}
+    app.innerHTML=`<div style="font-size:70px">🗳️</div><div class="h1">Stemmen</div><div class="hint">Iedereen stemt op zijn gsm.${H.mayor?` De stem van burgemeester ${esc(nm(H.mayor))} telt dubbel.`:''}</div>
+      <div class="bar"><i style="width:${need?inn/need*100:0}%"></i></div><div class="mono">${inn} / ${need} stemmen</div>${ctrl('<button class="tbtn" id="f">Stemming afsluiten</button>')}`;const f=$('#f');if(f)f.onclick=resolveVote;return}
+  if(H.phase==='reveal'){app.innerHTML=`<div class="h2" style="max-width:900px">${esc(H.log.slice(-1)[0])}</div><div class="plist">${chips}</div>${ctrl('<button class="btn" id="n">Verder</button>')}`;
+    const b=$('#n');if(b)b.onclick=()=>afterDeaths('night',H.pending);return}
   if(H.phase==='end'){app.innerHTML=`<div style="font-size:90px">${H.winner==='village'?'🏡':'🐺'}</div><div class="h1">${H.winner==='village'?'Het dorp wint':'De weerwolven winnen'}</div>
-      <div class="hint">${H.winner==='village'?'Alle weerwolven zijn ontmaskerd. Weerwolven: ad fundum.':'De weerwolven hebben het dorp opgegeten. Alle burgers: ad fundum.'}</div>
-      <div class="plist">${P.map(p=>`<span class="pchip">${ROLES[p.role].e} ${esc(p.n)} · ${ROLES[p.role].n}${p.role==='wolf'?` <span class="small">(“${esc(p.task)}”)</span>`:''}</span>`).join('')}</div>
+      <div class="plist">${inGame().map(p=>`<span class="pchip">${ROLES[H.players[p].role].e} ${esc(nm(p))} · ${ROLES[H.players[p].role].n}${H.players[p].role==='wolf'?` <span class="small">(“${esc(H.players[p].task)}”)</span>`:''}</span>`).join('')}</div>
       <div class="log">${H.log.map(esc).join('<br>')}</div>
       <div class="row"><button class="btn" id="again">Nieuw spel, zelfde groep</button><button class="tbtn" id="new">Nieuwe lobby</button><a class="btn ghost" href="./" style="text-decoration:none">Terug naar Zwijnerij</a></div>`;
-    $('#again').onclick=()=>{H.order.forEach(id=>{H.players[id].alive=true;H.players[id].role=null});H.phase='lobby';H.round=0;H.log=[];H.winner=null;broadcast();privAll()};
+    $('#again').onclick=()=>{H.order.forEach(id=>{H.players[id].alive=true;H.players[id].role=null});H.phase='lobby';H.round=0;H.log=[];H.winner=null;H.mayor=null;H.nar=null;broadcast();privAll()};
     $('#new').onclick=()=>{ls.set('ww_host',null);location.href=location.pathname+'?host=1'};return}};
 
 /* ============================================================
    SPELER (gsm)
    ============================================================ */
-const Pl={pid:null,n:'',keys:null,key:null,code:null,state:null,mine:null,sel:null,peek:false};
+const Pl={pid:null,n:'',keys:null,key:null,code:null,state:null,mine:null,sel:null,peek:false,showRoles:false,heal:false};
 const startPlayer=async code=>{Pl.code=code.toUpperCase();const st=ls.get('ww_p_'+Pl.code,null);
   Pl.pid=st?.pid||rid();Pl.keys=st?.keys||await genKeys();Pl.n=st?.n||ls.get('ww_name','');
   if(!Pl.n){askName();return}
   ls.set('ww_p_'+Pl.code,{pid:Pl.pid,keys:Pl.keys,n:Pl.n});ls.set('ww_name',Pl.n);$('#me').textContent=Pl.n;
   app.innerHTML=`<div class="h2">Verbinden…</div>`;
   await join(Pl.code,Pl.pid,{n:Pl.n},onPlayerMsg);send({t:'join',pid:Pl.pid,n:Pl.n,pub:Pl.keys.pub});
-  setTimeout(()=>{if(!Pl.state)app.innerHTML=`<div class="h2">Lobby ${Pl.code} niet gevonden</div><div class="hint">Klopt de code? Staat de spelleider zijn iPad open?</div><button class="btn" onclick="location.href=location.pathname">Andere code</button>`},6000)};
+  setTimeout(()=>{if(!Pl.state)app.innerHTML=`<div class="h2">Lobby ${Pl.code} niet gevonden</div><div class="hint">Klopt de code? Staat het spelscherm op de iPad open?</div><button class="btn" onclick="location.href=location.pathname">Andere code</button>`},6000)};
 const askName=()=>{app.innerHTML=`<div class="mono">Lobby ${esc(Pl.code)}</div><div class="h1">Hoe heet je?</div><input class="f" id="nm" maxlength="16" placeholder="Je naam" autocomplete="off"><button class="btn" id="ok">Doe mee</button>`;
   const go=()=>{const v=$('#nm').value.trim();if(!v)return;Pl.n=v;ls.set('ww_name',v);startPlayer(Pl.code)};$('#ok').onclick=go;$('#nm').onkeydown=e=>{if(e.key==='Enter')go()};$('#nm').focus()};
 const onPlayerMsg=async m=>{
   if(m.t==='state'){const first=!Pl.state;Pl.state=m;if(!Pl.key||Pl.hostPub!==m.hostPub){Pl.hostPub=m.hostPub;Pl.key=await derive(Pl.keys.priv,m.hostPub)}if(first)send({t:'join',pid:Pl.pid,n:Pl.n,pub:Pl.keys.pub});renderPlayer();return}
-  if(m.t==='priv'&&m.to===Pl.pid&&Pl.key){try{const prev=Pl.mine;Pl.mine=await dec(Pl.key,m);if(!prev||prev.phase!==Pl.mine.phase){Pl.sel=null;buzz()}renderPlayer()}catch(e){}return}
+  if(m.t==='priv'&&m.to===Pl.pid&&Pl.key){try{const prev=Pl.mine;Pl.mine=await dec(Pl.key,m);if(!prev||prev.phase!==Pl.mine.phase){Pl.sel=null;Pl.heal=false;buzz()}renderPlayer()}catch(e){}return}
   if(m.t==='reject'&&m.to===Pl.pid){app.innerHTML=`<div class="h2">${esc(m.why)}</div><button class="btn" onclick="location.href=location.pathname">Terug</button>`}};
-const act=async(kind,target)=>{const e=await enc(Pl.key,{kind,target});send({t:'act',pid:Pl.pid,...e});beep(880)};
-const roleCard=(r,small)=>`<div class="role" style="--c:${ROLES[r].c}"><div class="emo">${ROLES[r].e}</div><div class="mono">Jouw rol</div><div class="rn">${ROLES[r].n}</div>${small?'':`<div class="hint" style="color:#cfcfcf">${ROLES[r].d}</div>`}</div>`;
-const renderPlayer=()=>{const s=Pl.state,me=Pl.mine;if(!s){return}
+const act=async o=>{const e=await enc(Pl.key,o);send({t:'act',pid:Pl.pid,...e});beep(880)};
+const R=r=>r==='mayor'?MAYOR:r==='nar'?NAR:ROLES[r];
+const roleCard=(r,small,mayor)=>`<div class="role" style="--c:${R(r).c}"><div class="emo">${R(r).e}</div><div class="mono">Jouw rol</div><div class="rn">${R(r).n}</div>${mayor?`<div class="small" style="color:#ffd23f">🎖️ en je bent ook burgemeester: je stem telt dubbel</div>`:''}${small?'':`<div class="hint" style="color:#cfcfcf">${R(r).d}</div>`}</div>`;
+const rolesBtn=()=>`<button class="peek" id="rb">📖 Rollen in dit spel</button>`;
+const bindCommon=()=>{const b=$('#pk');if(b)b.onclick=()=>{Pl.peek=!Pl.peek;renderPlayer()};const r=$('#rb');if(r)r.onclick=()=>{Pl.showRoles=true;renderPlayer()}};
+const narScript={roles:['Iedereen bekijkt stiekem zijn rol op zijn gsm.','Lees daarna voor: “Het wordt nacht in het dorp. Iedereen sluit de ogen.”'],
+  night:['“Weerwolven, open je ogen. Kies op je gsm wie jullie vannacht verscheuren.” Wacht tot ze klaar zijn.','“Weerwolven, sluit je ogen.”','“Heks, open je ogen. Op je gsm zie je wie werd aangevallen. Wil je redden of vergiftigen?” Daarna: “Heks, sluit je ogen.”','“Ziener en beschermer: kies op je gsm.” (als die rollen meedoen)','Burgers tikken ook iets aan. Als iedereen klaar is, wordt het vanzelf ochtend.'],
+  day:['“Het wordt dag in het dorp. Iedereen opent de ogen.”','Lees het nieuws voor dat op de iPad staat.','Leid de discussie. Let zelf ook op de geheime opdrachten van de wolven.'],
+  vote:['“Tijd om te stemmen. Kies op je gsm wie we ophangen.”','De stem van de burgemeester telt dubbel.'],
+  reveal:['Lees het resultaat voor dat op de iPad staat.','Druk daarna op Verder: de nacht valt.'],
+  hunter:['De jager kiest op zijn gsm wie hij meeneemt.'],end:['Het spel is voorbij. Lees voor wie er gewonnen heeft.']};
+const renderNar=(s,me)=>{const roleLine=x=>`<div class="wrow2 ${x.alive?'':'dead'}"><span>${ROLES[x.role]?.e||''} ${esc(x.n)}${x.mayor?' 🎖️':''}</span><span class="small">${ROLES[x.role]?.n||''}${x.task&&x.alive?' · “'+esc(x.task)+'”':''}</span></div>`;
+  const btn={roles:[['startNight','Start de nacht']],night:[['morning','Forceer ochtend']],day:[['plus','+1 minuut'],['vote','Start stemming']],vote:[['closeVote','Sluit stemming']],reveal:[['next','Verder: nacht']]}[s.phase]||[];
+  app.innerHTML=`${roleCard('nar',true)}<div class="mono">${s.phase==='night'?'Nacht '+s.round:s.phase==='day'?'Dag '+s.round:s.phase}</div>
+    <div class="script">${(narScript[s.phase]||[]).map(t=>`<p>${t}</p>`).join('')}</div>
+    ${s.phase==='night'&&me.night?`<div class="small">Al gekozen: ${me.night.map(v=>v.kind==='witch'?`🧪 heks${v.heal?' redt':''}${v.poison?' vergiftigt '+esc(v.poison):''}${!v.heal&&!v.poison?' doet niets':''}`:v.kind==='wolf'?`🐺 ${esc(v.by)} → ${esc(v.to)}`:v.kind==='seer'?`🔮 ziener → ${esc(v.to)}`:v.kind==='doc'?`🛡️ beschermt ${esc(v.to)}`:'').filter(Boolean).join(' · ')||'nog niemand'} (${s.nightIn}/${s.need})</div>`:''}
+    ${s.phase==='vote'?`<div class="small">${s.votesIn}/${s.need} stemmen</div>`:''}
+    ${s.phase==='day'?`<div class="timer" style="font-size:60px" id="nt">${fmt(Math.round((s.timerEnd-Date.now())/1000))}</div>`:''}
+    <div class="row">${btn.map(([c,l])=>`<button class="btn ${c==='plus'?'ghost':''}" data-cmd="${c}">${l}</button>`).join('')}</div>
+    <details style="width:100%;max-width:560px"><summary class="peek" style="list-style:none">👁️ Toon wie wat is (geheim!)</summary><div style="margin-top:12px">${(me.all||[]).map(roleLine).join('')}</div></details>`;
+  app.querySelectorAll('[data-cmd]').forEach(b=>b.onclick=()=>act({kind:'nar',cmd:b.dataset.cmd}));
+  clearInterval(window._nt);if(s.phase==='day')window._nt=setInterval(()=>{const t=$('#nt');if(!t)return clearInterval(window._nt);t.textContent=fmt(Math.round((Pl.state.timerEnd-Date.now())/1000))},500)};
+const renderPlayer=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
   document.body.classList.toggle('night',s.phase==='night');
-  if(s.phase==='lobby'){app.innerHTML=`<div class="mono">Lobby ${esc(s.code)}</div><div class="h1">Je zit erin</div><div class="hint">Wacht tot de spelleider start. Leg je gsm alvast met het scherm naar beneden zodra je je rol kent.</div><div class="plist">${s.players.map(p=>`<span class="pchip">${esc(p.n)}${p.id===Pl.pid?' (jij)':''}</span>`).join('')}</div>`;return}
+  if(Pl.showRoles){app.innerHTML=`<div class="h2">Rollen in dit spel</div>${roleCards(s.roles||[])}<button class="btn" id="cl">Sluiten</button>`;$('#cl').onclick=()=>{Pl.showRoles=false;renderPlayer()};return}
+  if(s.phase==='lobby'){app.innerHTML=`<div class="mono">Lobby ${esc(s.code)}</div><div class="h1">Je zit erin</div><div class="hint">Wacht tot het spel start. Het spel kiest zelf wie welke rol krijgt.</div><div class="plist">${s.players.map(p=>`<span class="pchip">${esc(p.n)}${p.id===Pl.pid?' (jij)':''}</span>`).join('')}</div>${rolesBtn()}`;bindCommon();return}
   if(!me||!me.role){app.innerHTML=`<div class="h2">Even wachten…</div>`;send({t:'hello',pid:Pl.pid});return}
-  const peekBtn=`<button class="peek" id="pk">${Pl.peek?'Verberg mijn rol':'Toon mijn rol'}</button>`;
-  const hidden=`<div class="${Pl.peek?'':'hide'}" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px">${roleCard(me.role,true)}
+  if(me.role==='nar'){renderNar(s,me);return}
+  const peekBtn=`<div class="row"><button class="peek" id="pk">${Pl.peek?'Verberg mijn rol':'Toon mijn rol'}</button>${rolesBtn()}</div>`;
+  const hidden=`<div class="${Pl.peek?'':'hide'}" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px">${roleCard(me.role,true,me.mayor)}
     ${me.mates&&me.mates.length?`<div class="small">Mede-weerwolven: <b style="color:var(--wolf)">${me.mates.map(esc).join(', ')}</b></div>`:''}
-    ${me.seen&&me.seen.length?`<div class="small">Gezien: ${me.seen.map(x=>`${esc(x.n)} ${x.wolf?'🐺':'✅'}`).join(' · ')}</div>`:''}</div>`;
-  const bindPeek=()=>{const b=$('#pk');if(b)b.onclick=()=>{Pl.peek=!Pl.peek;renderPlayer()}};
-  if(!me.alive&&s.phase!=='end'){app.innerHTML=`<div style="font-size:80px">💀</div><div class="h1">Je bent dood</div><div class="hint">Zeg niets meer over het spel. Drink en kijk toe. Je rol was:</div>${roleCard(me.role,true)}`;return}
-  if(s.phase==='roles'){app.innerHTML=`${roleCard(me.role)}${me.mates?`<div class="hint">Jouw roedel: <b style="color:var(--wolf)">${me.mates.length?me.mates.map(esc).join(', '):'je bent de enige weerwolf'}</b></div>`:''}
-    ${me.role==='wolf'?`<div class="task"><span class="mono">Je geheime opdracht overdag</span><b>${esc(me.task)}</b><div class="small" style="margin-top:8px">Doe dit in elke praatronde. De burgers weten dat je zo'n opdracht hebt…</div></div>`:''}
-    <div class="small">Hou je gsm verborgen. Straks verschijnt je rol vervaagd, en met “Toon mijn rol” kijk je stiekem.</div>`;return}
+    ${me.seen&&me.seen.length?`<div class="small">Gezien: ${me.seen.map(x=>`${esc(x.n)} ${x.wolf?'🐺':'✅'}`).join(' · ')}</div>`:''}
+    ${me.potions?`<div class="small">Drankjes: ${me.potions.heal?'❤️ leven':'<s>leven</s>'} · ${me.potions.poison?'☠️ gif':'<s>gif</s>'}</div>`:''}</div>`;
+  if(!me.alive&&s.phase!=='end'){app.innerHTML=`<div style="font-size:80px">💀</div><div class="h1">Je bent dood</div><div class="hint">Zeg niets meer over het spel en kijk toe. Je rol was:</div>${roleCard(me.role,true)}${rolesBtn()}`;bindCommon();return}
+  if(s.phase==='roles'){app.innerHTML=`${roleCard(me.role,false,me.mayor)}${me.mates?`<div class="hint">Jouw roedel: <b style="color:var(--wolf)">${me.mates.length?me.mates.map(esc).join(', '):'je bent de enige weerwolf'}</b></div>`:''}
+    ${me.role==='wolf'?`<div class="task"><span class="mono">Je geheime opdracht overdag</span><b>${esc(me.task)}</b><div class="small" style="margin-top:8px">Doe dit in elke praatronde. De burgers weten dat je zo'n opdracht hebt.</div></div>`:''}
+    ${rolesBtn()}<div class="small">Hou je gsm verborgen. Straks is je rol vervaagd, en met “Toon mijn rol” kijk je stiekem.</div>`;bindCommon();return}
   if(s.phase==='night'){
     if(me.done){app.innerHTML=`<div style="font-size:70px">😴</div><div class="h1">Slaap zacht</div><div class="hint">Je keuze is doorgegeven. Ogen dicht.</div>
       ${me.role==='wolf'&&me.wolfVotes?`<div class="small">Roedel: ${me.wolfVotes.map(v=>esc(v.by)+' → '+esc(v.to||'?')).join(' · ')}</div>`:''}${me.role==='seer'&&me.seen?.length?`<div class="h2">${esc(me.seen.slice(-1)[0].n)} is ${me.seen.slice(-1)[0].wolf?'<span style="color:var(--wolf)">een weerwolf 🐺</span>':'geen weerwolf ✅'}</div>`:''}`;return}
+    if(me.role==='witch'){
+      if(me.wait){app.innerHTML=`${peekBtn}${hidden}<div style="font-size:60px">🧪</div><div class="h2">Wacht even…</div><div class="hint">De weerwolven kiezen nog. Zodra ze klaar zijn, zie je hier wie werd aangevallen.</div>`;bindCommon();return}
+      const P=me.potions||{};
+      app.innerHTML=`${peekBtn}${hidden}<div class="mono">Nacht ${s.round}</div><div class="h2">${me.victim?`De wolven vallen <span style="color:var(--wolf)">${esc(me.victim)}</span> aan`:'De wolven vielen niemand aan'}</div>
+        ${P.heal&&me.victim?`<button class="choice ${Pl.heal?'sel':''}" id="wh" style="width:min(420px,100%)">❤️ Red ${esc(me.victim)} (levensdrankje)</button>`:'<div class="small">Levensdrankje: '+(P.heal?'niemand te redden':'al gebruikt')+'</div>'}
+        ${P.poison?`<div class="mono">☠️ Vergiftig iemand? (optioneel)</div><div class="grid">${me.choices.map(c=>`<button class="choice ${Pl.sel===c.id?'sel wolfsel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div>`:'<div class="small">Gifdrankje: al gebruikt</div>'}
+        <button class="btn" id="cf">${Pl.heal||Pl.sel?'Bevestig':'Niets doen'}</button>`;
+      bindCommon();const wh=$('#wh');if(wh)wh.onclick=()=>{Pl.heal=!Pl.heal;renderPlayer()};
+      app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{Pl.sel=Pl.sel===b.dataset.c?null:b.dataset.c;renderPlayer()});$('#cf').onclick=()=>act({kind:'witch',heal:Pl.heal,poison:Pl.sel});return}
     const q={wolf:'Wie verscheuren jullie vannacht?',seer:'Bij wie wil je kijken?',doc:'Wie bescherm je vannacht?',hunter:'Wie vind jij verdacht?',vil:'Wie vind jij verdacht?'}[me.role];
     app.innerHTML=`${peekBtn}${hidden}<div class="mono">Nacht ${s.round}</div><div class="h2">${q}</div>
       ${me.role==='wolf'&&me.wolfVotes?.length?`<div class="small">Roedel koos al: ${me.wolfVotes.map(v=>esc(v.by)+' → '+esc(v.to)).join(' · ')}</div>`:''}
       <div class="grid">${(me.choices||[]).map(c=>`<button class="choice ${Pl.sel===c.id?(me.role==='wolf'?'sel wolfsel':'sel'):''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div>
       <button class="btn ${me.role==='wolf'?'red':''}" id="cf" ${Pl.sel?'':'disabled'}>Bevestig</button>`;
-    bindPeek();app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{Pl.sel=b.dataset.c;renderPlayer()});$('#cf').onclick=()=>{if(Pl.sel)act('night',Pl.sel)};return}
-  if(s.phase==='hunter'){if(me.hunt){app.innerHTML=`<div class="h1">🎯 Neem iemand mee</div><div class="grid">${me.choices.map(c=>`<button class="choice" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div>`;app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>act('hunt',b.dataset.c))}
+    bindCommon();app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{Pl.sel=b.dataset.c;renderPlayer()});$('#cf').onclick=()=>{if(Pl.sel)act({kind:'night',target:Pl.sel})};return}
+  if(s.phase==='hunter'){if(me.hunt){app.innerHTML=`<div class="h1">🎯 Neem iemand mee</div><div class="grid">${me.choices.map(c=>`<button class="choice" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div>`;app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>act({kind:'hunt',target:b.dataset.c}))}
     else app.innerHTML=`<div class="h2">De jager kiest…</div>`;return}
   if(s.phase==='day'){app.innerHTML=`${peekBtn}${hidden}<div class="mono">Dag ${s.round}</div><div class="hint">${esc(s.lastNews||'')}</div>
       ${me.role==='wolf'?`<div class="task ${Pl.peek?'':'hide'}"><span class="mono">Geheime opdracht deze ronde</span><b>${esc(me.task)}</b></div>`:`<div class="task" style="border-color:#7aa2ff"><span class="mono">Tip</span><b style="color:#7aa2ff;font-size:22px">${esc(VTIPS[s.round%VTIPS.length])}</b></div>`}
-      <div class="small">Discussieer aan tafel. Stemmen gebeurt straks op je gsm.</div>`;bindPeek();return}
+      <div class="small">Discussieer aan tafel. Stemmen gebeurt straks op je gsm.</div>`;bindCommon();return}
   if(s.phase==='vote'){if(me.done){app.innerHTML=`<div style="font-size:70px">🗳️</div><div class="h1">Stem uitgebracht</div><div class="hint">Wachten op de rest…</div>`;return}
-    app.innerHTML=`<div class="mono">Stemming</div><div class="h2">Wie hangen we op?</div><div class="grid">${(me.choices||[]).map(c=>`<button class="choice ${Pl.sel===c.id?'sel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div><button class="btn" id="cf" ${Pl.sel?'':'disabled'}>Stem</button>`;
-    app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{Pl.sel=b.dataset.c;renderPlayer()});$('#cf').onclick=()=>{if(Pl.sel)act('vote',Pl.sel)};return}
+    app.innerHTML=`<div class="mono">Stemming${me.mayor?' · jouw stem telt dubbel 🎖️':''}</div><div class="h2">Wie hangen we op?</div><div class="grid">${(me.choices||[]).map(c=>`<button class="choice ${Pl.sel===c.id?'sel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div><button class="btn" id="cf" ${Pl.sel?'':'disabled'}>Stem</button>`;
+    app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{Pl.sel=b.dataset.c;renderPlayer()});$('#cf').onclick=()=>{if(Pl.sel)act({kind:'vote',target:Pl.sel})};return}
   if(s.phase==='reveal'){app.innerHTML=`<div class="h2">${esc(s.lastNews||'')}</div><div class="hint">Kijk naar de iPad.</div>`;return}
-  if(s.phase==='end'){app.innerHTML=`<div style="font-size:80px">${s.winner==='village'?'🏡':'🐺'}</div><div class="h1">${s.winner==='village'?'Het dorp wint':'De weerwolven winnen'}</div>
-    ${roleCard(me.role,true)}<div class="h2" style="color:${(s.winner==='village')===(me.role!=='wolf')?'var(--acc)':'var(--wolf)'}">${(s.winner==='village')===(me.role!=='wolf')?'Gewonnen!':'Verloren: ad fundum'}</div>`;return}};
+  if(s.phase==='end'){const won=(s.winner==='village')===(me.role!=='wolf');app.innerHTML=`<div style="font-size:80px">${s.winner==='village'?'🏡':'🐺'}</div><div class="h1">${s.winner==='village'?'Het dorp wint':'De weerwolven winnen'}</div>
+    ${roleCard(me.role,true)}<div class="h2" style="color:${won?'var(--acc)':'var(--wolf)'}">${won?'Gewonnen!':'Verloren'}</div>`;return}};
 
 /* ===== start ===== */
 const landing=()=>{app.innerHTML=`<div style="font-size:80px">🐺</div><div class="h1">Weerwolven</div><div class="hint">Vul de code in die op de iPad staat.</div>
   <input class="f code" id="cd" maxlength="4" placeholder="CODE" autocomplete="off" autocapitalize="characters"><button class="btn" id="jn">Naar de lobby</button>
-  <button class="tbtn" id="hs">Ik ben de spelleider (iPad)</button>`;
+  <button class="tbtn" id="hs">Spelscherm openen (iPad)</button>`;
   const go=()=>{const c=$('#cd').value.trim().toUpperCase();if(c.length===4)location.href=location.pathname+'?c='+c};$('#jn').onclick=go;$('#cd').onkeydown=e=>{if(e.key==='Enter')go()};
   $('#hs').onclick=()=>location.href=location.pathname+'?host=1'};
 (async()=>{if(!sb){app.innerHTML='<div class="h2 err">Geen internet: Weerwolven heeft een verbinding nodig.</div>';return}
