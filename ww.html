@@ -98,7 +98,7 @@ const dec=async(key,m)=>JSON.parse(new TextDecoder().decode(await crypto.subtle.
 /* ===== rollen & opdrachten ===== */
 const ROLES={
  wolf:{n:'Weerwolf',e:'🐺',c:'#ff4d6d',k:'wolf',d:'Elke nacht kiezen de weerwolven samen een slachtoffer. Overdag doe je alsof je een gewone burger bent en voer je stiekem je geheime opdracht uit.'},
- witch:{n:'Heks',e:'🧪',c:'#c77dff',d:'Je hebt twee drankjes, elk één keer te gebruiken: een levensdrankje om het slachtoffer van de wolven te redden, en een gifdrankje om ’s nachts iemand te doden.'},
+ witch:{n:'Heks',e:'🧪',c:'#c77dff',d:'Je hebt twee toverdrankjes, elk één keer te gebruiken: een levenselixer om het slachtoffer van de wolven te redden, en een gif om ’s nachts iemand te doden.'},
  seer:{n:'Ziener',e:'🔮',c:'#b388ff',d:'Elke nacht mag je bij één speler kijken of het een weerwolf is.'},
  doc:{n:'Beschermer',e:'🛡️',c:'#3cff8a',d:'Elke nacht bescherm je iemand tegen de wolven. Niet twee nachten na elkaar dezelfde persoon.'},
  hunter:{n:'Jager',e:'🎯',c:'#ffb703',d:'Ga je dood, dan mag je meteen nog één speler meenemen in je val.'},
@@ -296,7 +296,7 @@ const narScript={roles:['Iedereen bekijkt stiekem zijn rol op zijn gsm.','Lees d
   hunter:['De jager kiest op zijn gsm wie hij meeneemt.'],end:['Het spel is voorbij. Lees voor wie er gewonnen heeft.']};
 const renderNar=(s,me)=>{const roleLine=x=>`<div class="wrow2 ${x.alive?'':'dead'}"><span>${ROLES[x.role]?.e||''} ${esc(x.n)}${x.mayor?' 🎖️':''}</span><span class="small">${ROLES[x.role]?.n||''}${x.task&&x.alive?' · “'+esc(x.task)+'”':''}</span></div>`;
   const btn={roles:[['startNight','Start de nacht']],night:[['morning','Forceer ochtend']],day:[['plus','+1 minuut'],['vote','Start stemming']],vote:[['closeVote','Sluit stemming']],reveal:[['next','Verder: nacht']]}[s.phase]||[];
-  app.innerHTML=`${roleCard('nar',true)}<div class="mono">${s.phase==='night'?'Nacht '+s.round:s.phase==='day'?'Dag '+s.round:s.phase}</div>
+  app.innerHTML=`${roleCard('nar',true)}<div class="mono">${s.phase==='night'?'Nacht '+s.round:s.phase==='day'?'Dag '+s.round:({roles:'Rollen bekijken',vote:'Stemming',reveal:'Uitslag',hunter:'De jager',end:'Einde'}[s.phase]||s.phase)}</div>
     <div class="script">${(narScript[s.phase]||[]).map(t=>`<p>${t}</p>`).join('')}</div>
     ${s.phase==='night'&&me.night?`<div class="small">Al gekozen: ${me.night.map(v=>v.kind==='witch'?`🧪 heks${v.heal?' redt':''}${v.poison?' vergiftigt '+esc(v.poison):''}${!v.heal&&!v.poison?' doet niets':''}`:v.kind==='wolf'?`🐺 ${esc(v.by)} → ${esc(v.to)}`:v.kind==='seer'?`🔮 ziener → ${esc(v.to)}`:v.kind==='doc'?`🛡️ beschermt ${esc(v.to)}`:'').filter(Boolean).join(' · ')||'nog niemand'} (${s.nightIn}/${s.need})</div>`:''}
     ${s.phase==='vote'?`<div class="small">${s.votesIn}/${s.need} stemmen</div>`:''}
@@ -315,7 +315,7 @@ const renderPlayer=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
   const hidden=`<div class="${Pl.peek?'':'hide'}" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px">${roleCard(me.role,true,me.mayor)}
     ${me.mates&&me.mates.length?`<div class="small">Mede-weerwolven: <b style="color:var(--wolf)">${me.mates.map(esc).join(', ')}</b></div>`:''}
     ${me.seen&&me.seen.length?`<div class="small">Gezien: ${me.seen.map(x=>`${esc(x.n)} ${x.wolf?'🐺':'✅'}`).join(' · ')}</div>`:''}
-    ${me.potions?`<div class="small">Drankjes: ${me.potions.heal?'❤️ leven':'<s>leven</s>'} · ${me.potions.poison?'☠️ gif':'<s>gif</s>'}</div>`:''}</div>`;
+    ${me.potions?`<div class="small">Toverdrankjes: ${me.potions.heal?'❤️ leven':'<s>leven</s>'} · ${me.potions.poison?'☠️ gif':'<s>gif</s>'}</div>`:''}</div>`;
   if(!me.alive&&s.phase!=='end'){app.innerHTML=`<div style="font-size:80px">💀</div><div class="h1">Je bent dood</div><div class="hint">Zeg niets meer over het spel en kijk toe. Je rol was:</div>${roleCard(me.role,true)}${rolesBtn()}`;bindCommon();return}
   if(s.phase==='roles'){app.innerHTML=`${roleCard(me.role,false,me.mayor)}${me.mates?`<div class="hint">Jouw roedel: <b style="color:var(--wolf)">${me.mates.length?me.mates.map(esc).join(', '):'je bent de enige weerwolf'}</b></div>`:''}
     ${me.role==='wolf'?`<div class="task"><span class="mono">Je geheime opdracht overdag</span><b>${esc(me.task)}</b><div class="small" style="margin-top:8px">Doe dit in elke praatronde. De burgers weten dat je zo'n opdracht hebt.</div></div>`:''}
@@ -327,8 +327,8 @@ const renderPlayer=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
       if(me.wait){app.innerHTML=`${peekBtn}${hidden}<div style="font-size:60px">🧪</div><div class="h2">Wacht even…</div><div class="hint">De weerwolven kiezen nog. Zodra ze klaar zijn, zie je hier wie werd aangevallen.</div>`;bindCommon();return}
       const P=me.potions||{};
       app.innerHTML=`${peekBtn}${hidden}<div class="mono">Nacht ${s.round}</div><div class="h2">${me.victim?`De wolven vallen <span style="color:var(--wolf)">${esc(me.victim)}</span> aan`:'De wolven vielen niemand aan'}</div>
-        ${P.heal&&me.victim?`<button class="choice ${Pl.heal?'sel':''}" id="wh" style="width:min(420px,100%)">❤️ Red ${esc(me.victim)} (levensdrankje)</button>`:'<div class="small">Levensdrankje: '+(P.heal?'niemand te redden':'al gebruikt')+'</div>'}
-        ${P.poison?`<div class="mono">☠️ Vergiftig iemand? (optioneel)</div><div class="grid">${me.choices.map(c=>`<button class="choice ${Pl.sel===c.id?'sel wolfsel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div>`:'<div class="small">Gifdrankje: al gebruikt</div>'}
+        ${P.heal&&me.victim?`<button class="choice ${Pl.heal?'sel':''}" id="wh" style="width:min(420px,100%)">❤️ Red ${esc(me.victim)} (levenselixer)</button>`:'<div class="small">Levenselixer: '+(P.heal?'niemand te redden':'al gebruikt')+'</div>'}
+        ${P.poison?`<div class="mono">☠️ Vergiftig iemand? (optioneel)</div><div class="grid">${me.choices.map(c=>`<button class="choice ${Pl.sel===c.id?'sel wolfsel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div>`:'<div class="small">Gif: al gebruikt</div>'}
         <button class="btn" id="cf">${Pl.heal||Pl.sel?'Bevestig':'Niets doen'}</button>`;
       bindCommon();const wh=$('#wh');if(wh)wh.onclick=()=>{Pl.heal=!Pl.heal;renderPlayer()};
       app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{Pl.sel=Pl.sel===b.dataset.c?null:b.dataset.c;renderPlayer()});$('#cf').onclick=()=>act({kind:'witch',heal:Pl.heal,poison:Pl.sel});return}
