@@ -221,6 +221,26 @@
   .srow{display:grid;grid-template-columns:1fr 1fr;gap:14px}.srow .surprise{margin-bottom:14px}
   .surprise.alt{border-color:var(--line2);background:var(--card)}
   @media(max-width:600px){.srow{grid-template-columns:1fr}}
+  .kch{border:1px dashed var(--acc);border-radius:18px;padding:14px 22px;display:flex;flex-direction:column;gap:6px;max-width:760px}
+  .kch b{font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(24px,3.4vw,40px);text-transform:uppercase;color:var(--acct)}
+  .jury{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:min(820px,92vw)}
+  .jury button{border:1px solid var(--line2);border-radius:22px;padding:24px 14px;background:var(--card);display:flex;flex-direction:column;align-items:center;gap:8px}
+  .jury b{font-size:54px;line-height:1}.jury .jn{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase}
+  .chaosbox{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;border:1px solid var(--line2);border-radius:22px;padding:18px 22px;margin-bottom:14px;background:var(--card)}
+  .chaosbox.on{border-color:#ff3bd4;background:repeating-linear-gradient(135deg,color-mix(in srgb,#ff3bd4 10%,var(--card)) 0 18px,var(--card) 18px 36px)}
+  .chaosbox .tag{font-family:'JetBrains Mono',monospace;font-size:12px;background:#ff3bd4;color:#000;padding:3px 8px;border-radius:999px;vertical-align:middle;letter-spacing:.1em}
+  #cho{position:fixed;inset:0;z-index:15;display:none;align-items:center;justify-content:center;padding:30px;background:repeating-linear-gradient(135deg,#ff3bd4 0 26px,#0a0a0a 26px 52px);animation:chin .35s ease}
+  #cho.open{display:flex}
+  @keyframes chin{0%{transform:scale(1.15);opacity:0}100%{transform:none;opacity:1}}
+  .chb{background:#070707;color:#ededed;border:3px solid #ff3bd4;border-radius:28px;padding:34px 30px;max-width:900px;width:100%;display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;animation:sh .5s}
+  .chtag{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.3em;color:#ff3bd4;font-size:18px}
+  .cht{font-family:'Anton',sans-serif;font-size:clamp(34px,5.6vw,72px);text-transform:uppercase;line-height:1.02}
+  .cht span,.chr span{color:#d4ff3a!important}
+  .chr{font-size:18px;color:#bdbdbd}.chr b{display:block;margin-top:6px;font-family:'Anton',sans-serif;font-weight:400;font-size:30px;text-transform:uppercase;color:#ff3bd4}
+  #chrule{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 96px);z-index:6;background:#ff3bd4;color:#000;border-radius:999px;padding:10px 18px;font-weight:600;display:flex;gap:10px;align-items:center;max-width:92vw;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);cursor:pointer}
+  #chrule i{font-style:normal;opacity:.6}
+  #ov.open~#chrule,body:has(#ov.open) #chrule{bottom:calc(env(safe-area-inset-bottom,0px) + 18px)}
+  @media(max-width:760px){.chaosbox{grid-template-columns:1fr}.jury{grid-template-columns:1fr}}
   .tbtn{border:1px solid var(--line2);border-radius:999px;padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
   .srch{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:22px;padding:8px 8px 8px 20px;background:var(--card)}
   .srch svg{width:22px;height:22px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex:none}
@@ -416,9 +436,9 @@ const nightDeck=(key,list)=>{const K='kp_used_'+key;let st0={t:Date.now(),u:[]};
 let CUS={};try{CUS=JSON.parse(localStorage.getItem('kp_custom')||'{}')}catch(e){}
 const saveCus=()=>{try{localStorage.setItem('kp_custom',JSON.stringify(CUS))}catch(e){}};
 const withC=(k,list)=>list.concat(CUS[k]||[]);
-let STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{}};try{const s=JSON.parse(localStorage.getItem('kp_stats')||'null');if(s&&Date.now()-s.t<14*3.6e6)STATS=s}catch(e){}
+let STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{},kara:{}};try{const s=JSON.parse(localStorage.getItem('kp_stats')||'null');if(s&&Date.now()-s.t<14*3.6e6)STATS=s}catch(e){}
 const saveS=()=>{try{localStorage.setItem('kp_stats',JSON.stringify(STATS))}catch(e){}};
-const bump=(o,k,v=1,max=false)=>{STATS[o][k]=max?Math.max(STATS[o][k]||0,v):(STATS[o][k]||0)+v;saveS()};
+const bump=(o,k,v=1,max=false)=>{STATS[o]=STATS[o]||{};STATS[o][k]=max?Math.max(STATS[o][k]||0,v):(STATS[o][k]||0)+v;saveS()};
 const CAT=["Biermerken","Voetbalclubs in Europa","Dingen in een koelkast","Rappers","Cafés in Gent","Automerken","Landen in Afrika","Cocktails",
 "Merken van frisdrank","Champions League-winnaars","Apps op je gsm","Netflix-series","Dingen die je meeneemt naar een festival","Belgische steden",
 "Hoofdsteden","Pizza-toppings","Disney-films","Kledingmerken","Dingen die rood zijn","Sporten met een bal","Studierichtingen","Spelers van Real Madrid"];
@@ -750,6 +770,7 @@ const IC={
  clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',wheel:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/>',
  quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 16.5v.5"/>',head:'<path d="M12 3a7 7 0 0 0-7 7c0 2.5 1 4 2 5v5h7v-3h2a2 2 0 0 0 2-2v-2l2-1-2-3a7 7 0 0 0-6-6z"/>',
  bottle:'<path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3z"/><path d="M8 13h8"/>',lot:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 6v12M3 12h5"/>',ball:'<circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 5h-5L8 10z"/>',cup:'<path d="M6 4h12l-2 16H8z"/><path d="M6.5 9h11"/>',vs:'<path d="M4 5l4 14 4-14M20 7a3 3 0 0 0-3-2h-1a3 3 0 0 0 0 6h1a3 3 0 0 1 0 6h-1a3 3 0 0 1-3-2"/>',
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/>',
  flame:'<path d="M12 22c4 0 7-3 7-7 0-5-5-7-5-12-3 2-4 5-4 7-1-1-2-2-2-4-2 2-3 5-3 9 0 4 3 7 7 7z"/>'};
 const META=[
  {k:'bom',lvl:'hard',n:'Kaboom',s:'Lees · geef door · boem',ic:'bomb',p:'3+ spelers',r:["Tik op Start. De bom begint te tikken, maar niemand weet hoe lang hij heeft: ergens tussen 25 en 70 seconden.","Lees de stelling luidop voor (bv. ‘Wie liegt het best?’).","Geef de iPad aan de persoon op wie de stelling het best past. Discussie mag, maar de tijd loopt.","Die tikt op Volgende, leest de nieuwe stelling voor en geeft weer door.","Het tikken versnelt. Bij de knal drinkt wie de iPad vasthoudt."]},
@@ -773,6 +794,7 @@ const META=[
  {k:'wed',lvl:'chill',n:'Wedkantoor',s:'Voorspel de match',ic:'ball',tag:'Nieuw',p:'2+ spelers',r:["Vul de match in, bv. Real Madrid - Bayern.","Iedereen stelt zijn voorspelde score in.","Na de match vul je de uitslag in. Exacte score: deel 3 slokken uit. Juiste winnaar: deel 1 uit. Fout: 1 slok.","De weddenschap blijft bewaard tot je de uitslag invult, ook als je de app sluit."]},
  {k:'pong',lvl:'hard',n:'Beerpong',s:'Scorebord · teams',ic:'cup',tag:'Teams',p:'2 teams',r:["Zet in Spelers 2 teams aan, of speel met Team A en Team B.","Elk team heeft 10 bekers in een driehoek.","Raak je een beker van de tegenstander? Tik hem weg op het scherm. Zij drinken hem leeg.","Eerste team zonder bekers verliest."]},
  {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
+ {k:'kara',lvl:'chill',n:'Karaoke',s:'Rad · uitdaging · jury',ic:'mic',tag:'Nieuw',p:'2+ spelers',r:["Het rad kiest wie er moet zingen. Met teams aan zingt het hele team samen.","Je krijgt een categorie (bv. ‘Een Belgische klassieker’) en een uitdaging (bv. ‘met een West-Vlaams accent’).","Tik het nummer in en open de karaoke-versie op YouTube: dan staat de tekst op het scherm. Bluetooth-box aan, en gaan.","Na het nummer beslist de jury: 🔥 ster (deel 3 slokken uit), 👍 prima of 💀 vals (zanger drinkt 2). Weigeren = ad fundum."]},
  {k:'wvo',lvl:'chill',n:'Durf Je',s:'Truth or dare',ic:'flame',p:'3+ spelers',r:["Kies Truth of Dare.","Beantwoord eerlijk of voer de opdracht uit.","Weigeren = drinken. Daarna is de volgende aan de beurt."]}];
 
 const LV={chill:{n:'Chill',s:'Rustig aan · af en toe een slok',d:1},hard:{n:'Full Send',s:'Er wordt constant gedronken',d:3}};
@@ -780,10 +802,11 @@ let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function renderGames(){$('#gn').textContent=String(META.length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
-  $('#gl').outerHTML=`<div id="gl"><div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
+  $('#gl').outerHTML=`<div id="gl">${chaosUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
   document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{lvSel=b.dataset.lv;try{localStorage.setItem('kp_lv',lvSel)}catch(e){}renderGames()});
   document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g));
+  bindChaos();
   $('#pla').onclick=()=>openPL();
   $('#rnd').onclick=()=>{const l=META.filter(m=>m.lvl===lvSel),m=l[Math.random()*l.length|0];beep(660,.05,.1,'triangle');openGame(m.k)}}
 const openGame=k=>{clr();plBar();const m=META.find(x=>x.k===k);$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
@@ -791,7 +814,6 @@ const openGame=k=>{clr();plBar();const m=META.find(x=>x.k===k);$('#gt').textCont
     ${PL?`<div class="mono" style="color:var(--acct)">Spellenavond · spel ${PL.i+1} van ${PL.list.length}</div>`:''}<div class="pr">${m.n}</div><div class="meta"><span>${LV[m.lvl].n}</span><span>${m.p}</span><span>${m.s}</span></div>
     <ol class="rules">${m.r.map(x=>`<li><span>${x}</span></li>`).join('')}</ol><button class="btn" id="sg">Start</button>`);
   $('#sg').onclick=()=>{bump('games',k);try{wake()}catch(e){}try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}G[k].i()}};
-renderGames();
 
 $('#bk').onclick=()=>{clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
 
@@ -892,7 +914,7 @@ function renderPlayers(){const el=$('#t-players'),P=active();
     $('#nn').onkeydown=e=>{if(e.key==='Enter')save()};$('#ns').onclick=save;$('#nc').onclick=()=>{newC=null;renderPlayers()}}
   bindTeamUI();
   $('#pall').onclick=()=>{ACT.ids=ACC.map(a=>a.id);saveA();renderPlayers();renderHead()};
-  $('#pnone').onclick=e=>{const b=e.currentTarget;if(b.dataset.sure){ACT.ids=[];CNT={};STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{}};saveS();saveC();saveA();try{Object.keys(localStorage).filter(k=>k.startsWith('kp_used_')).forEach(k=>localStorage.removeItem(k))}catch(x){}renderPlayers();renderHead()}
+  $('#pnone').onclick=e=>{const b=e.currentTarget;if(b.dataset.sure){ACT.ids=[];CNT={};STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{},kara:{}};saveS();saveC();saveA();try{Object.keys(localStorage).filter(k=>k.startsWith('kp_used_')).forEach(k=>localStorage.removeItem(k))}catch(x){}renderPlayers();renderHead()}
     else{b.dataset.sure=1;b.textContent='Wist selectie, teller, statistieken en vragen. Zeker?'}};}
 function renderHead(){const P=active();$('#hs').innerHTML=P.length?P.map(a=>`<button class="qa" data-q="${a.id}">${av(a,34)}</button>`).join('')+'<span class="mono qhint">Tik op iemand voor +1</span>':'<span class="mono">Geen spelers geselecteerd</span>'}
 
@@ -972,13 +994,13 @@ $('#cq').onclick=openCQ;
 /* ===== avondstatistieken ===== */
 const statsHTML=()=>{const byId=id=>ACC.find(a=>a.id===id),top=(o,low)=>{const e=Object.entries(STATS[o]).filter(([id])=>byId(id));if(!e.length)return null;e.sort((a,b)=>low?a[1]-b[1]:b[1]-a[1]);return[byId(e[0][0]),e[0][1]]};
   const g=Object.entries(STATS.games).sort((a,b)=>b[1]-a[1])[0],gm=g&&META.find(m=>m.k===g[0]);
-  const q=top('quiz'),k=top('kop'),r=top('reflex',true),w=top('water');
+  STATS.kara=STATS.kara||{};const q=top('quiz'),k=top('kop'),r=top('reflex',true),w=top('water'),kk=top('kara');
   const cell=(l,v)=>`<div><span class="mono">${l}</span><b>${v||'—'}</b></div>`;
   return `<div class="mono" style="margin-top:6px">Statistieken van de avond</div><div class="stats">
     ${cell('Populairste spel',gm?gm.n+' · '+g[1]+'×':'')}${cell('Quizkoning',q?esc(q[0].n)+' · '+q[1]:'')}
     ${cell('Beste raadder',k?esc(k[0].n)+' · '+k[1]:'')}${cell('Snelste reflex',r?esc(r[0].n)+' · '+r[1]+'ms':'')}
     ${cell('Waterheld',w?esc(w[0].n)+' · '+w[1]+'×':'')}${cell('Spellen gespeeld',Object.values(STATS.games).reduce((a,b)=>a+b,0)||'')}
-    ${cell('Spelers',active().length||'')}${cell('Sinds',hhmm(STATS.t))}</div>`};
+    ${cell('Karaokester',kk?esc(kk[0].n)+' · '+kk[1]+'🔥':'')}${cell('Sinds',hhmm(STATS.t))}</div>`};
 
 
 /* ===== licht / donker ===== */
@@ -1047,8 +1069,82 @@ const openHR=()=>{clr();PL=null;plBar();$('#gt').textContent='Huisregels';$('#gc
   $('#hrs').onclick=()=>{HOUSE=$('#hrt').value.split('\n').map(s=>s.trim()).filter(Boolean);saveH();$('#hrs').textContent='Opgeslagen ✓';setTimeout(()=>{const b=$('#hrs');if(b)b.textContent='Opslaan'},1500)}};
 
 $('#hr').onclick=openHR;
+/* ===== KARAOKE ===== */
+const KCAT=['Een Nederlandstalige meezinger','Een hit uit de jaren 2000','Een Disney-nummer','Een Belgische klassieker','Een power-ballad','Een rapnummer','Een nummer uit de jaren 80','Iets voor de afterparty','Een boyband- of girlband-hit','Een kampvuurlied','Een eurosong-nummer','Een nummer dat iedereen kent maar niemand kan zingen','Een schlager','Het nummer van je eerste fuif'];
+const KCH=['met een zwaar West-Vlaams accent','fluisterend, maar met volle overtuiging','als opera','met je ogen dicht','als duet met {b}','met een pen als microfoon en een choreo','in slow motion dansend','als nieuwslezer','met de rest als backing vocals','terwijl {b} het in gebarentaal vertaalt','als boze leraar','alsof je op een groot festival staat','met elke zin hoger','op één been','zonder tekst: alleen nananana','als romantisch serenade voor {b}','en bij elk refrein drinkt de hele groep','gewoon normaal, maar dan perfect','met je rug naar het publiek','alsof je net gedumpt bent'];
+const KJURY=[{k:'ster',e:'🔥',n:'Sterrenstatus',d:'Deel 3 slokken uit',s:()=>SB[3].f()},{k:'ok',e:'👍',n:'Prima',d:'Niemand drinkt',s:()=>SB[4].f()},{k:'vals',e:'💀',n:'Vals',d:'De zanger drinkt 2',s:()=>SB[5].f()}];
+Object.assign(G,{
+ kara:{i(){const nc=nightDeck('kcat',KCAT),nh=nightDeck('kch',KCH);let cur=null;
+   const spin=()=>{clr();const U=units();if(!U.length)return needPlayers(1);T.next();const who=T.p;let k=0,steps=18;
+     const others=active().filter(a=>!(who.ids||[who.id]).includes(a.id));const b=others.length?others[Math.random()*others.length|0]:null;
+     cur={who,b,cat:nc(),ch:nh().replace(/\{b\}/g,b?esc(b.n):'iemand')};
+     scr(`<div class="mono">Wie moet er zingen?</div><div id="kv" style="display:flex;flex-direction:column;align-items:center;gap:12px"></div>`);
+     const tick=()=>{const p=k<steps?U[k%U.length]:who;$('#kv').innerHTML=`${av(p,110)}<div class="pr">${esc(p.n)}</div>`;beep(520+k*25,.03,.06);
+       if(k<steps){k++;timers.push(setTimeout(tick,55+k*k*.7))}else{SB[2].f();timers.push(setTimeout(card,700))}};tick()};
+   const card=()=>{const c=cur;
+     scr(`${T.tag('Op het podium')}<div class="mono">Categorie</div><div class="pr" style="font-size:clamp(30px,4.4vw,54px)">${c.cat}</div>
+       <div class="kch"><span class="mono">Uitdaging</span><b>${c.ch}</b></div>
+       <div class="srch" style="width:min(720px,92vw)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="kq" placeholder="Welk nummer? (artiest + titel)" autocomplete="off">
+         <a class="sb" id="kyt" style="--c:#FF0033" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=karaoke">Karaoke-versie</a></div>
+       <div class="hint">Tip: de karaoke-versie op YouTube toont de tekst op het scherm. Weigeren = ad fundum.</div>
+       <div class="row"><button class="tbtn" id="kr">Andere categorie</button><button class="btn" id="kd">Klaar met zingen</button></div>`);
+     const setQ=()=>{const q=($('#kq').value.trim()||c.cat)+' karaoke';$('#kyt').href='https://www.youtube.com/results?search_query='+encodeURIComponent(q)};$('#kq').oninput=setQ;setQ();
+     $('#kr').onclick=()=>{c.cat=nc();card()};$('#kd').onclick=jury};
+   const jury=()=>{const c=cur;scr(`<div class="mono">De jury beslist</div><div class="pr" style="font-size:clamp(30px,4.4vw,54px)">Hoe was ${esc(c.who.n)}?</div>
+     <div class="jury">${KJURY.map(j=>`<button data-j="${j.k}"><b>${j.e}</b><span class="jn">${j.n}</span><span class="small">${j.d}</span></button>`).join('')}</div>`);
+     st.querySelectorAll('[data-j]').forEach(bt=>bt.onclick=()=>{const j=KJURY.find(x=>x.k===bt.dataset.j);j.s();if(j.k==='ster'&&c.who.id)bump('kara',c.who.id);
+       joeg(j.k==='ster'?'STER!':j.k==='vals'?'JOEGNEE!':'NETJES!',j.d);
+       scr(`<div class="pr">${j.e} ${j.n}</div><div class="hint">${j.d}.</div><button class="btn" id="kn">Volgende zanger</button>`);$('#kn').onclick=spin})};
+   spin()}}
+});
+
+/* ===== CHAOSMODUS ===== */
+const CHAOS_EV=[
+ {t:'Laatste die zijn hand op zijn hoofd legt, drinkt!',c:5},{t:'Laatste die opstaat, drinkt!',c:5},{t:'Laatste die de vloer aanraakt, drinkt!',c:5},{t:'Laatste die "joegnee" roept, drinkt!',c:4},
+ {t:'Iedereen schuift één plaats naar links!',c:15},{t:'Iedereen wisselt van drankje met zijn rechterbuur, één slok lang.'},{t:'Proost! Iedereen klinkt met iedereen. Wie iemand mist, drinkt.',c:20},
+ {t:'{a} kiest iemand die 2 slokken drinkt.'},{t:'{a} en {b}: duimworstelen. Verliezer drinkt.'},{t:'{a} en {b}: staarwedstrijd. Wie eerst lacht, drinkt.'},{t:'{a} deelt 3 slokken uit, zoals hij wil.'},
+ {t:'{a}, imiteer {b} tot iemand het raadt. Lukt het niet in 20 seconden? Drinken.',c:20},{t:'{a} noemt 5 Champions League-winnaars in 15 seconden. Lukt het niet? 2 slokken.',c:15},
+ {t:'{a} vertelt in 30 seconden zijn gênantste kotmoment. Weigeren = ad fundum.',c:30},{t:'{a} en {b} wisselen van plaats voor de rest van het spel.'},
+ {t:'Waterpauze! Iedereen een slok water. Joegnee, ook jij.'},{t:'Iedereen met een iPhone drinkt.'},{t:'Iedereen die vandaag nog niet buiten is geweest, drinkt.'},{t:'Alle singles drinken.'},
+ {t:'Wie het laatst een bericht stuurde naar zijn ex, drinkt. Eerlijk zijn.'},{t:'De jongste kiest het volgende nummer.'},{t:'De oudste drinkt, uit respect.'},
+ {t:'Volgende refrein: iedereen zingt mee. Wie niet meezingt, drinkt.'},{t:'Stilte! Wie binnen 20 seconden praat, drinkt.',c:20},{t:'Iedereen drinkt behalve {a}.'},
+ {t:'{a} wordt Vragenmeester tot het volgende chaos-event.',r:'{a} is Vragenmeester: wie zijn vraag beantwoordt, drinkt'},
+ {t:'Nieuwe chaosregel!',r:'Niemand mag nog "drinken" zeggen'},{t:'Nieuwe chaosregel!',r:'Drinken alleen met je linkerhand'},{t:'Nieuwe chaosregel!',r:'Wie zijn gsm aanraakt, drinkt'},
+ {t:'Nieuwe chaosregel!',r:'Geen namen meer zeggen, alleen bijnamen'},{t:'Nieuwe chaosregel!',r:'Na elke slok: tik twee keer op tafel'},{t:'Nieuwe chaosregel!',r:'Wie vloekt, drinkt'},
+ {t:'Nieuwe chaosregel!',r:'Engels praten. Joegnee wel toegestaan'},{t:'Nieuwe chaosregel!',r:'{a} is de koning: iedereen zegt "majesteit" tegen hem'},
+ {t:'Team-chaos: het team van {a} drinkt samen.',team:1},{t:'Team-chaos: de teams wisselen één speler. {a} kiest.',team:1},{t:'Team-chaos: elk team doet een groepsfoto-pose. Lelijkste pose drinkt.',team:1}];
+let CH={on:false,lvl:'mild',rule:null};try{const s=JSON.parse(localStorage.getItem('kp_chaos')||'null');if(s)CH=s}catch(e){}
+const saveCH=()=>{try{localStorage.setItem('kp_chaos',JSON.stringify(CH))}catch(e){}};
+let chT=null,chEnd=0;const chDeck=deck(CHAOS_EV.map((_,i)=>i));
+const chDelay=()=>CH.lvl==='wild'?(90+Math.random()*120)*1e3:(300+Math.random()*300)*1e3;
+const chSchedule=(ms=chDelay())=>{clearTimeout(chT);if(!CH.on)return;chEnd=Date.now()+ms;chT=setTimeout(chFire,ms)};
+const siren=()=>{if(MUTE)return;for(let i=0;i<3;i++){tone(600,i*.5,.25,'square',.14,1100);tone(1100,i*.5+.25,.25,'square',.14,600)}};
+const chBusy=()=>{const o=$('#ov');return o.classList.contains('ticking')||!!document.querySelector('.kop')||!!document.querySelector('.zones')||document.getElementById('cho')?.classList.contains('open')};
+const chFire=()=>{if(!CH.on)return;if(chBusy()){chSchedule(30000);return}
+  const U=units(),P=active();if(P.length<2){chSchedule();return}
+  let ev;for(let n=0;n<10;n++){const e=CHAOS_EV[chDeck()];if(e.team&&!TM.on)continue;ev=e;break}if(!ev){chSchedule();return}
+  const pp=shuf(P),tt=shuf(U);const fill=s=>s.replace(/\{a\}/g,`<span style="color:var(--acct)">${esc((ev.team?tt[0]:pp[0]).n)}</span>`).replace(/\{b\}/g,`<span style="color:var(--acct)">${esc(pp[1].n)}</span>`);
+  const plain=s=>s.replace(/\{a\}/g,esc(pp[0].n)).replace(/\{b\}/g,esc(pp[1].n));
+  if(ev.r)CH.rule=plain(ev.r);saveCH();drawRule();
+  let o=document.getElementById('cho');if(!o){o=document.createElement('div');o.id='cho';document.body.appendChild(o)}
+  o.innerHTML=`<div class="chb"><div class="chtag">⚠ CHAOS</div><div class="cht">${fill(ev.t)}</div>${ev.r?`<div class="chr">Geldt tot het volgende chaos-event:<br><b>${fill(ev.r)}</b></div>`:''}
+    ${ev.c?`<div class="timer" id="chc">${ev.c}</div>`:''}<button class="btn" id="chok">Verder spelen</button></div>`;
+  o.classList.add('open');siren();try{wake()}catch(e){}
+  if(ev.c){let s=ev.c;const iv=setInterval(()=>{s--;const el=$('#chc');if(!el){clearInterval(iv);return}el.textContent=Math.max(0,s);if(s<=3&&s>0)beep(900,.05,.1);if(s<=0){clearInterval(iv);boomSnd()}},1000)}
+  $('#chok').onclick=()=>{o.classList.remove('open');chSchedule()}};
+const drawRule=()=>{let r=document.getElementById('chrule');if(!r){r=document.createElement('div');r.id='chrule';document.body.appendChild(r);r.onclick=()=>{CH.rule=null;saveCH();drawRule()}}
+  r.style.display=CH.on&&CH.rule?'':'none';r.innerHTML=CH.rule?`<span>⚠</span>${CH.rule}<i>✕</i>`:''};
+const chaosUI=()=>`<div class="chaosbox ${CH.on?'on':''}"><div><div class="lvn" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase">Chaosmodus ${CH.on?'<span class="tag">AAN</span>':''}</div>
+  <div class="small" style="margin-top:6px">Tijdens het spelen verschijnen er onverwachte events: reactiespelletjes, duels, tijdelijke regels. ${CH.on?`Volgende chaos ergens in de komende ${Math.max(1,Math.round((chEnd-Date.now())/6e4))} min.`:''}</div></div>
+  <div class="seg"><span class="sg ${!CH.on?'on':''}" data-ch="off">Uit</span><span class="sg ${CH.on&&CH.lvl==='mild'?'on':''}" data-ch="mild">Mild · 5-10 min</span><span class="sg ${CH.on&&CH.lvl==='wild'?'on':''}" data-ch="wild">Wild · 2-3 min</span></div>
+  ${CH.on?'<button class="tbtn" id="chnow">Nu!</button>':''}</div>`;
+const bindChaos=()=>{document.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{const v=b.dataset.ch;if(v==='off'){CH.on=false;CH.rule=null;clearTimeout(chT)}else{CH.on=true;CH.lvl=v;chSchedule();beep(1000,.06,.1,'square')}saveCH();drawRule();renderGames()});
+  const n=$('#chnow');if(n)n.onclick=()=>chFire()};
+if(CH.on)chSchedule();drawRule();
+
+renderGames();
 /* ===== automatisch updaten ===== */
-const APPVER='1794921289';
+const APPVER='1794921833';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
