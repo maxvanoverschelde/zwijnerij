@@ -1073,7 +1073,7 @@ const drawParty=()=>{const d=new Date(),P=active();if(Date.now()-ruleAt>10*6e4){
    <div><div class="mono" style="margin-bottom:10px">Regel van het moment · nog ${mins} min</div><div class="rule">${curRule}</div></div>
    <div class="row"><button class="tbtn" id="pr">Nieuwe regel</button><button class="tbtn" id="px">Sluiten</button></div>`;
   $('#pr').onclick=()=>{curRule=ruleN();ruleAt=Date.now();drawParty()};$('#px').onclick=()=>{pov.classList.remove('open');clearInterval(pTimer)}};
-$('#qs').onclick=quickStart;$('#boothb').onclick=booth;$('#spillb').onclick=spill;$('#spl').onclick=spill;$('#party').onclick=()=>{pov.classList.add('open');wake();drawParty();clearInterval(pTimer);pTimer=setInterval(drawParty,15000)};
+$('#qs').onclick=()=>quickStart();$('#boothb').onclick=booth;$('#spillb').onclick=spill;$('#spl').onclick=spill;$('#party').onclick=()=>{pov.classList.add('open');wake();drawParty();clearInterval(pTimer);pTimer=setInterval(drawParty,15000)};
 
 /* ===== eigen vragen ===== */
 const CQ={bom:'Kaboom',nooit:'Biecht',wie:'Wie Van Ons',chaos:'Chaos',dod:'Dit of Dat',waar:'Durf Je · truth',durf:'Durf Je · dare'};
@@ -1316,7 +1316,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794951639';
+const APPVER='1794951713';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
