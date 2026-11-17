@@ -111,9 +111,12 @@
   .zones.go .zone{background:var(--acc);color:#000}
   .zone.done{background:var(--card3)!important;color:var(--fg)!important}
   .zone.bad{background:#ff3b3b!important;color:#000!important}
-  body{padding-bottom:120px;padding-top:max(28px,env(safe-area-inset-top));padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
-  #nav{bottom:max(20px,env(safe-area-inset-bottom))}
-  #ov{padding-top:max(28px,env(safe-area-inset-top))}
+  body{padding-bottom:120px;padding-top:calc(env(safe-area-inset-top,0px) + 28px);padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
+  #nav{bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}
+  #ov{padding-top:calc(env(safe-area-inset-top,0px) + 24px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 16px);padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right))}
+  #party-ov{padding-top:calc(env(safe-area-inset-top,0px) + 30px)}
+  #qs{padding-top:calc(env(safe-area-inset-top,0px) + 90px)!important}
+  @media(max-width:600px){#ov{padding-left:16px;padding-right:16px}.bar .back{padding:10px 14px}#gt{font-size:20px}}
   main{max-width:1180px;margin:0 auto}
   header{max-width:1180px;margin:0 auto}
   .tab{display:none;animation:fi .25s ease}
@@ -191,6 +194,28 @@
   body.light .ic svg,body.light .drops i.on{stroke:var(--acct)}
   .thm{width:46px;height:46px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;margin-left:auto;margin-bottom:10px}
   .thm svg{width:22px;height:22px;fill:none;stroke:var(--fg);stroke-width:1.8;stroke-linecap:round}
+  .teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .team{border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));background:color-mix(in srgb,var(--c) 7%,var(--card));border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px}
+  .team.new{border-style:dashed;align-items:center;justify-content:center;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;font-size:13px;min-height:120px;background:none;--c:var(--line)}
+  .tn{flex:1;min-width:0;background:none;border:0;border-bottom:1px dashed var(--line2);color:var(--fg);font-family:'Anton',sans-serif;font-size:20px;text-transform:uppercase;padding:4px 6px;margin:0 8px;outline:none}
+  .chip .av{vertical-align:middle;margin-right:4px}
+  .fles{position:relative;width:min(560px,80vw,62vh);aspect-ratio:1}
+  .fn{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'Anton',sans-serif;text-transform:uppercase;font-size:18px}
+  #fb{position:absolute;left:50%;top:50%;width:22%;height:66%;margin-left:-11%;margin-top:-33%;transition:transform 3.2s cubic-bezier(.12,.8,.12,1);transform-origin:50% 50%}
+  .wl{display:flex;flex-direction:column;gap:10px;width:min(760px,92vw)}
+  .wrow{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:16px;padding:10px 14px;text-align:left}
+  .wrow b{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase;flex:1}
+  .sc{display:flex;align-items:center;gap:8px}.sc span{font-family:'Anton',sans-serif;font-size:30px;min-width:28px;text-align:center}.sc .tbtn{padding:8px 14px}
+  .pong{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center}
+  .pside{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));border-radius:22px;padding:18px 22px}
+  .pt{font-family:'Anton',sans-serif;font-weight:400;font-size:26px;text-transform:uppercase}
+  .pvs{font-family:'Anton',sans-serif;font-size:34px;color:var(--muted);margin:0 10px}
+  .prow{display:flex;justify-content:center;gap:8px;margin-top:-4px}
+  .cup{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#ff6b6b,#c81e1e);border:3px solid #fff3;transition:transform .15s,opacity .2s}
+  .cup:active{transform:scale(.85)}.cup.gone{opacity:.12;background:var(--line2);border-color:transparent}
+  .sbd{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  .sbd button{border:1px solid var(--line);border-radius:20px;padding:22px 14px;background:var(--card);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;transition:transform .1s}
+  .sbd button b{font-size:34px;line-height:1}.sbd button:active{transform:scale(.94);background:color-mix(in srgb,var(--acc) 20%,var(--card))}
   .tbtn{border:1px solid var(--line2);border-radius:999px;padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
   .srch{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:22px;padding:8px 8px 8px 20px;background:var(--card)}
   .srch svg{width:22px;height:22px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex:none}
@@ -267,6 +292,8 @@
   <a href="https://soundcloud.com/" target="_blank" rel="noopener" style="--c:#FF5500"><div class="top"><svg class="lg" viewBox="0 0 24 24"><path d="M1 14.5c0-.3.2-.5.5-.5s.5.2.5.5v3c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-3Zm2.5-1.5c.3 0 .5.2.5.5v4.5c0 .3-.2.5-.5.5S3 18.3 3 18v-4.5c0-.3.2-.5.5-.5Zm2.5-1c.3 0 .5.2.5.5V18c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-5.5c0-.3.2-.5.5-.5Zm2.5-1.5c.3 0 .5.2.5.5V18c0 .3-.2.5-.5.5S8 18.3 8 18v-7c0-.3.2-.5.5-.5ZM11 8c.3 0 .5.2.5.5V18c0 .3-.2.5-.5.5s-.5-.2-.5-.5V8.5c0-.3.2-.5.5-.5Zm2.3-1.6A6 6 0 0 1 19 10.7a3.4 3.4 0 1 1 1.1 6.7l-.1.1h-6.2a.5.5 0 0 1-.5-.5V6.9c0-.2.1-.4.3-.5Z"/></svg><span class="mono">02</span></div><div class="nm">SoundCloud</div></a>
   <a href="https://www.youtube.com/" target="_blank" rel="noopener" style="--c:#FF0033"><div class="top"><svg class="lg" viewBox="0 0 24 24"><path d="M22 7.2a2.7 2.7 0 0 0-1.9-1.9C18.4 4.8 12 4.8 12 4.8s-6.4 0-8.1.5A2.7 2.7 0 0 0 2 7.2 28 28 0 0 0 1.5 12a28 28 0 0 0 .5 4.8 2.7 2.7 0 0 0 1.9 1.9c1.7.5 8.1.5 8.1.5s6.4 0 8.1-.5a2.7 2.7 0 0 0 1.9-1.9 28 28 0 0 0 .5-4.8 28 28 0 0 0-.5-4.8ZM9.9 15V9l5.2 3Z"/></svg><span class="mono">03</span></div><div class="nm">YouTube</div></a>
 </section>
+<div class="sec mono" style="margin-top:26px"><span>Soundboard</span><span>07</span></div>
+<div class="sbd" id="sbd"></div>
 <div class="mrow">
   <button class="mcard" id="party"><div class="mono" style="color:var(--acct)">Feestmodus</div><div class="nmx">Scherm op tafel</div><div class="small">Grote klok, wie er is en een wisselende regel van het moment.</div></button>
   <div class="mcard"><div class="mono">Speaker</div><div class="nmx">Bluetooth</div><div class="small">Eénmalig: Instellingen › Bluetooth › kies je speaker. Daarna speelt alles vanzelf via de box.</div></div>
@@ -494,10 +521,19 @@ const active=()=>ACC.filter(a=>ACT.ids.includes(a.id));
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ini=n=>n.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
 const av=(a,s=44)=>`<span class="av" style="--c:${a.c};width:${s}px;height:${s}px;font-size:${Math.round(s*.4)}px">${esc(ini(a.n))}</span>`;
-const pname=i=>{const a=active();return a.length?esc(a[i%a.length].n):'Speler '+(i+1)};
-let turnI=0;const turnLbl=()=>{const a=active();if(!a.length)return'';const p=a[turnI%a.length];turnI++;return 'Beurt · '+p.n};
-const T={p:null,next(){const a=active();this.p=a.length?a[turnI++%a.length]:null;return this.p},
-  tag(lbl='Aan de beurt'){return this.p?`<div class="turn">${av(this.p,40)}<div><div class="mono">${lbl}</div><b>${esc(this.p.n)}</b></div></div>`:''}};
+const TNAMES=['De Zwijnen','Team Joegnee','De Biervlekken','De Katers','Pintjeshelden','Overpoortridders','Schuimkragen','De Ad Fundums','De Brakke Ochtend','Team Frietkot','Leie-Leeuwen','De Shotgunners','Graslei Gangsters','De Bierbuiken','De Laatste Ronde','Kotkoningen','Team Knor','De Spekslagers','Gravensteengang','De Schuimers'];
+let TM={on:false,mode:'duo',t:Date.now(),teams:[]};try{const s=JSON.parse(localStorage.getItem('kp_teams')||'null');if(s&&Date.now()-s.t<12*3.6e6)TM=s}catch(e){}
+const saveT=()=>{TM.t=Date.now();try{localStorage.setItem('kp_teams',JSON.stringify(TM))}catch(e){}};
+const units=()=>{if(TM.on){const on=new Set(ACT.ids);return TM.teams.map(t=>({...t,ids:t.ids.filter(i=>on.has(i))})).filter(t=>t.ids.length)}return active()};
+const members=u=>u&&u.ids?u.ids.map(i=>(ACC.find(a=>a.id===i)||{}).n).filter(Boolean).map(esc).join(' & '):'';
+const lootTeams=(mode=TM.mode)=>{const ids=shuf(ACT.ids);let groups=[];
+  if(mode==='duo'){for(let i=0;i<ids.length;i+=2)groups.push(ids.slice(i,i+2));if(groups.length>1&&groups[groups.length-1].length===1){groups[groups.length-2].push(groups.pop()[0])}}
+  else{const n=mode==='n3'?3:2;groups=[...Array(n)].map(()=>[]);ids.forEach((id,i)=>groups[i%n].push(id))}
+  const names=shuf(TNAMES);TM.mode=mode;TM.teams=groups.filter(g=>g.length).map((g,i)=>({id:'t'+i+Date.now().toString(36),n:names[i],c:COLORS[(i*3+1)%COLORS.length],ids:g}));saveT()};
+const pname=i=>{const a=units();return a.length?esc(a[i%a.length].n):'Speler '+(i+1)};
+let turnI=0;const turnLbl=()=>{const a=units();if(!a.length)return'';const p=a[turnI%a.length];turnI++;return 'Beurt · '+p.n};
+const T={p:null,next(){const a=units();this.p=a.length?a[turnI++%a.length]:null;return this.p},
+  tag(lbl='Aan de beurt'){return this.p?`<div class="turn">${av(this.p,40)}<div><div class="mono">${lbl}${this.p.ids?' · team':''}</div><b>${esc(this.p.n)}</b>${this.p.ids?`<div class="small" style="margin-top:2px">${members(this.p)} · samen drinken</div>`:''}</div></div>`:''}};
 const needPlayers=(min,msg)=>{scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Eerst spelers kiezen</div><div class="hint">${msg||'Dit spel heeft minstens '+min+' spelers nodig. Duid in het venster Spelers aan wie er vanavond meedoet.'}</div><button class="btn" id="gp">Naar Spelers</button>`);
   $('#gp').onclick=()=>{clr();$('#ov').classList.remove('open');showTab('players')}};
 const pip={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
@@ -512,7 +548,7 @@ Object.assign(G,{
    const a=()=>{scr(`<div class="pr">Geef de iPad<br>aan je buur</div><div class="hint">Alleen jij en je buur mogen het scherm zien.</div><button class="btn" id="sh">Toon vraag</button>`);$('#sh').onclick=b};
    const b=()=>{scr(`<div class="mono">Fluister het antwoord</div><div class="pr" style="font-size:clamp(34px,5vw,64px)">${n()}</div><div class="hint">Je buur zegt luidop alleen een naam. Wie genoemd wordt, mag drinken om de vraag te horen, of muisstil blijven.</div><button class="btn" id="hd">Verberg en geef door</button>`);$('#hd').onclick=a};a()}},
  chaos:{i(){const n=nightDeck('chaos',withC('chaos',CHAOS));let c=0;
-   const play=()=>{const P=active();if(P.length<2)return needPlayers(2);c++;$('#gc').textContent=String(c).padStart(2,'0');const p=shuf(P);
+   const play=()=>{const P=units();if(P.length<2)return needPlayers(2);c++;$('#gc').textContent=String(c).padStart(2,'0');const p=shuf(P);
      const t=n().replace(/\{a\}/g,`<span style="color:${p[0].c}">${esc(p[0].n)}</span>`).replace(/\{b\}/g,`<span style="color:${p[1].c}">${esc(p[1].n)}</span>`);
      scr(`<div class="pr" style="font-size:clamp(34px,5vw,66px)">${t}</div><button class="btn" id="nx">Volgende</button>`);$('#nx').onclick=play};
    play()}},
@@ -556,7 +592,7 @@ Object.assign(G,{
    const draw=()=>{if(!dk.length)dk=fullDeck().filter(c=>c[0]!=='A');const c=dk.pop(),i=H.findIndex(h=>h[0]===c[1]);pos[i]++;beep(500+i*120,.05,.1,'triangle');if(pos[i]>=L){win=i;boomSnd()}view(c)};
    const go=()=>{pos=[0,0,0,0];win=null;dk=fullDeck().filter(c=>c[0]!=='A');view()};go()}},
  reflex:{i(){let n=2;
-   const pick=()=>{if(active().length>=2&&!pick.d){n=Math.min(4,active().length);pick.d=1}scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Hoeveel spelers?</div><div class="row">${[2,3,4].map(k=>`<button class="btn ${k===n?'':'ghost'}" data-n="${k}">${k}</button>`).join('')}</div><button class="btn" id="go">Klaar</button>`);
+   const pick=()=>{if(units().length>=2&&!pick.d){n=Math.min(4,units().length);pick.d=1}scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Hoeveel spelers?</div><div class="row">${[2,3,4].map(k=>`<button class="btn ${k===n?'':'ghost'}" data-n="${k}">${k}</button>`).join('')}</div><button class="btn" id="go">Klaar</button>`);
      st.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{n=+b.dataset.n;pick()});$('#go').onclick=run};
    const run=()=>{clr();const cols=n===2?'1fr 1fr':'1fr 1fr',rows=n===2?'1fr':'1fr 1fr';
      st.style.position='relative';scr(`<div class="zones" style="grid-template-columns:${cols};grid-template-rows:${rows}">${[...Array(n)].map((_,i)=>`<div class="zone" data-z="${i}">${pname(i)}<br><span class="mono">wacht…</span></div>`).join('')}</div>`);
@@ -628,6 +664,75 @@ Object.assign(G,{
    pick()}}
 });
 
+/* ===== nieuwe spellen: fles, loting, wedkantoor, beerpong, teamduel ===== */
+const DUEL=["Noem om beurten een voetbalclub. Wie herhaalt of stilvalt, verliest.","Noem om beurten een biermerk.","Wie bouwt het hoogste torentje van bekers in 30 seconden?","Staarwedstrijd: één speler per team. Wie eerst knippert, verliest.",
+"Noem om beurten een land in Europa.","Duim-worstelen: één speler per team.","Wie zegt het snelst het alfabet achterstevoren tot de M?","Noem om beurten een Disneyfilm.","Steen-papier-schaar, best of three, met de teamcaptains.",
+"Wie neuriet een nummer dat het andere team als eerste raadt?","Noem om beurten een merk van auto's.","Wie zit het langst in de stoelhouding tegen de muur?","Noem om beurten een café in Gent.","Om beurten een rapper noemen.",
+"Wie raadt het dichtst bij: hoeveel stappen naar de voordeur?","Speed-ronde: noem 5 Champions League-winnaars in 15 seconden. Lukt het? Gewonnen.","Noem om beurten een studierichting aan de UGent."];
+const LOT=['BOB van de avond','Doet de afwas','Haalt de volgende ronde','DJ van de avond','Ruimt morgen op','Kiest het volgende spel'];
+let BETS={cur:null,hist:[]};try{BETS=JSON.parse(localStorage.getItem('kp_bets')||'{"cur":null,"hist":[]}')}catch(e){}
+const saveB=()=>{try{localStorage.setItem('kp_bets',JSON.stringify(BETS))}catch(e){}};
+Object.assign(G,{
+ fles:{i(){const U=units();let rot=0,busy=false;const n=U.length;
+   const pos=U.map((u,i)=>{const a=i/n*2*Math.PI-Math.PI/2;return{u,x:50+42*Math.cos(a),y:50+42*Math.sin(a),deg:i/n*360}});
+   scr(`<div class="fles">${pos.map(p=>`<div class="fn" style="left:${p.x}%;top:${p.y}%">${av(p.u,48)}<span>${esc(p.u.n)}</span></div>`).join('')}
+     <svg id="fb" viewBox="0 0 100 300"><rect x="38" y="6" width="24" height="40" rx="5" style="fill:var(--acc)"/><path d="M38 46 Q38 80 22 104 Q14 116 14 136 L14 280 Q14 294 28 294 L72 294 Q86 294 86 280 L86 136 Q86 116 78 104 Q62 80 62 46 Z" style="fill:var(--card3);stroke:var(--acc);stroke-width:3"/><rect x="14" y="170" width="72" height="56" style="fill:var(--acc);opacity:.85"/><text x="50" y="205" text-anchor="middle" font-family="Anton,sans-serif" font-size="22" style="fill:#000">ZWIJN</text></svg></div>
+     <div class="pr" id="fr" style="font-size:clamp(30px,4.4vw,52px);min-height:1.1em">&nbsp;</div><button class="btn" id="fs">Draai</button>`);
+   $('#fs').onclick=()=>{if(busy)return;busy=true;$('#fr').innerHTML='&nbsp;';const extra=Math.random()*360;rot+=1440+extra;$('#fb').style.transform=`rotate(${rot}deg)`;beep(400,.05,.08,'triangle');
+     timers.push(setTimeout(()=>{busy=false;if(!$('#fr'))return;if(!n){$('#fr').textContent='Wie aangewezen wordt, kiest: drinken of durven';return}
+       const a=((rot%360)+360)%360;let best=0,bd=999;pos.forEach((p,i)=>{const d=Math.min(Math.abs(p.deg-a),360-Math.abs(p.deg-a));if(d<bd){bd=d;best=i}});
+       const u=pos[best].u;$('#fr').innerHTML=`<span style="color:var(--acct)">${esc(u.n)}</span>: drinken of durven?`;beep(880,.08,.12,'triangle')},3300))}}},
+ lot:{i(){let what=LOT[0];
+   const menu=()=>{scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Wat loten we?</div><div class="qgrid">${LOT.map(l=>`<button class="qo ${l===what?'ok':''}" data-l="${esc(l)}">${l}</button>`).join('')}</div><button class="btn" id="go">Loot</button>`);
+     st.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{what=b.dataset.l;menu()});$('#go').onclick=run};
+   const run=()=>{const P=active();if(!P.length)return needPlayers(1);let k=0,steps=22+(Math.random()*10|0),pick=P[Math.random()*P.length|0];
+     scr(`<div class="mono">${what}</div><div id="lv" style="display:flex;flex-direction:column;align-items:center;gap:14px"></div><div id="lr"></div>`);
+     const tick=()=>{const p=k<steps?P[k%P.length]:pick;$('#lv').innerHTML=`${av(p,110)}<div class="pr">${esc(p.n)}</div>`;beep(500+k*20,.03,.06);
+       if(k<steps){k++;timers.push(setTimeout(tick,60+k*k*0.6))}else{joeg(esc(p.n).toUpperCase()+'!',what);$('#lr').innerHTML='<div class="row"><button class="tbtn" id="ag">Nog eens</button><button class="tbtn" id="mn">Iets anders loten</button></div>';$('#ag').onclick=run;$('#mn').onclick=menu}};tick()};
+   menu()}},
+ wed:{i(){
+   const home=()=>{const c=BETS.cur;
+     if(!c){scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Nieuwe weddenschap</div><input class="nm" id="wm" placeholder="Bv. Real Madrid - Bayern" maxlength="40" style="width:min(520px,80vw)"><button class="btn" id="wn">Start</button>
+       ${BETS.hist.length?`<div class="small">Vorige: ${BETS.hist.slice(-3).reverse().map(x=>esc(x.m)+' '+x.r).join(' · ')}</div>`:''}`);
+       $('#wn').onclick=()=>{const m=$('#wm').value.trim();if(!m)return $('#wm').focus();if(active().length<1)return needPlayers(1);BETS.cur={m,p:{},open:true};active().forEach(a=>BETS.cur.p[a.id]=[1,1]);saveB();home()};return}
+     const rows=Object.entries(c.p).map(([id,[a,b]])=>{const u=ACC.find(x=>x.id===id);return u?`<div class="wrow">${av(u,36)}<b>${esc(u.n)}</b>
+       <div class="sc"><button class="tbtn" data-w="${id}|0|-1">−</button><span>${a}</span><button class="tbtn" data-w="${id}|0|1">+</button></div><span class="mono">-</span>
+       <div class="sc"><button class="tbtn" data-w="${id}|1|-1">−</button><span>${b}</span><button class="tbtn" data-w="${id}|1|1">+</button></div></div>`:''}).join('');
+     scr(`<div class="mono">Voorspellingen</div><div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${esc(c.m)}</div><div class="wl">${rows}</div>
+       <div class="row"><button class="tbtn" id="wx">Annuleer</button><button class="btn" id="wu">Uitslag invullen</button></div>`);
+     st.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{const[id,s,d]=b.dataset.w.split('|');c.p[id][+s]=Math.max(0,c.p[id][+s]+ +d);saveB();home()});
+     $('#wx').onclick=()=>{BETS.cur=null;saveB();home()};$('#wu').onclick=()=>result([0,0])};
+   const result=r=>{const c=BETS.cur;scr(`<div class="mono">Eindstand</div><div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${esc(c.m)}</div>
+     <div class="wrow" style="justify-content:center"><div class="sc"><button class="tbtn" data-r="0|-1">−</button><span>${r[0]}</span><button class="tbtn" data-r="0|1">+</button></div><span class="mono">-</span><div class="sc"><button class="tbtn" data-r="1|-1">−</button><span>${r[1]}</span><button class="tbtn" data-r="1|1">+</button></div></div>
+     <button class="btn" id="wc">Bereken</button>`);
+     st.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const[s,d]=b.dataset.r.split('|');r[+s]=Math.max(0,r[+s]+ +d);result(r)});
+     $('#wc').onclick=()=>{const sg=x=>Math.sign(x[0]-x[1]);const out=Object.entries(c.p).map(([id,p])=>{const u=ACC.find(x=>x.id===id);if(!u)return'';
+         const exact=p[0]===r[0]&&p[1]===r[1],win=sg(p)===sg(r);return `<div class="wrow">${av(u,36)}<b>${esc(u.n)}</b><span class="small">${p[0]}-${p[1]}</span><span style="color:${exact||win?'var(--acct)':'#ff5c6c'}">${exact?'Exact! Deel 3 slokken uit':win?'Juiste winnaar: deel 1 uit':'Fout: 1 slok'}</span></div>`}).join('');
+       BETS.hist.push({m:c.m,r:r.join('-')});BETS.cur=null;saveB();joeg('JOEGNEE!','Afrekenen');
+       scr(`<div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${esc(c.m)} · ${r.join('-')}</div><div class="wl">${out}</div><button class="btn" id="wh">Nieuwe weddenschap</button>`);$('#wh').onclick=home}};
+   home()}},
+ pong:{i(){const U=TM.on&&units().length>=2?units().slice(0,2):[{n:'Team A',c:COLORS[0]},{n:'Team B',c:COLORS[1]}];let cups=[[...Array(10)].map(()=>1),[...Array(10)].map(()=>1)],hist=[];
+   const tri=(k)=>{let rows=[4,3,2,1],idx=0;return rows.map(r=>`<div class="prow">${[...Array(r)].map(()=>{const i=idx++;return `<button class="cup ${cups[k][i]?'':'gone'}" data-c="${k}|${i}"></button>`}).join('')}</div>`).join('')};
+   const draw=()=>{const left=cups.map(c=>c.reduce((a,b)=>a+b,0));
+     scr(`<div class="pong">${[0,1].map(k=>`<div class="pside" style="--c:${U[k].c}"><div class="row" style="align-items:center">${av(U[k],40)}<b class="pt">${esc(U[k].n)}</b></div>${U[k].ids?`<div class="small">${members(U[k])}</div>`:''}<div class="ptri">${tri(k)}</div><div class="mono">${left[k]} bekers over</div></div>`).join('<div class="pvs">VS</div>')}</div>
+       <div class="hint">Raak je een beker van de tegenstander? Tik hem weg. Zij drinken hem.</div><div class="row"><button class="tbtn" id="pu">Ongedaan</button><button class="tbtn" id="pr">Opnieuw</button></div>`);
+     st.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const[k,i]=b.dataset.c.split('|').map(Number);if(!cups[k][i])return;cups[k][i]=0;hist.push([k,i]);beep(900,.05,.1,'triangle');
+       const l=cups[k].reduce((a,b)=>a+b,0);if(l===0)joeg(esc(U[1-k].n).toUpperCase()+' WINT!','Joegnee');draw()});
+     $('#pu').onclick=()=>{const h=hist.pop();if(h){cups[h[0]][h[1]]=1;draw()}};$('#pr').onclick=()=>{cups=[[...Array(10)].map(()=>1),[...Array(10)].map(()=>1)];hist=[];draw()}};
+   draw()}},
+ duel:{i(){const U=units();if(U.length<2)return needPlayers(2,'Zet in Spelers de teams aan (bv. 2 teams) voor een teamduel. Zonder teams speelt elke speler voor zichzelf.');
+   const n=nightDeck('duel',DUEL),score={};U.forEach(u=>score[u.id]=0);
+   const round=()=>{const [a,b]=shuf(U);const c=n();
+     scr(`<div class="row" style="align-items:center">${av(a,48)}<b class="pt">${esc(a.n)}</b><span class="pvs">VS</span><b class="pt">${esc(b.n)}</b>${av(b,48)}</div>
+       <div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${c}</div><div class="timer" id="dt" style="font-size:90px">30</div>
+       <div class="row"><button class="tbtn" id="ds">Start 30 sec</button></div><div class="mono">Wie won?</div>
+       <div class="row"><button class="btn ghost" data-win="${a.id}">${esc(a.n)}</button><button class="btn ghost" data-win="${b.id}">${esc(b.n)}</button></div>
+       <div class="small">${U.map(u=>esc(u.n)+' '+score[u.id]).join(' · ')}</div>`);
+     $('#ds').onclick=()=>{clr();let s=30;timers.push(setInterval(()=>{s--;const t=$('#dt');if(!t)return clr();t.textContent=s;if(s<=5&&s>0)beep(700,.05,.1);if(s<=0){clr();boomSnd()}},1000))};
+     st.querySelectorAll('[data-win]').forEach(bt=>bt.onclick=()=>{clr();score[bt.dataset.win]++;const loser=bt.dataset.win===a.id?b:a;joeg('JOEGNEE!',esc(loser.n)+' drinkt');round()})};
+   round()}}
+});
+
 /* ===== menu ===== */
 const IC={
  bomb:'<circle cx="10" cy="14" r="7"/><path d="M15 9l3-3M17 4l1 1M20 3v2M21 6h-2"/>',
@@ -639,6 +744,7 @@ const IC={
  split:'<path d="M12 21V12M12 12L5 4M12 12l7-8M5 4v4M5 4h4M19 4v4M19 4h-4"/>',updown:'<path d="M12 3v18M6 9l6-6 6 6M6 15l6 6 6-6"/>',
  clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',wheel:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/>',
  quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 16.5v.5"/>',head:'<path d="M12 3a7 7 0 0 0-7 7c0 2.5 1 4 2 5v5h7v-3h2a2 2 0 0 0 2-2v-2l2-1-2-3a7 7 0 0 0-6-6z"/>',
+ bottle:'<path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3z"/><path d="M8 13h8"/>',lot:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 6v12M3 12h5"/>',ball:'<circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 5h-5L8 10z"/>',cup:'<path d="M6 4h12l-2 16H8z"/><path d="M6.5 9h11"/>',vs:'<path d="M4 5l4 14 4-14M20 7a3 3 0 0 0-3-2h-1a3 3 0 0 0 0 6h1a3 3 0 0 1 0 6h-1a3 3 0 0 1-3-2"/>',
  flame:'<path d="M12 22c4 0 7-3 7-7 0-5-5-7-5-12-3 2-4 5-4 7-1-1-2-2-2-4-2 2-3 5-3 9 0 4 3 7 7 7z"/>'};
 const META=[
  {k:'bom',lvl:'hard',n:'Kaboom',s:'Lees · geef door · boem',ic:'bomb',p:'3+ spelers',r:["Tik op Start. De bom begint te tikken, maar niemand weet hoe lang hij heeft: ergens tussen 25 en 70 seconden.","Lees de stelling luidop voor (bv. ‘Wie liegt het best?’).","Geef de iPad aan de persoon op wie de stelling het best past. Discussie mag, maar de tijd loopt.","Die tikt op Volgende, leest de nieuwe stelling voor en geeft weer door.","Het tikken versnelt. Bij de knal drinkt wie de iPad vasthoudt."]},
@@ -657,6 +763,11 @@ const META=[
  {k:'rad',lvl:'hard',n:'Wheel of Doom',s:'Eén draai, geen discussie',ic:'wheel',p:'Om beurten',r:["Om beurten draai je aan het rad.","Waar het pijltje stopt, gebeurt het. Geen onderhandelingen."]},
  {k:'quiz',lvl:'chill',n:'Kotquiz',s:'Algemene kennis · Gent · voetbal',ic:'quiz',tag:'Nieuw',p:'2+ spelers',r:["Om de beurt krijgt iemand een meerkeuzevraag.","Juist? Deel 1 slok uit. Fout? Neem zelf 1 slok.","Geen vraag komt twee keer op één avond."]},
  {k:'kop',lvl:'chill',n:'Op Je Kop',s:'iPad op je voorhoofd · raden',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie. De speler die aan de beurt is, houdt de iPad tegen zijn voorhoofd, met het scherm naar de groep.","De groep legt het woord uit zonder het te zeggen. Uitbeelden mag.","Geraden? Tik rechts op het scherm. Te moeilijk? Tik links om te passen.","60 seconden. Minder dan 5 geraden is 1 slok, meer dan 10 betekent 2 slokken uitdelen."]},
+ {k:'fles',lvl:'chill',n:'Draai de Fles',s:'iPad plat in het midden',ic:'bottle',tag:'Nieuw',p:'3+ spelers',r:["Leg de iPad plat in het midden van de tafel. De namen staan rond de fles, zet je ongeveer op je plek.","Tik op Draai. Naar wie de fles wijst, kiest: drinken of een durf-opdracht van de groep.","Met teams aan wijst de fles naar een team."]},
+ {k:'lot',lvl:'chill',n:'De Loting',s:'BOB · afwas · volgende ronde',ic:'lot',tag:'Nieuw',p:'Iedereen',r:["Kies wat er geloot wordt: BOB, afwas, wie de volgende ronde haalt…","Tik op Loot. De namen draaien en vertragen tot er één overblijft.","Geen discussie: het lot heeft gesproken."]},
+ {k:'wed',lvl:'chill',n:'Wedkantoor',s:'Voorspel de match',ic:'ball',tag:'Nieuw',p:'2+ spelers',r:["Vul de match in, bv. Real Madrid - Bayern.","Iedereen stelt zijn voorspelde score in.","Na de match vul je de uitslag in. Exacte score: deel 3 slokken uit. Juiste winnaar: deel 1 uit. Fout: 1 slok.","De weddenschap blijft bewaard tot je de uitslag invult, ook als je de app sluit."]},
+ {k:'pong',lvl:'hard',n:'Beerpong',s:'Scorebord · teams',ic:'cup',tag:'Teams',p:'2 teams',r:["Zet in Spelers 2 teams aan, of speel met Team A en Team B.","Elk team heeft 10 bekers in een driehoek.","Raak je een beker van de tegenstander? Tik hem weg op het scherm. Zij drinken hem leeg.","Eerste team zonder bekers verliest."]},
+ {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
  {k:'wvo',lvl:'chill',n:'Durf Je',s:'Truth or dare',ic:'flame',p:'3+ spelers',r:["Kies Truth of Dare.","Beantwoord eerlijk of voer de opdracht uit.","Weigeren = drinken. Daarna is de volgende aan de beurt."]}];
 
 const LV={chill:{n:'Chill',s:'Rustig aan · af en toe een slok',d:1},hard:{n:'Full Send',s:'Er wordt constant gedronken',d:3}};
@@ -732,12 +843,33 @@ function overview(){/* iedereen die vanavond iets dronk, ook wie al vertrokken i
 
 /* ===== spelers ===== */
 let newC=null,newG='m';
+
+/* ===== teams UI ===== */
+const teamUI=()=>{const P=active(),U=TM.on?units():[];const inTeam=id=>TM.teams.findIndex(t=>t.ids.includes(id));
+  return `<div class="sec mono" style="margin-top:30px"><span>Teams</span><span>${TM.on?U.length+' teams':'uit'}</span></div>
+  <div class="row" style="justify-content:flex-start;align-items:center">
+    <div class="seg">${[['off','Iedereen apart'],['duo',"Duo's"],['n2','2 teams'],['n3','3 teams']].map(([k,l])=>`<span class="sg ${(!TM.on&&k==='off')||(TM.on&&TM.mode===k)?'on':''}" data-tm="${k}">${l}</span>`).join('')}</div>
+    ${TM.on?'<button class="tbtn" id="tloot">🎲 Opnieuw loten</button>':''}</div>
+  ${TM.on?`<div class="hint" style="text-align:left;margin:12px 0">Tik op een speler om hem naar een ander team te schuiven. Tik op de naam van een team om die aan te passen, of op 🎲 voor een nieuwe naam. Spellen gaan nu per team, en de tekst zegt wie samen drinkt.</div>
+  <div class="teams">${TM.teams.map((t,ti)=>`<div class="team" style="--c:${t.c}"><div class="row" style="justify-content:space-between;width:100%;align-items:center">${av(t,40)}<input class="tn" data-tn="${ti}" value="${esc(t.n)}" maxlength="22"><button class="tbtn" data-tr="${ti}">🎲</button></div>
+    <div class="chips" style="justify-content:flex-start">${t.ids.filter(i=>ACT.ids.includes(i)).map(i=>{const a=ACC.find(x=>x.id===i);return a?`<button class="chip" data-mv="${i}">${av(a,24)} ${esc(a.n)}</button>`:''}).join('')||'<span class="small">Leeg</span>'}</div></div>`).join('')}
+    <button class="team new" id="tadd">+ Team</button></div>
+  ${P.filter(a=>inTeam(a.id)<0).length?`<div class="row" style="justify-content:flex-start;margin-top:10px"><span class="small">Nog zonder team:</span>${P.filter(a=>inTeam(a.id)<0).map(a=>`<button class="chip" data-mv="${a.id}">${av(a,24)} ${esc(a.n)}</button>`).join('')}</div>`:''}`:''}`};
+const bindTeamUI=()=>{const el=$('#t-players');
+  el.querySelectorAll('[data-tm]').forEach(b=>b.onclick=()=>{const k=b.dataset.tm;if(k==='off'){TM.on=false;saveT()}else{TM.on=true;if(active().length<2){TM.on=false;saveT();renderPlayers();return}lootTeams(k);beep(880,.05,.1,'triangle')}renderPlayers()});
+  const lo=$('#tloot');if(lo)lo.onclick=()=>{lootTeams();beep(990,.05,.1,'triangle');renderPlayers()};
+  el.querySelectorAll('[data-tn]').forEach(i=>i.onchange=()=>{TM.teams[+i.dataset.tn].n=i.value.trim()||TM.teams[+i.dataset.tn].n;saveT()});
+  el.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{const used=TM.teams.map(t=>t.n),opts=TNAMES.filter(n=>!used.includes(n));TM.teams[+b.dataset.tr].n=opts[Math.random()*opts.length|0]||'Team '+(+b.dataset.tr+1);saveT();renderPlayers()});
+  el.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const id=b.dataset.mv;let cur=TM.teams.findIndex(t=>t.ids.includes(id));if(cur>=0)TM.teams[cur].ids=TM.teams[cur].ids.filter(i=>i!==id);
+    const nx=(cur+1)%TM.teams.length;TM.teams[nx].ids.push(id);saveT();renderPlayers()});
+  const ad=$('#tadd');if(ad)ad.onclick=()=>{const used=TM.teams.map(t=>t.n),opts=TNAMES.filter(n=>!used.includes(n));TM.teams.push({id:'t'+Date.now().toString(36),n:opts[0]||'Nieuw team',c:COLORS[(TM.teams.length*3+1)%COLORS.length],ids:[]});saveT();renderPlayers()}};
 function renderPlayers(){const el=$('#t-players'),P=active();
   el.innerHTML=`<div class="sec mono"><span>Spelers</span><span>${P.length} doen mee</span></div>
    <div class="hint" style="text-align:left;margin-bottom:18px">Tik op een profiel om het aan of uit te zetten voor vanavond. Komt er iemand bij of vertrekt er iemand? Gewoon aan- of uittikken. Spellen en teller passen zich meteen aan.</div>
    <div class="accs">${ACC.map(a=>{const on=ACT.ids.includes(a.id);return `<button class="acc ${on?'on':''}" style="--c:${a.c}" data-a="${a.id}">${av(a,56)}<div><div class="nmx">${esc(a.n)}</div><div class="st" style="margin-top:6px">${on?'● Doet mee':'○ Niet vanavond'}</div></div><div class="seg"><span class="sg ${a.g==='m'?'on':''}" data-g="m" data-id="${a.id}">Man</span><span class="sg ${a.g==='v'?'on':''}" data-g="v" data-id="${a.id}">Vrouw</span></div><span class="sg nv ${a.nov?'on':''}" data-nov="${a.id}">Rijbewijs &lt; 3 jaar</span><span class="x" data-del="${a.id}">✕</span></button>`}).join('')}
      <div class="acc new" id="na">${newC!==null?`<input class="nm" id="nn" placeholder="Naam of bijnaam" maxlength="16" style="width:100%"><div class="seg"><span class="sg ${newG==='m'?'on':''}" data-ng="m">Man</span><span class="sg ${newG==='v'?'on':''}" data-ng="v">Vrouw</span></div><div class="sw">${COLORS.map(c=>`<button data-c="${c}" style="--c:${c}" class="${c===newC?'on':''}"></button>`).join('')}</div><div class="row" style="width:100%"><button class="tbtn" id="nc">Annuleer</button><button class="btn" id="ns" style="padding:14px 26px">Maak aan</button></div>`
        :`<span style="font-size:44px;line-height:1">+</span><span class="mono">Nieuw profiel</span>`}</div></div>
+   ${teamUI()}
    <div class="row" style="justify-content:space-between;margin-top:22px"><span class="small">Alleen naam, kleur en man/vrouw (voor de promilleschatting en King's Cup). Niets anders wordt opgeslagen, en alleen op deze iPad.</span>
    <div class="row"><button class="tbtn" id="pall">Iedereen aan</button><button class="tbtn" id="pnone">Nieuwe avond</button></div></div>`;
   el.querySelectorAll('[data-a]').forEach(b=>b.onclick=e=>{const nv=e.target.closest('[data-nov]');if(nv){const a=ACC.find(x=>x.id===nv.dataset.nov);a.nov=!a.nov;saveA();renderPlayers();return}
@@ -752,6 +884,7 @@ function renderPlayers(){const el=$('#t-players'),P=active();
     na.querySelectorAll('[data-ng]').forEach(b=>b.onclick=()=>{const v=$('#nn').value;newG=b.dataset.ng;renderPlayers();$('#nn').value=v;$('#nn').focus()});
     na.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const v=$('#nn').value;newC=b.dataset.c;renderPlayers();$('#nn').value=v;$('#nn').focus()});
     $('#nn').onkeydown=e=>{if(e.key==='Enter')save()};$('#ns').onclick=save;$('#nc').onclick=()=>{newC=null;renderPlayers()}}
+  bindTeamUI();
   $('#pall').onclick=()=>{ACT.ids=ACC.map(a=>a.id);saveA();renderPlayers();renderHead()};
   $('#pnone').onclick=e=>{const b=e.currentTarget;if(b.dataset.sure){ACT.ids=[];CNT={};STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{}};saveS();saveC();saveA();try{Object.keys(localStorage).filter(k=>k.startsWith('kp_used_')).forEach(k=>localStorage.removeItem(k))}catch(x){}renderPlayers();renderHead()}
     else{b.dataset.sure=1;b.textContent='Wist selectie, teller, statistieken en vragen. Zeker?'}};}
@@ -860,8 +993,25 @@ const SPK='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.
 const drawSnd=()=>{$('#snd').innerHTML=MUTE?SPX:SPK};$('#snd').onclick=()=>{MUTE=!MUTE;try{localStorage.setItem('kp_mute',MUTE?'1':'0')}catch(e){}drawSnd();if(!MUTE)beep(880,.06,.1,'triangle')};drawSnd();
 try{const t=localStorage.getItem('kp_tab');if(!active().length)showTab('players');else if(t)showTab(t)}catch(e){}
 
+
+/* ===== soundboard ===== */
+const AC=()=>{ac=ac||new (window.AudioContext||window.webkitAudioContext)();try{ac.resume()}catch(e){}return ac};
+const tone=(f,t0,d,type='sawtooth',v=.25,f2)=>{const a=AC(),o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.linearRampToValueAtTime(f2,a.currentTime+t0+d);
+  g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(v,a.currentTime+t0+.02);g.gain.setValueAtTime(v,a.currentTime+t0+d*.8);g.gain.linearRampToValueAtTime(0,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)};
+const noise=(t0,d,v=.4,fq=1200,decay=2)=>{const a=AC(),len=a.sampleRate*d,b=a.createBuffer(1,len,a.sampleRate),x=b.getChannelData(0);for(let i=0;i<len;i++)x[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);
+  const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();f.type='bandpass';f.frequency.value=fq;g.gain.value=v;s.buffer=b;s.connect(f);f.connect(g);g.connect(a.destination);s.start(a.currentTime+t0)};
+const SB=[
+ {k:'JOEGNEE!',e:'🐷',f(){try{const u=new SpeechSynthesisUtterance('Joegnee!');u.lang='nl-BE';u.rate=.9;u.pitch=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}tone(220,0,.12,'square',.15);tone(330,.12,.2,'square',.15);joeg('JOEGNEE!')}},
+ {k:'Airhorn',e:'📯',f(){[0,.35,.7].forEach(t=>{tone(415,t,.28,'sawtooth',.22);tone(523,t,.28,'sawtooth',.16);tone(622,t,.28,'square',.08)})}},
+ {k:'Tromgeroffel',e:'🥁',f(){for(let i=0;i<34;i++)noise(i*.045,.06,.35,1800,3);noise(1.6,.6,.7,3000,1.5);tone(90,1.6,.3,'sine',.5)}},
+ {k:'Applaus',e:'👏',f(){for(let i=0;i<90;i++)noise(Math.random()*2.4,.05,.25,2200+Math.random()*1500,4)}},
+ {k:'Ba-dum-tss',e:'😂',f(){tone(160,0,.12,'sine',.5,90);tone(140,.18,.14,'sine',.5,80);noise(.36,.7,.5,6000,1.2)}},
+ {k:'Fail',e:'📉',f(){[0,.35,.7].forEach((t,i)=>tone([392,370,349][i],t,.32,'sawtooth',.18));tone(330,1.05,.9,'sawtooth',.18,300)}},
+ {k:'Knor',e:'🐽',f(){[0,.28].forEach(t=>{tone(150,t,.18,'sawtooth',.3,95);noise(t,.18,.25,500,1.5)})}}];
+$('#sbd').innerHTML=SB.map((s,i)=>`<button data-sb="${i}"><b>${s.e}</b>${s.k}</button>`).join('');
+document.querySelectorAll('[data-sb]').forEach(b=>b.onclick=()=>{if(MUTE){MUTE=false;try{localStorage.setItem('kp_mute','0')}catch(e){}drawSnd()}SB[+b.dataset.sb].f()});
 /* ===== automatisch updaten ===== */
-const APPVER='1794920396';
+const APPVER='1794920818';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
