@@ -15,13 +15,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:rgba(20,20,20,.82)}
-  body.light{--bg:#f3f2ec;--line:#dcdad2;--fg:#111;--muted:#77756c;--acc:#c8f000;--acct:#4f6b00;--card:#fbfaf6;--card2:#ecebe4;--card3:#e3e2da;--line2:#cfcdc4;--line3:#b9b7ad;--soft:#3d3c37;--inv:#111;--noise:.035;--navbg:rgba(250,249,244,.86)}
+  :root{--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:#141414}
+  body.light{--bg:#f3f2ec;--line:#dcdad2;--fg:#111;--muted:#77756c;--acc:#c8f000;--acct:#4f6b00;--card:#fbfaf6;--card2:#ecebe4;--card3:#e3e2da;--line2:#cfcdc4;--line3:#b9b7ad;--soft:#3d3c37;--inv:#111;--noise:.035;--navbg:#fbfaf6}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif;min-height:100vh;
        padding:28px 32px;-webkit-user-select:none;user-select:none;position:relative;overflow-x:hidden}
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--noise);z-index:0;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  body::before{content:none}
   body>*{position:relative;z-index:1}
   button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .mono{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--muted)}
@@ -71,7 +70,7 @@
   .btn:active{transform:scale(.96)}
   .btn.ghost{background:none;color:var(--fg);border:1px solid var(--line3)}
   .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-  .card{width:min(240px,38vw);aspect-ratio:5/7;border:1px solid var(--line3);border-radius:18px;padding:16px;display:flex;flex-direction:column;
+  .card{width:min(240px,38vw,24vh);font-size:min(40px,5vh)!important;aspect-ratio:5/7;border:1px solid var(--line3);border-radius:18px;padding:16px;display:flex;flex-direction:column;
     justify-content:space-between;font-family:'Anton',sans-serif;font-size:40px;background:var(--card)}
   .card.red{color:#ff4d4d}
   .card .mid{font-size:100px;text-align:center;line-height:1}
@@ -126,7 +125,7 @@
   .music .lg{width:72px;height:72px}
   .music .nm{font-size:clamp(36px,4.6vw,58px)}
   #nav{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:flex;gap:6px;padding:8px;border-radius:999px;z-index:4;
-    background:var(--navbg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line2);box-shadow:0 20px 50px -20px rgba(0,0,0,.45)}
+    background:var(--navbg);border:1px solid var(--line2);box-shadow:0 20px 50px -20px rgba(0,0,0,.45)}
   #nav button{display:flex;align-items:center;gap:10px;padding:16px 22px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
   #nav button svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
   #nav button.on{background:var(--acc);color:#000}
@@ -216,6 +215,12 @@
   .sbd{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
   .sbd button{border:1px solid var(--line);border-radius:20px;padding:22px 14px;background:var(--card);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;transition:transform .1s}
   .sbd button b{font-size:34px;line-height:1}.sbd button:active{transform:scale(.94);background:color-mix(in srgb,var(--acc) 20%,var(--card))}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  .lg{filter:none!important}
+  .card .mid{font-size:min(100px,11vh)!important}
+  .srow{display:grid;grid-template-columns:1fr 1fr;gap:14px}.srow .surprise{margin-bottom:14px}
+  .surprise.alt{border-color:var(--line2);background:var(--card)}
+  @media(max-width:600px){.srow{grid-template-columns:1fr}}
   .tbtn{border:1px solid var(--line2);border-radius:999px;padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
   .srch{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:22px;padding:8px 8px 8px 20px;background:var(--card)}
   .srch svg{width:22px;height:22px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex:none}
@@ -303,7 +308,7 @@
 <section class="tab" id="t-games">
 <div class="sec mono"><span>Games</span><span id="gn"></span></div>
 <div id="gl"></div>
-<div class="row" style="justify-content:flex-start;margin-top:20px"><button class="tbtn" id="cq">+ Eigen vragen toevoegen</button></div>
+<div class="row" style="justify-content:flex-start;margin-top:20px"><button class="tbtn" id="cq">+ Eigen vragen toevoegen</button><button class="tbtn" id="hr">Huisregels</button></div>
 </section>
 <section class="tab" id="t-players"></section>
 <section class="tab" id="t-count"></section>
@@ -319,7 +324,7 @@
 </nav>
 
 <div id="ov">
-  <div class="bar"><button class="back mono" id="bk">← Terug</button><div id="gt"></div><div class="mono" id="gc"></div></div>
+  <div class="bar"><button class="back mono" id="bk">← Terug</button><div id="gt"></div><div style="display:flex;gap:12px;align-items:center"><div class="mono" id="gc"></div><button class="back mono" id="pln" style="display:none;border-color:var(--acc);color:var(--acct)">Volgend spel →</button></div></div>
   <div id="st"></div>
 </div>
 
@@ -775,19 +780,20 @@ let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function renderGames(){$('#gn').textContent=String(META.length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
-  $('#gl').outerHTML=`<div id="gl"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
+  $('#gl').outerHTML=`<div id="gl"><div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
   document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{lvSel=b.dataset.lv;try{localStorage.setItem('kp_lv',lvSel)}catch(e){}renderGames()});
   document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g));
+  $('#pla').onclick=()=>openPL();
   $('#rnd').onclick=()=>{const l=META.filter(m=>m.lvl===lvSel),m=l[Math.random()*l.length|0];beep(660,.05,.1,'triangle');openGame(m.k)}}
-const openGame=k=>{clr();const m=META.find(x=>x.k===k);$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
+const openGame=k=>{clr();plBar();const m=META.find(x=>x.k===k);$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="ic" style="width:84px;height:84px;margin:0;border-radius:22px"><svg viewBox="0 0 24 24" style="width:42px;height:42px">${IC[m.ic]}</svg></div>
-    <div class="pr">${m.n}</div><div class="meta"><span>${LV[m.lvl].n}</span><span>${m.p}</span><span>${m.s}</span></div>
+    ${PL?`<div class="mono" style="color:var(--acct)">Spellenavond · spel ${PL.i+1} van ${PL.list.length}</div>`:''}<div class="pr">${m.n}</div><div class="meta"><span>${LV[m.lvl].n}</span><span>${m.p}</span><span>${m.s}</span></div>
     <ol class="rules">${m.r.map(x=>`<li><span>${x}</span></li>`).join('')}</ol><button class="btn" id="sg">Start</button>`);
   $('#sg').onclick=()=>{bump('games',k);try{wake()}catch(e){}try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}G[k].i()}};
 renderGames();
 
-$('#bk').onclick=()=>{clr();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
+$('#bk').onclick=()=>{clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
 
 /* ===== tabs ===== */
 const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
@@ -928,11 +934,13 @@ $('#nightb').onclick=()=>{const on=document.body.classList.contains('night');nig
 applyNight();setInterval(applyNight,60000);
 
 /* ===== feestmodus ===== */
+let HOUSE=['Wie morst, drinkt','Geen gsm aan tafel tijdens een spel','Wie de laatste pint pakt, haalt de volgende bak','Proosten = oogcontact, anders drinken'];try{const s=JSON.parse(localStorage.getItem('kp_house')||'null');if(Array.isArray(s))HOUSE=s}catch(e){}
+const saveH=()=>{try{localStorage.setItem('kp_house',JSON.stringify(HOUSE))}catch(e){}};
 const RULES=["Drinken met je linkerhand","Niemand mag nog iemands naam zeggen","Wie zijn gsm vastneemt, drinkt","Proosten in een andere taal","Wie ‘ja’ zegt, drinkt","Na elke slok: tik op tafel",
 "Wie lacht om zijn eigen grap, drinkt","Niet wijzen, met je elleboog wel","Engels praten tot de volgende regel","Wie naar het toilet gaat, kiest het volgende nummer",
 "Elke keer het refrein: iedereen een slok","Duim op tafel: laatste die het ziet, drinkt","Water erbij voor iedereen","Wie ‘drinken’ zegt, drinkt"];
 const pov=document.createElement('div');pov.id='party-ov';document.body.appendChild(pov);
-let pTimer=null,ruleN=deck(RULES),curRule=ruleN(),ruleAt=Date.now();
+let pTimer=null,ruleN=()=>{const all=RULES.concat(HOUSE.map(x=>'Huisregel: '+x));return all[Math.random()*all.length|0]},curRule=ruleN(),ruleAt=Date.now();
 const drawParty=()=>{const d=new Date(),P=active();if(Date.now()-ruleAt>10*6e4){curRule=ruleN();ruleAt=Date.now();beep(880,.08,.1,'triangle')}
   const mins=10-Math.floor((Date.now()-ruleAt)/6e4);
   pov.innerHTML=`<div class="mono">Zwijn<span style="color:var(--acct)">erij</span> · feestmodus</div>
@@ -1010,8 +1018,37 @@ const SB=[
  {k:'Knor',e:'🐽',f(){[0,.28].forEach(t=>{tone(150,t,.18,'sawtooth',.3,95);noise(t,.18,.25,500,1.5)})}}];
 $('#sbd').innerHTML=SB.map((s,i)=>`<button data-sb="${i}"><b>${s.e}</b>${s.k}</button>`).join('');
 document.querySelectorAll('[data-sb]').forEach(b=>b.onclick=()=>{if(MUTE){MUTE=false;try{localStorage.setItem('kp_mute','0')}catch(e){}drawSnd()}SB[+b.dataset.sb].f()});
+/* ===== offline ===== */
+try{if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js')}catch(e){}
+
+/* ===== spellenavond ===== */
+let PL=null;
+const PRESETS=[{k:'warm',n:'Opwarmer',s:'3 chill, daarna 2 full send',f:()=>shuf(META.filter(m=>m.lvl==='chill'&&!['lot','wed'].includes(m.k))).slice(0,3).concat(shuf(META.filter(m=>m.lvl==='hard'&&m.k!=='pong')).slice(0,2))},
+ {k:'chill',n:'Rustige avond',s:'5 chill-spellen',f:()=>shuf(META.filter(m=>m.lvl==='chill'&&!['lot','wed'].includes(m.k))).slice(0,5)},
+ {k:'hard',n:'Full send',s:'5 full send-spellen',f:()=>shuf(META.filter(m=>m.lvl==='hard'&&m.k!=='pong')).slice(0,5)},
+ {k:'mix',n:'Grote mix',s:'8 spellen, chill en full send door elkaar',f:()=>shuf(META.filter(m=>!['lot','wed','pong'].includes(m.k))).slice(0,8)}];
+const plBar=()=>{const b=$('#pln');b.style.display=PL?'':'none';b.onclick=()=>plNext()};
+const plNext=()=>{if(!PL)return;clr();PL.i++;if(PL.i>=PL.list.length){PL=null;plBar();joeg('KLAAR!','Joegnee, wat een avond');$('#ov').classList.remove('open','ticking');return}
+  const hr=HOUSE.length?HOUSE[Math.random()*HOUSE.length|0]:null;$('#gt').textContent='Spellenavond';$('#gc').textContent='';
+  scr(`<div class="mono">Volgende: spel ${PL.i+1} van ${PL.list.length}</div><div class="pr">${META.find(m=>m.k===PL.list[PL.i]).n}</div>
+    ${hr?`<div class="hint">Huisregel blijft gelden: <b style="color:var(--fg)">${esc(hr)}</b></div>`:''}<button class="btn" id="pg">Naar het spel</button>`);
+  $('#pg').onclick=()=>openGame(PL.list[PL.i])};
+const openPL=()=>{clr();$('#gt').textContent='Spellenavond';$('#gc').textContent='';$('#ov').classList.add('open');PL=null;plBar();
+  scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Kies je avond</div><div class="hint">De spellen komen automatisch na elkaar. Met <b style="color:var(--fg)">Volgend spel →</b> rechtsboven ga je verder.</div>
+   <div class="qgrid">${PRESETS.map(p=>`<button class="qo" data-pl="${p.k}"><b style="font-family:'Anton',sans-serif;font-weight:400;font-size:26px;text-transform:uppercase">${p.n}</b><br><span class="small">${p.s}</span></button>`).join('')}</div>`);
+  st.querySelectorAll('[data-pl]').forEach(b=>b.onclick=()=>{const p=PRESETS.find(x=>x.k===b.dataset.pl);PL={list:p.f().map(m=>m.k),i:0};
+    scr(`<div class="mono">${p.n}</div><div class="pr" style="font-size:clamp(30px,4.4vw,52px)">Vanavond op het menu</div><ol class="rules">${PL.list.map(k=>`<li><span>${META.find(m=>m.k===k).n}</span></li>`).join('')}</ol>
+      <div class="row"><button class="tbtn" id="pr2">Opnieuw husselen</button><button class="btn" id="ps">Start</button></div>`);
+    $('#pr2').onclick=()=>b.onclick();$('#ps').onclick=()=>openGame(PL.list[0])})};
+/* ===== huisregels editor ===== */
+const openHR=()=>{clr();PL=null;plBar();$('#gt').textContent='Huisregels';$('#gc').textContent='';$('#ov').classList.add('open');
+  scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Huisregels</div><div class="hint">Eén regel per lijn. Ze komen terug in feestmodus en tussen de spellen van een spellenavond.</div>
+   <textarea class="cq" id="hrt">${esc(HOUSE.join('\n'))}</textarea><button class="btn" id="hrs">Opslaan</button>`);
+  $('#hrs').onclick=()=>{HOUSE=$('#hrt').value.split('\n').map(s=>s.trim()).filter(Boolean);saveH();$('#hrs').textContent='Opgeslagen ✓';setTimeout(()=>{const b=$('#hrs');if(b)b.textContent='Opslaan'},1500)}};
+
+$('#hr').onclick=openHR;
 /* ===== automatisch updaten ===== */
-const APPVER='1794920818';
+const APPVER='1794921289';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
