@@ -68,6 +68,10 @@ input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;tex
 .wrow2{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #222;padding:10px 4px;text-align:left}.wrow2.dead{opacity:.4;text-decoration:line-through}
 details summary::-webkit-details-marker{display:none}
 @media(max-width:760px){.lobby{grid-template-columns:1fr;justify-items:center}}
+.leftbox{width:min(560px,100%);display:flex;flex-direction:column;gap:8px;align-items:center;margin-top:6px}
+.leftbox>div{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.lchip{border:1px solid var(--c);color:var(--c);border-radius:999px;padding:6px 12px;font-weight:700;font-size:15px}
+.youare{font-size:20px;margin-top:8px;cursor:pointer}.youare b{display:inline-block}
 </style>
 </head>
 <body>
@@ -130,10 +134,16 @@ const inGame=()=>H.order.filter(p=>H.players[p]&&H.players[p].role!=='nar');
 const alive=()=>inGame().filter(p=>H.players[p].alive);
 const nm=p=>H.players[p]?.n||'?';
 const rolesInGame=()=>{const s=new Set(inGame().map(p=>H.players[p].role).filter(Boolean));return ['wolf','witch','cupid','seer','doc','hunter','vil'].filter(r=>s.has(r)).concat(H.cfg.mayor?['mayor']:[]).concat(H.nar?['nar']:[])};
+const PLUR={vil:'Burgers',wolf:'Weerwolven'};
+const leftRoles=()=>{const c={};alive().forEach(x=>{const r=H.players[x].role;if(r)c[r]=(c[r]||0)+1});return ['wolf','vil','witch','cupid','seer','doc','hunter'].filter(r=>c[r]).map(r=>({r,k:c[r]}))};
+const leftHtml=l=>l&&l.length?`<div class="leftbox"><span class="mono">Nog in het spel</span><div>${l.map(x=>`<span class="lchip" style="--c:${ROLES[x.r].c}">${ROLES[x.r].e} ${x.k>1?x.k+'× '+(PLUR[x.r]||ROLES[x.r].n):ROLES[x.r].n}</span>`).join('')}</div></div>`:'';
+const narOut=id=>{const p=H.players[id];if(!p||!p.alive||p.role==='nar'||H.phase==='lobby'||H.phase==='end')return;
+  p.alive=false;delete H.night[id];delete H.votes[id];Object.keys(H.votes).forEach(k=>{if(H.votes[k]===id)delete H.votes[k]});
+  H.log.push(`☠️ ${p.n} is eruit. Rol: ${ROLES[p.role].n}.`);mayorCheck(loveDeaths([id]));if(checkWin())return;broadcast();privAll()};
 const cfgRoles=()=>['wolf','vil'].concat(H.cfg.witch?['witch']:[],H.cfg.cupid?['cupid']:[],H.cfg.seer?['seer']:[],H.cfg.doc?['doc']:[],H.cfg.hunter?['hunter']:[],H.cfg.mayor?['mayor']:[],H.cfg.nar?['nar']:[]);
 const pub=()=>({t:'state',phase:H.phase,round:H.round,hostPub:H.keys.pub,code:H.code,mayor:H.mayor,nar:H.nar,
   players:H.order.map(p=>({id:p,n:nm(p),alive:H.players[p].alive,nar:H.players[p].role==='nar',role:(H.phase==='end'||(!H.players[p].alive&&H.players[p].role!=='nar'))?H.players[p].role:null})),
-  roles:H.phase==='lobby'?(()=>{const c=comp(H.order.length);return ['wolf','vil'].concat(c.witch?['witch']:[],c.cupid?['cupid']:[],c.seer?['seer']:[],c.hunter?['hunter']:[],c.doc?['doc']:[],c.mayor?['mayor']:[],c.nar?['nar']:[])})():rolesInGame(),timerEnd:H.timerEnd,winner:H.winner,lastNews:H.log.slice(-1)[0]||null,votesIn:Object.keys(H.votes).length,nightIn:Object.keys(H.night).length,need:alive().length});
+  left:H.phase==='lobby'?[]:leftRoles(),roles:H.phase==='lobby'?(()=>{const c=comp(H.order.length);return ['wolf','vil'].concat(c.witch?['witch']:[],c.cupid?['cupid']:[],c.seer?['seer']:[],c.hunter?['hunter']:[],c.doc?['doc']:[],c.mayor?['mayor']:[],c.nar?['nar']:[])})():rolesInGame(),timerEnd:H.timerEnd,winner:H.winner,lastNews:H.log.slice(-1)[0]||null,votesIn:Object.keys(H.votes).length,nightIn:Object.keys(H.night).length,need:alive().length});
 const broadcast=()=>{send(pub());saveH();renderHost()};
 const wolvesDone=()=>alive().filter(p=>H.players[p].role==='wolf').every(p=>H.night[p]);
 const calcVictim=()=>{const wv={};Object.values(H.night).filter(v=>v.kind==='wolf').forEach(v=>wv[v.target]=(wv[v.target]||0)+1);
@@ -141,7 +151,7 @@ const calcVictim=()=>{const wv={};Object.values(H.night).filter(v=>v.kind==='wol
 const priv=async pid=>{const p=H.players[pid];if(!p||!p.pub)return;const k=await pkey(pid);
   const a=alive(),others=a.filter(x=>x!==pid).map(x=>({id:x,n:nm(x)}));
   const o={role:p.role,alive:p.alive,phase:H.phase,round:H.round,mayor:H.mayor===pid};
-  if(p.role==='nar'){o.all=inGame().map(x=>({n:nm(x),role:H.players[x].role,alive:H.players[x].alive,task:H.players[x].task,mayor:H.mayor===x}));
+  if(p.role==='nar'){o.all=inGame().map(x=>({id:x,n:nm(x),role:H.players[x].role,alive:H.players[x].alive,task:H.players[x].task,mayor:H.mayor===x}));
     o.night=Object.entries(H.night).map(([k,v])=>({by:nm(k),kind:v.kind,to:v.target?nm(v.target):null,heal:v.heal,poison:v.poison?nm(v.poison):null}));
     o.votes=Object.entries(H.votes).map(([k,v])=>({by:nm(k),to:nm(v)}));o.timerEnd=H.timerEnd;o.potions=H.potions;o.lovers=H.lovers?H.lovers.map(nm):null}
   if(p.role==='wolf'){o.mates=inGame().filter(x=>x!==pid&&H.players[x].role==='wolf').map(nm);o.task=p.task}
@@ -168,7 +178,7 @@ const onHostMsg=async m=>{
   if(m.t==='hello'){send(pub());priv(m.pid)}};
 const narCmd=c=>{({startNight:goNight,morning:resolveNight,vote:goVote,closeVote:resolveVote,next:()=>afterDeaths('night',H.pending),plus:()=>{H.timerEnd+=60000;broadcast();priv(H.nar)}}[c]||(()=>{}))()};
 const hostAct=(pid,a)=>{const p=H.players[pid];
-  if(a.kind==='nar'&&p.role==='nar'){narCmd(a.cmd);return}
+  if(a.kind==='nar'&&p.role==='nar'){if(a.cmd==='out')narOut(a.target);else narCmd(a.cmd);return}
   if(H.phase==='night'&&p.alive&&p.role!=='nar'){
     if(p.role==='witch'){if(a.kind!=='witch'||!wolvesDone())return;
       const heal=!!a.heal&&H.potions.heal&&!!H.victim,poison=a.poison&&H.potions.poison?a.poison:null;
@@ -234,7 +244,8 @@ const checkWin=()=>{const a=alive(),w=a.filter(p=>H.players[p].role==='wolf').le
   H.phase='end';document.body.classList.remove('night');broadcast();privAll();return true};
 const chip=p=>{const pl=H.players[p];return `<span class="pchip ${pl.role==='nar'||pl.alive||H.phase==='lobby'?'':'dead'}"><span class="dot ${H.online[p]?'':'off'}"></span>${H.mayor===p?'🎖️ ':''}${pl.role==='nar'?'🎙️ ':''}${esc(pl.n)}${(H.phase==='end'||(!pl.alive&&pl.role!=='nar'&&H.phase!=='lobby'))&&pl.role&&pl.role!=='nar'?' · '+ROLES[pl.role].e:''}${H.phase==='lobby'?`<span class="x" data-kick="${p}">✕</span>`:''}</span>`};
 const roleCards=list=>`<div class="rlist">${list.map(r=>{const R=r==='mayor'?MAYOR:r==='nar'?NAR:ROLES[r];return `<div class="rc" style="--c:${R.c}"><b>${R.e} ${R.n}</b><span>${R.d}</span></div>`}).join('')}</div>`;
-const renderHost=()=>{const chips=H.order.map(chip).join('');const url=location.origin+location.pathname+'?c='+H.code;
+const renderHost=()=>{renderHost0();if(['roles','night','day','vote','reveal','hunter'].includes(H.phase))app.insertAdjacentHTML('beforeend',leftHtml(leftRoles()))};
+const renderHost0=()=>{const chips=H.order.map(chip).join('');const url=location.origin+location.pathname+'?c='+H.code;
   const narLine=H.nar?`<div class="small">🎙️ Verteller: <b style="color:var(--acc)">${esc(nm(H.nar))}</b>, die volgt alles op zijn gsm.</div>`:'';
   const ctrl=(btns)=>H.nar?`<div class="small">De verteller gaat verder via zijn gsm.</div><details><summary class="small">Knoppen op dit scherm</summary><div class="row" style="margin-top:10px">${btns}</div></details>`:`<div class="row">${btns}</div>`;
   if(H.phase==='lobby'){const n=H.order.length;
@@ -306,10 +317,13 @@ const renderNar=(s,me)=>{const roleLine=x=>`<div class="wrow2 ${x.alive?'':'dead
     ${s.phase==='vote'?`<div class="small">${s.votesIn}/${s.need} stemmen</div>`:''}
     ${s.phase==='day'?`<div class="timer" style="font-size:60px" id="nt">${fmt(Math.round((s.timerEnd-Date.now())/1000))}</div>`:''}
     <div class="row">${btn.map(([c,l])=>`<button class="btn ${c==='plus'?'ghost':''}" data-cmd="${c}">${l}</button>`).join('')}</div>
+    ${leftHtml(s.left)}
+    ${['lobby','end'].includes(s.phase)?'':`<details style="width:100%;max-width:560px"><summary class="peek" style="list-style:none">☠️ Iemand eruit zetten</summary><div class="small" style="margin:10px 0">Tik een naam en bevestig. Iedereen ziet daarna welke rollen er nog inzitten.</div><div class="grid">${(me.all||[]).filter(x=>x.alive).map(x=>`<button class="choice ${Pl.outSel===x.id?'sel wolfsel':''}" data-out="${x.id}">${Pl.outSel===x.id?'Zeker? '+esc(x.n)+' eruit':esc(x.n)}</button>`).join('')}</div></details>`}
     <details style="width:100%;max-width:560px"><summary class="peek" style="list-style:none">👁️ Toon wie wat is (geheim!)</summary><div style="margin-top:12px">${(me.all||[]).map(roleLine).join('')}${me.lovers?`<div class="small" style="margin-top:10px;color:#ff7eb6">💘 Geliefden: ${me.lovers.map(esc).join(' & ')}</div>`:''}</div></details>`;
   app.querySelectorAll('[data-cmd]').forEach(b=>b.onclick=()=>act({kind:'nar',cmd:b.dataset.cmd}));
+  app.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const id=b.dataset.out;if(Pl.outSel===id){Pl.outSel=null;act({kind:'nar',cmd:'out',target:id})}else{Pl.outSel=id;renderPlayer();const d=app.querySelectorAll('details')[0];if(d)d.open=true}});
   clearInterval(window._nt);if(s.phase==='day')window._nt=setInterval(()=>{const t=$('#nt');if(!t)return clearInterval(window._nt);t.textContent=fmt(Math.round((Pl.state.timerEnd-Date.now())/1000))},500)};
-const renderPlayer=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
+const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
   document.body.classList.toggle('night',s.phase==='night');
   if(Pl.showRoles){app.innerHTML=`<div class="h2">Rollen in dit spel</div>${roleCards(s.roles||[])}<button class="btn" id="cl">Sluiten</button>`;$('#cl').onclick=()=>{Pl.showRoles=false;renderPlayer()};return}
   if(s.phase==='lobby'){app.innerHTML=`<div class="mono">Lobby ${esc(s.code)}</div><div class="h1">Je zit erin</div><div class="hint">Wacht tot het spel start. Het spel kiest zelf wie welke rol krijgt.</div><div class="plist">${s.players.map(p=>`<span class="pchip">${esc(p.n)}${p.id===Pl.pid?' (jij)':''}</span>`).join('')}</div>${rolesBtn()}`;bindCommon();return}
@@ -361,6 +375,10 @@ const renderPlayer=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
   if(s.phase==='end'){const won=s.winner==='lovers'?!!me.lover:(s.winner==='village')===(me.role!=='wolf');app.innerHTML=`<div style="font-size:80px">${s.winner==='village'?'🏡':s.winner==='lovers'?'💘':'🐺'}</div><div class="h1">${s.winner==='village'?'Het dorp wint':s.winner==='lovers'?'De geliefden winnen':'De weerwolven winnen'}</div>
     ${roleCard(me.role,true)}<div class="h2" style="color:${won?'var(--acc)':'var(--wolf)'}">${won?'Gewonnen!':'Verloren'}</div>`;return}};
 
+const renderPlayer=()=>{renderPlayer0();const s=Pl.state,me=Pl.mine;
+  if(!s||!me||!me.role||me.role==='nar'||Pl.showRoles||s.phase==='lobby'||s.phase==='end')return;
+  app.insertAdjacentHTML('beforeend',`<div class="youare" id="ya">Je bent <b class="${Pl.peek||!me.alive?'':'hide'}" style="color:${R(me.role).c}">${R(me.role).e} ${R(me.role).n}</b>${me.alive?'':' (dood)'}</div>${leftHtml(s.left)}`);
+  const y=$('#ya');if(y&&me.alive)y.onclick=()=>{Pl.peek=!Pl.peek;renderPlayer()}};
 /* ===== start ===== */
 const landing=()=>{app.innerHTML=`<div style="font-size:80px">🐺</div><div class="h1">Weerwolven</div><div class="hint">Vul de code in die op de iPad staat.</div>
   <input class="f code" id="cd" maxlength="4" placeholder="CODE" autocomplete="off" autocapitalize="characters"><button class="btn" id="jn">Naar de lobby</button>
