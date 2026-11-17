@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#070707">
-<title>De Spion · Zwijnerij</title>
+<title>Imposter · Zwijnerij</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -83,7 +83,7 @@ a,a:visited{color:inherit}#home{color:var(--fg)}
 </style>
 </head>
 <body>
-<div class="top"><a href="./" class="tbtn" style="text-decoration:none" id="home">← Zwijnerij</a><div class="brand">De <i>Spion</i></div><div class="mono" id="me"></div></div>
+<div class="top"><a href="./" class="tbtn" style="text-decoration:none" id="home">← Zwijnerij</a><div class="brand">Impos<i>ter</i></div><div class="mono" id="me"></div></div>
 <main id="app"><div class="hint">Laden…</div></main>
 <script>
 /* ===== basis ===== */
@@ -190,8 +190,8 @@ const onPlayerMsg=async m=>{
 const act=async o=>{const e=await enc(Pl.key,o);toHost({t:'act',pid:Pl.pid,...e});beep(880)};
 const hb=(btns)=>IS_HOST&&btns.length?`<div class="row">${btns.map(([c,l,g])=>`<button class="${g?'tbtn':'btn'}" data-hc="${c}">${l}</button>`).join('')}</div><div class="small">Jij maakte de lobby, dus jij bedient de knoppen.</div>`:'';
 const bindHb=()=>app.querySelectorAll('[data-hc]').forEach(b=>b.onclick=()=>act({kind:'cmd',c:b.dataset.hc}));
-const card=me=>me.spy?`<div class="role" style="--c:#ff4d6d"><div class="emo">🕵️</div><div class="mono">Jij bent</div><div class="rn">De spion</div>${me.cat?`<div class="small">Categorie: <b style="color:#ededed">${esc(me.cat)}</b></div>`:''}${me.mates&&me.mates.length?`<div class="small">Andere spion: <b style="color:#ff4d6d">${me.mates.map(esc).join(', ')}</b></div>`:''}<div class="hint" style="color:#cfcfcf">Je kent het woord niet. Luister goed, doe alsof en raad het woord.</div></div>`
-  :`<div class="role" style="--c:#d4ff3a"><div class="emo">🔑</div><div class="mono">Het geheime woord</div><div class="rn">${esc(me.word||'')}</div><div class="small">Categorie: ${esc(me.cat||'')}</div><div class="hint" style="color:#cfcfcf">Geef hints zonder het woord te verklappen: de spion luistert mee.</div></div>`;
+const card=me=>me.spy?`<div class="role" style="--c:#ff4d6d"><div class="emo">🕵️</div><div class="mono">Jij bent</div><div class="rn">De imposter</div>${me.cat?`<div class="small">Categorie: <b style="color:#ededed">${esc(me.cat)}</b></div>`:''}${me.mates&&me.mates.length?`<div class="small">Andere imposter: <b style="color:#ff4d6d">${me.mates.map(esc).join(', ')}</b></div>`:''}<div class="hint" style="color:#cfcfcf">Je kent het woord niet. Luister goed, doe alsof en raad het woord.</div></div>`
+  :`<div class="role" style="--c:#d4ff3a"><div class="emo">🔑</div><div class="mono">Het geheime woord</div><div class="rn">${esc(me.word||'')}</div><div class="small">Categorie: ${esc(me.cat||'')}</div><div class="hint" style="color:#cfcfcf">Geef hints zonder het woord te verklappen: de imposter luistert mee.</div></div>`;
 const render=()=>{const s=Pl.state,me=Pl.mine||{};if(!s)return;
   if(s.phase==='lobby'){
     if(IS_HOST){const n=H.order.length,url=location.origin+location.pathname+'?c='+H.code;
@@ -199,10 +199,10 @@ const render=()=>{const s=Pl.state,me=Pl.mine||{};if(!s)return;
       app.innerHTML=`<div class="mono">Laat de anderen scannen of de code invullen</div><div class="code-big">${H.code}</div><div id="qr"></div>
         <div class="plist">${H.order.map(p=>`<span class="pchip">${esc(nm(p))}${p===Pl.pid?' (jij)':`<span class="x" data-kick="${p}">✕</span>`}</span>`).join('')}</div>
         <details class="opts" ${Pl.oo?'open':''}><summary class="peek" style="list-style:none">⚙️ Instellingen</summary><div class="optgrid">
-          <span class="mono">Spionnen</span>${seg('spies',[[0,'Auto'],[1,'1'],[2,'2'],[3,'3']],H.opt.spies)}
-          <span class="mono">Hint spion</span>${seg('hint',[[1,'Categorie'],[0,'Niets']],H.opt.hint?1:0)}
+          <span class="mono">Imposters</span>${seg('spies',[[0,'Auto'],[1,'1'],[2,'2'],[3,'3']],H.opt.spies)}
+          <span class="mono">Hint imposter</span>${seg('hint',[[1,'Categorie'],[0,'Niets']],H.opt.hint?1:0)}
           <span class="mono">Categorie</span><div class="plist" style="justify-content:flex-start">${['mix'].concat(CATS).map(c=>`<button class="pchip ${H.opt.cat===c?'on2':''}" data-cat="${c}">${c==='mix'?'Alles door elkaar':c}</button>`).join('')}</div></div></details>
-        <div class="hint">${n>=3?`${nSpies(n)} ${nSpies(n)>1?'spionnen':'spion'} met ${n} spelers.`:'Minstens 3 spelers nodig.'}</div>
+        <div class="hint">${n>=3?`${nSpies(n)} ${nSpies(n)>1?'imposters':'imposter'} met ${n} spelers.`:'Minstens 3 spelers nodig.'}</div>
         <div class="small" style="color:#ffd23f">⚠️ Het spel draait op jouw toestel: laat deze pagina open tot het gedaan is.</div>
         <button class="btn" id="go" ${n<3?'disabled':''}>Start (${n} spelers)</button>`;
       try{new QRCode($('#qr'),{text:url,width:200,height:200,correctLevel:QRCode.CorrectLevel.M})}catch(e){}
@@ -221,26 +221,26 @@ const render=()=>{const s=Pl.state,me=Pl.mine||{};if(!s)return;
       <div class="plist">${s.order.map((n,i)=>`<span class="pchip">${i+1}. ${esc(n)}</span>`).join('')}</div>${hb([['vote','Nu stemmen']])}`;bindPeek();bindHb();return}
   if(s.phase==='vote'){const nv=s.players.filter(p=>p.voted).length;
     if(me.voted){app.innerHTML=`<div style="font-size:70px">🗳️</div><div class="h2">Je stemde op ${esc(me.voted)}</div><div class="small">${nv}/${s.players.length} stemmen</div>${hb([['close','Sluit stemming']])}`;bindHb();return}
-    app.innerHTML=`<div class="mono">Stemming</div><div class="h2">Wie is de spion?</div><div class="grid">${(me.choices||[]).map(c=>`<button class="choice ${Pl.sel===c.id?'sel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div><button class="btn" id="cf" ${Pl.sel?'':'disabled'}>Bevestig</button>${hb([['close',`Sluit stemming (${nv}/${s.players.length})`,1]])}`;
+    app.innerHTML=`<div class="mono">Stemming</div><div class="h2">Wie is de imposter?</div><div class="grid">${(me.choices||[]).map(c=>`<button class="choice ${Pl.sel===c.id?'sel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div><button class="btn" id="cf" ${Pl.sel?'':'disabled'}>Bevestig</button>${hb([['close',`Sluit stemming (${nv}/${s.players.length})`,1]])}`;
     app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{Pl.sel=b.dataset.c;render()});$('#cf').onclick=()=>{if(Pl.sel)act({kind:'vote',target:Pl.sel})};bindHb();return}
   if(s.phase==='guess'){if(me.guessOpts){app.innerHTML=`<div style="font-size:70px">🕵️</div><div class="h2">Je bent betrapt!</div><div class="hint">Laatste kans: raad het geheime woord. Juist? Dan win je toch.</div><div class="grid">${me.guessOpts.map(w=>`<button class="choice" data-w="${esc(w)}">${esc(w)}</button>`).join('')}</div>`;
       app.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>act({kind:'guess',w:b.dataset.w}));return}
-    app.innerHTML=`<div style="font-size:70px">🕵️</div><div class="h2">${esc(s.caught)} is betrapt</div><div class="hint">${esc(s.caught)} was inderdaad een spion en krijgt nog één kans om het woord te raden…</div>`;return}
+    app.innerHTML=`<div style="font-size:70px">🕵️</div><div class="h2">${esc(s.caught)} is betrapt</div><div class="hint">${esc(s.caught)} was inderdaad een imposter en krijgt nog één kans om het woord te raden…</div>`;return}
   if(s.phase==='end'){const r=s.result||{},sw=r.w==='spies',iSpy=me.spy,won=sw===!!iSpy;
-    const why={tie:'Gelijkstand bij de stemming: de spion ontsnapt.',wrong:`Jullie stemden op ${esc(s.caught||'')}, maar dat was geen spion.`,guessed:`${esc(s.caught||'')} werd betrapt, maar raadde het woord: ${esc(s.guess||'')}.`,caught:`${esc(s.caught||'')} werd betrapt en raadde fout (${esc(s.guess||'')}).`}[r.why]||'';
-    app.innerHTML=`<div style="font-size:80px">${sw?'🕵️':'🏡'}</div><div class="h1">${sw?(s.spies.length>1?'De spionnen winnen':'De spion wint'):'Spion betrapt'}</div><div class="hint">${why}</div>
-      <div class="task" style="border-color:#d4ff3a"><span class="mono">Het woord was</span><b style="color:#d4ff3a">${esc(s.word||'')}</b></div><div class="small">${s.spies.length>1?'Spionnen':'Spion'}: <b style="color:#ff4d6d">${s.spies.map(esc).join(', ')}</b></div>
+    const why={tie:'Gelijkstand bij de stemming: de imposter ontsnapt.',wrong:`Jullie stemden op ${esc(s.caught||'')}, maar dat was geen imposter.`,guessed:`${esc(s.caught||'')} werd betrapt, maar raadde het woord: ${esc(s.guess||'')}.`,caught:`${esc(s.caught||'')} werd betrapt en raadde fout (${esc(s.guess||'')}).`}[r.why]||'';
+    app.innerHTML=`<div style="font-size:80px">${sw?'🕵️':'🏡'}</div><div class="h1">${sw?(s.spies.length>1?'De imposters winnen':'De imposter wint'):'Imposter betrapt'}</div><div class="hint">${why}</div>
+      <div class="task" style="border-color:#d4ff3a"><span class="mono">Het woord was</span><b style="color:#d4ff3a">${esc(s.word||'')}</b></div><div class="small">${s.spies.length>1?'Imposters':'Imposter'}: <b style="color:#ff4d6d">${s.spies.map(esc).join(', ')}</b></div>
       <div class="h2" style="color:${won?'var(--acc)':'var(--wolf)'}">${won?'Gewonnen!':'Verloren: drink 2 slokken'}</div>
       ${s.tally&&s.tally.length?`<div class="small">Stemmen: ${s.tally.map(t=>esc(t.n)+' '+t.v).join(' · ')}</div>`:''}
       <div class="small">Stand: ${s.score.slice().sort((a,b)=>b.s-a.s).map(x=>esc(x.n)+' '+x.s).join(' · ')}</div>${hb([['again','Nog een ronde'],['lobby','Terug naar lobby',1]])}`;bindHb();return}};
 
 /* ===== start ===== */
-const landing=()=>{app.innerHTML=`<div style="font-size:80px">🕵️</div><div class="h1">De Spion</div><div class="hint">Vul de code in van wie de lobby maakte.</div>
+const landing=()=>{app.innerHTML=`<div style="font-size:80px">🕵️</div><div class="h1">Imposter</div><div class="hint">Vul de code in van wie de lobby maakte.</div>
   <input class="f code" id="cd" maxlength="4" placeholder="CODE" autocomplete="off" autocapitalize="characters"><button class="btn" id="jn">Naar de lobby</button><button class="tbtn" id="hs">Zelf een lobby maken</button>
-  <div class="rlist" style="margin-top:20px"><div class="rc" style="--c:#d4ff3a"><b>Zo werkt het</b><span>Iedereen krijgt hetzelfde geheime woord op zijn gsm, behalve de spion. Om beurten zeg je één woord dat erbij past. Daarna stemmen jullie wie de spion is. Betrapt? Dan mag de spion nog het woord raden. Wie verliest, drinkt 2 slokken.</span></div></div>`;
+  <div class="rlist" style="margin-top:20px"><div class="rc" style="--c:#d4ff3a"><b>Zo werkt het</b><span>Iedereen krijgt hetzelfde geheime woord op zijn gsm, behalve de imposter. Om beurten zeg je één woord dat erbij past. Daarna stemmen jullie wie de imposter is. Betrapt? Dan mag de imposter nog het woord raden. Wie verliest, drinkt 2 slokken.</span></div></div>`;
   const go=()=>{const c=$('#cd').value.trim().toUpperCase();if(c.length===4)location.href=location.pathname+'?c='+c};$('#jn').onclick=go;$('#cd').onkeydown=e=>{if(e.key==='Enter')go()};
   $('#hs').onclick=()=>location.href=location.pathname+'?host=1'};
-(async()=>{if(!sb){app.innerHTML='<div class="h2 err">Geen internet: De Spion heeft een verbinding nodig.</div>';return}
+(async()=>{if(!sb){app.innerHTML='<div class="h2 err">Geen internet: Imposter heeft een verbinding nodig.</div>';return}
   const q=new URLSearchParams(location.search);
   if(q.get('host')){const s=ls.get('sp_host',null);if(s&&s.phase!=='lobby'&&Date.now()-s.t<6*3.6e6&&!q.get('new')){app.innerHTML=`<div class="h2">Er loopt nog een spel (code ${esc(s.code)})</div><div class="row"><button class="btn" id="rs">Verder spelen</button><button class="tbtn" id="nw">Nieuw spel</button></div>`;
       $('#rs').onclick=()=>startHost(true);$('#nw').onclick=()=>startHost(false);return}

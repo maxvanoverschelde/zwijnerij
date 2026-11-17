@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:#141414}
-  body.light{--bg:#f3f2ec;--line:#dcdad2;--fg:#111;--muted:#77756c;--acc:#c8f000;--acct:#4f6b00;--card:#fbfaf6;--card2:#ecebe4;--card3:#e3e2da;--line2:#cfcdc4;--line3:#b9b7ad;--soft:#3d3c37;--inv:#111;--noise:.035;--navbg:#fbfaf6}
+  body.light{--bg:#ffffff;--line:#e2e2e2;--fg:#000;--muted:#6a6a6a;--acc:#c6ff00;--acct:#4a8f00;--card:#f6f6f6;--card2:#eeeeee;--card3:#e4e4e4;--line2:#d0d0d0;--line3:#b5b5b5;--soft:#2a2a2a;--inv:#000;--noise:.02;--navbg:#ffffff}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif;min-height:100vh;
        padding:28px 32px;-webkit-user-select:none;user-select:none;position:relative;overflow-x:hidden}
@@ -269,8 +269,8 @@
   .stats div{border:1px solid var(--line);border-radius:18px;padding:16px;text-align:left}
   .stats b{display:block;font-family:'Anton',sans-serif;font-weight:400;font-size:26px;text-transform:uppercase;margin-top:6px}
   textarea.cq{width:min(820px,90vw);min-height:220px;background:var(--card);border:1px solid var(--line2);border-radius:16px;color:var(--fg);font:inherit;font-size:18px;padding:16px;outline:none;line-height:1.5}
-  body.night{--acc:#ff8a4c;--fg:#e9d6c8;--muted:#7c6a5e}
-  body.night::after{content:"";position:fixed;inset:0;background:rgba(40,10,0,.28);pointer-events:none;z-index:50;mix-blend-mode:multiply}
+  body.night{}
+  body.night::after{content:"";position:fixed;inset:0;background:rgba(0,0,0,.3);pointer-events:none;z-index:50}
   body{padding-bottom:150px!important}
   .fact .k{font-size:clamp(28px,3.2vw,40px);overflow-wrap:anywhere;hyphens:auto}
   .hbtns{display:flex;gap:10px;justify-content:flex-end;margin-bottom:10px}.hbtns .thm{margin:0}
@@ -350,7 +350,7 @@ a:visited{color:inherit}
 <div class="mrow">
   <button class="mcard" id="party"><div class="mono" style="color:var(--acct)">Feestmodus</div><div class="nmx">Scherm op tafel</div><div class="small">Grote klok, wie er is en een wisselende regel van het moment.</div></button>
   <div class="mcard"><div class="mono">Speaker</div><div class="nmx">Bluetooth</div><div class="small">Eénmalig: Instellingen › Bluetooth › kies je speaker. Daarna speelt alles vanzelf via de box.</div></div>
-  <button class="mcard" id="nightb"><div class="mono">Scherm</div><div class="nmx" id="nightt">Nachtmodus</div><div class="small">Donkerder en warmer licht. Gaat na middernacht vanzelf aan.</div></button>
+  <button class="mcard" id="nightb"><div class="mono">Scherm</div><div class="nmx" id="nightt">Nachtmodus</div><div class="small">Dimt het scherm wat, zelfde kleuren.</div></button>
 </div>
 </section>
 <section class="tab" id="t-big"></section>
@@ -766,7 +766,7 @@ Object.assign(G,{
 function renderBig(){const card=(ic,n,s,p,attr)=>`<${attr.startsWith('href')?'a':'button'} class="bigc" ${attr}><svg class="ic" viewBox="0 0 24 24">${IC[ic]||''}</svg><div class="mono">${p}</div><div class="nmx">${n}</div><div class="small">${s}</div></${attr.startsWith('href')?'a':'button'}>`;
   $('#t-big').innerHTML=`<div class="sec mono"><span>Met jullie gsm's</span><span>lobby met code</span></div><div class="bigs">
    ${card('wolf','Weerwolven','Rollen, nachten en stemmen op je gsm. Eén iemand maakt de lobby en speelt mee.','5-30 spelers','href="ww.html"')}
-   ${card('eye','De Spion','Iedereen krijgt hetzelfde geheime woord, behalve de spion. Wie is het?','4-20 spelers','href="spion.html"')}
+   ${card('eye','Imposter','Iedereen krijgt hetzelfde geheime woord, behalve de imposter. Wie is het?','4-20 spelers','href="imposter.html"')}
    ${card('bolt','Buzzerquiz','De iPad stelt de vraag, jullie buzzen op je gsm. Wie eerst drukt, mag antwoorden.','2-20 spelers','href="buzz.html?host=1"')}</div>
    <div class="sec mono" style="margin-top:34px"><span>In teams op de iPad</span><span></span></div><div class="bigs">
    ${META.filter(m=>m.lvl==='big').map(m=>card(m.ic,m.n,m.s,m.p,`data-big="${m.k}"`)).join('')}</div>`;
@@ -968,7 +968,7 @@ let wl=null;const wake=async()=>{try{if('wakeLock' in navigator&&!wl){wl=await n
 document.addEventListener('click',()=>wake(),{once:false,passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')wake()});
 let nightPref=null;try{nightPref=localStorage.getItem('kp_night')}catch(e){}
-const isNightHour=()=>{const h=new Date().getHours();return h>=0&&h<6};
+const isNightHour=()=>false;
 const applyNight=()=>{const on=!document.body.classList.contains('light')&&(nightPref==='on'||(nightPref!=='off'&&isNightHour()));document.body.classList.toggle('night',on);$('#nightt').textContent=on?'Nachtmodus aan':'Nachtmodus uit'};
 $('#nightb').onclick=()=>{const on=document.body.classList.contains('night');nightPref=on?'off':'on';try{localStorage.setItem('kp_night',nightPref)}catch(e){}applyNight()};
 applyNight();setInterval(applyNight,60000);
@@ -1211,7 +1211,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794949894';
+const APPVER='1794950091';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
