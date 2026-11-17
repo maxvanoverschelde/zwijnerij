@@ -164,7 +164,7 @@ const resetLobby=()=>{H.order.forEach(id=>{H.players[id].alive=true;H.players[id
 const cfgRoles=()=>['wolf','vil'].concat(H.cfg.witch?['witch']:[],H.cfg.cupid?['cupid']:[],H.cfg.seer?['seer']:[],H.cfg.doc?['doc']:[],H.cfg.hunter?['hunter']:[],H.cfg.mayor?['mayor']:[],H.cfg.nar?['nar']:[]);
 const pub=()=>({t:'state',phase:H.phase,round:H.round,hostPub:H.keys.pub,code:H.code,mayor:H.mayor,nar:H.nar,
   players:H.order.map(p=>({id:p,n:nm(p),alive:H.players[p].alive,nar:H.players[p].role==='nar',role:(H.phase==='end'||(!H.players[p].alive&&H.players[p].role!=='nar'))?H.players[p].role:null})),
-  left:H.phase==='lobby'?[]:leftRoles(),roles:H.phase==='lobby'?(()=>{const c=comp(H.order.length);return ['wolf','vil'].concat(c.witch?['witch']:[],c.cupid?['cupid']:[],c.seer?['seer']:[],c.hunter?['hunter']:[],c.doc?['doc']:[],c.mayor?['mayor']:[],c.nar?['nar']:[])})():rolesInGame(),timerEnd:H.timerEnd,winner:H.winner,lastNews:H.log.slice(-1)[0]||null,undo:H.undo&&[H.undo.phase,'hunter','end'].includes(H.phase)?H.undo.n:null,votesIn:Object.keys(H.votes).length,nightIn:Object.keys(H.night).length,need:alive().length});
+  left:H.phase==='lobby'?[]:leftRoles(),roles:H.phase==='lobby'?(()=>{const c=comp(H.order.length);return ['wolf','vil'].concat(c.witch?['witch']:[],c.cupid?['cupid']:[],c.seer?['seer']:[],c.hunter?['hunter']:[],c.doc?['doc']:[],c.mayor?['mayor']:[],c.nar?['nar']:[])})():rolesInGame(),timerEnd:H.timerEnd,winner:H.winner,lastNews:H.log.slice(-1)[0]||null,hist:H.phase==='end'?H.log:null,undo:H.undo&&[H.undo.phase,'hunter','end'].includes(H.phase)?H.undo.n:null,votesIn:Object.keys(H.votes).length,nightIn:Object.keys(H.night).length,need:alive().length});
 const broadcast=()=>{send(pub());saveH();renderHost()};
 const cupWait=()=>H.round===1&&alive().some(x=>H.players[x].role==='cupid'&&!H.night[x]);
 const wolvesDone=()=>alive().filter(p=>H.players[p].role==='wolf').every(p=>H.night[p]);
@@ -254,6 +254,11 @@ const resolveNight=()=>{clearTimeout(timers.night);if(H.phase!=='night')return;i
   const victim=H.victim;const docE=Object.entries(H.night).find(([k,v])=>v.kind==='doc');const prot=docE?docE[1].target:null;if(docE)H.players[docE[0]].lastDoc=prot;
   const wE=Object.values(H.night).find(v=>v.kind==='witch');const healed=wE&&wE.heal;const poisoned=wE&&wE.poison;
   const deaths=[],parts=[];
+  {const sE=Object.values(H.night).find(v=>v.kind==='seer'),cE=Object.values(H.night).find(v=>v.kind==='cupid'),h=[];
+   if(cE)h.push(`💘 Cupido koppelde ${nm(cE.target)} en ${nm(cE.target2)}`);
+   h.push(victim?`🐺 Wolven vielen ${nm(victim)} aan`:'🐺 Wolven kozen niemand');
+   if(prot)h.push(`🛡️ Beschermer beschermde ${nm(prot)}`);if(healed)h.push('🧪 Heks gebruikte haar levensdrankje');if(poisoned)h.push(`🧪 Heks vergiftigde ${nm(poisoned)}`);
+   if(sE)h.push(`🔮 Ziener bekeek ${nm(sE.target)}`);H.log.push(`🌙 Nacht ${H.round}: `+h.join(' · '))}
   if(victim&&victim!==prot&&!healed){deaths.push(victim)}
   else if(victim){parts.push('De weerwolven sloegen toe, maar hun slachtoffer werd gered.')}
   if(poisoned&&H.players[poisoned]?.alive&&!deaths.includes(poisoned))deaths.push(poisoned);
@@ -442,7 +447,7 @@ const hostBar=s=>{if(!IS_HOST||Pl.showRoles)return;const m=Pl.mine||{};if(m.role
   if(!b.length)return;app.insertAdjacentHTML('beforeend',`<div class="row hostbar">${b.map(([c,l])=>`<button class="${c==='plus'?'tbtn':'btn'}" data-hc="${c}">${l}</button>`).join('')}</div>${H.nar?'':'<div class="small">Jij maakte de lobby, dus jij bedient de knoppen.</div>'}`);
   app.querySelectorAll('[data-hc]').forEach(x=>x.onclick=()=>act({kind:'nar',cmd:x.dataset.hc}))};
 const renderPlayer=()=>{renderPlayer0();const s=Pl.state,me=Pl.mine;if(!s)return;
-  if(s.phase==='end'&&!Pl.showRoles&&me&&me.role!=='nar')app.insertAdjacentHTML('beforeend',`<div class="plist">${s.players.filter(p=>!p.nar).map(p=>`<span class="pchip">${p.role?ROLES[p.role].e+' ':''}${esc(p.n)}</span>`).join('')}</div>`);
+  if(s.phase==='end'&&!Pl.showRoles)app.insertAdjacentHTML('beforeend',`${me&&me.role!=='nar'?`<div class="plist">${s.players.filter(p=>!p.nar).map(p=>`<span class="pchip">${p.role?ROLES[p.role].e+' ':''}${esc(p.n)}</span>`).join('')}</div>`:''}${s.hist&&s.hist.length?`<details style="width:100%;max-width:640px"><summary class="peek" style="list-style:none">📜 Wat gebeurde er?</summary><div class="log" style="text-align:left;margin-top:12px">${s.hist.map(esc).join('<br>')}</div></details>`:''}`);
   hostBar(s);
   if(!me||!me.role||me.role==='nar'||Pl.showRoles||s.phase==='lobby'||s.phase==='end')return;
   app.insertAdjacentHTML('beforeend',`<div class="youare" id="ya">Je bent <b class="${Pl.peek||!me.alive?'':'hide'}" style="color:${R(me.role).c}">${R(me.role).e} ${R(me.role).n}</b>${me.alive?'':' (dood)'}</div>${leftHtml(s.left)}`);

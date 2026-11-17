@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#070707">
+<title>De Spion · Zwijnerij</title>
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#070707;--fg:#ededed;--muted:#7a7a7a;--line:#222;--card:#101010;--acc:#d4ff3a;--wolf:#ff4d6d;--moon:#7aa2ff}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif}
+body{padding:calc(env(safe-area-inset-top,0px) + 20px) max(20px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom,0px) + 24px) max(20px,env(safe-area-inset-left));min-height:100vh;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
+body.night{background:radial-gradient(circle at 50% -10%,#16203d 0%,#070707 60%)}
+button,input{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+.mono{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--muted)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.brand{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;letter-spacing:.01em}
+.brand i{font-style:normal;color:var(--wolf)}
+main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;width:100%;max-width:1100px;margin:0 auto}
+.h1{font-family:'Anton',sans-serif;font-size:clamp(40px,8vw,96px);line-height:.95;text-transform:uppercase}
+.h2{font-family:'Anton',sans-serif;font-size:clamp(28px,5vw,54px);line-height:1;text-transform:uppercase}
+.hint{color:var(--muted);font-size:17px;line-height:1.45;max-width:640px}
+.btn{background:var(--acc);color:#000;font-family:'JetBrains Mono',monospace;font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:15px;padding:20px 38px;border-radius:999px;transition:transform .1s}
+.btn:active{transform:scale(.96)}.btn.ghost{background:none;color:var(--fg);border:1px solid #333}.btn.red{background:var(--wolf);color:#000}
+.btn:disabled{opacity:.35}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
+input.f{background:#111;border:1px solid #2c2c2c;border-radius:16px;padding:18px 20px;font-size:22px;width:min(420px,88vw);outline:none;text-align:center}
+input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;text-transform:uppercase}
+.code-big{font-family:'Anton',sans-serif;font-size:clamp(70px,14vw,150px);letter-spacing:.18em;color:var(--acc);line-height:1}
+.lobby{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center;width:100%}
+#qr{background:#fff;padding:14px;border-radius:20px;display:inline-block}
+#qr img,#qr canvas{display:block;width:220px!important;height:220px!important}
+.plist{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.pchip{border:1px solid #2c2c2c;border-radius:999px;padding:10px 16px;font-size:18px;display:flex;align-items:center;gap:8px}
+.pchip.dead{opacity:.35;text-decoration:line-through}
+.pchip .dot{width:9px;height:9px;border-radius:50%;background:#3cff8a}.pchip .dot.off{background:#555}
+.pchip .x{color:var(--muted);margin-left:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;width:100%;max-width:720px}
+.choice{border:1px solid #2c2c2c;border-radius:18px;padding:20px 12px;font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;background:var(--card)}
+.choice.sel{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 15%,var(--card));color:var(--acc)}
+.choice.wolfsel{border-color:var(--wolf);color:var(--wolf)}
+.role{border-radius:28px;padding:30px 24px;width:min(560px,100%);border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,#0a0a0a);display:flex;flex-direction:column;gap:12px;align-items:center}
+.role .emo{font-size:72px;line-height:1}
+.role .rn{font-family:'Anton',sans-serif;font-size:46px;text-transform:uppercase;color:var(--c);line-height:1}
+.task{border:2px dashed var(--wolf);border-radius:20px;padding:18px;max-width:560px}
+.task b{display:block;font-family:'Anton',sans-serif;font-weight:400;font-size:28px;text-transform:uppercase;color:var(--wolf);margin-top:6px;line-height:1.1}
+.timer{font-family:'Anton',sans-serif;font-size:clamp(70px,14vw,140px);font-variant-numeric:tabular-nums;line-height:1}
+.hide{filter:blur(18px)}
+.peek{border:1px solid #333;border-radius:999px;padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.bar{height:8px;background:#1a1a1a;border-radius:9px;overflow:hidden;width:min(520px,90vw)}.bar i{display:block;height:100%;background:var(--acc)}
+.small{font-size:14px;color:var(--muted)}
+.tbtn{border:1px solid #2c2c2c;border-radius:999px;padding:11px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.seg{display:flex;border:1px solid #2c2c2c;border-radius:999px;overflow:hidden}.seg button{padding:10px 14px;font-size:14px;color:var(--muted)}.seg button.on{background:#ededed;color:#000}
+.log{font-size:15px;color:var(--muted);max-width:640px;line-height:1.6}
+.err{color:var(--wolf)}
+.rlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;width:100%;max-width:900px;text-align:left}
+.rc{border:1px solid color-mix(in srgb,var(--c) 50%,#222);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--c) 6%,#0a0a0a)}
+.rc b{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase;color:var(--c)}.rc span{font-size:14px;color:#bdbdbd;line-height:1.4}
+.script{border:1px solid #333;border-radius:20px;padding:16px 20px;max-width:560px;text-align:left;display:flex;flex-direction:column;gap:10px;font-size:18px;line-height:1.45;background:#0d0d0d}
+.wrow2{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #222;padding:10px 4px;text-align:left}.wrow2.dead{opacity:.4;text-decoration:line-through}
+details summary::-webkit-details-marker{display:none}
+@media(max-width:760px){.lobby{grid-template-columns:1fr;justify-items:center}}
+.leftbox{width:min(560px,100%);display:flex;flex-direction:column;gap:8px;align-items:center;margin-top:6px}
+.leftbox>div{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.lchip{border:1px solid var(--c);color:var(--c);border-radius:999px;padding:6px 12px;font-weight:700;font-size:15px}
+.youare{font-size:20px;margin-top:8px;cursor:pointer}.youare b{display:inline-block}
+.opts{width:min(560px,100%)}.optgrid{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:center;margin-top:14px;text-align:left}
+.rtg{cursor:pointer;opacity:.45}.rtg.ron{opacity:1;border-color:var(--acc);color:var(--acc)}
+@keyframes fl{0%{box-shadow:inset 0 0 0 9999px rgba(212,255,58,.35)}100%{box-shadow:inset 0 0 0 9999px transparent}}body.flash{animation:fl 1.2s ease-out 2}
+a,a:visited{color:inherit}
+#home{color:var(--fg,#ededed)}
+.opts{width:min(560px,100%)}.optgrid{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:center;margin-top:14px;text-align:left}
+.pchip.on2{border-color:var(--acc);color:var(--acc)}
+a,a:visited{color:inherit}#home{color:var(--fg)}
+</style>
+</head>
+<body>
+<div class="top"><a href="./" class="tbtn" style="text-decoration:none" id="home">← Zwijnerij</a><div class="brand">De <i>Spion</i></div><div class="mono" id="me"></div></div>
+<main id="app"><div class="hint">Laden…</div></main>
+<script>
+/* ===== basis ===== */
+const SB_URL='https://koenqjuwnngluqxseodq.supabase.co',SB_KEY='sb_publishable_FV0_pSspnXUlZXFES5Ga4w_gzlX2kFm';
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const ls={get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const rid=()=>Math.random().toString(36).slice(2,10);
+let actx;const beep=(f=660,d=.08)=>{try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.15,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+d)}catch(e){}};
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate([80,60,80])}catch(e){}};
+let wl=null;const wake=async()=>{try{if('wakeLock' in navigator&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>wl=null)}}catch(e){}};document.addEventListener('click',wake);
+const b64=buf=>btoa(String.fromCharCode(...new Uint8Array(buf))),unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const genKeys=async()=>{const k=await crypto.subtle.generateKey({name:'ECDH',namedCurve:'P-256'},true,['deriveKey']);return{pub:b64(await crypto.subtle.exportKey('raw',k.publicKey)),priv:await crypto.subtle.exportKey('jwk',k.privateKey)}};
+const derive=async(privJwk,pubB64)=>{const priv=await crypto.subtle.importKey('jwk',privJwk,{name:'ECDH',namedCurve:'P-256'},false,['deriveKey']);const pub=await crypto.subtle.importKey('raw',unb64(pubB64),{name:'ECDH',namedCurve:'P-256'},false,[]);return crypto.subtle.deriveKey({name:'ECDH',public:pub},priv,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])};
+const enc=async(key,obj)=>{const iv=crypto.getRandomValues(new Uint8Array(12));const d=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(obj)));return{iv:b64(iv),d:b64(d)}};
+const dec=async(key,m)=>JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(m.iv)},key,unb64(m.d))));
+
+/* ===== woorden ===== */
+const WORDS={
+ 'Plaatsen':['Strand','Ziekenhuis','Bioscoop','Supermarkt','Kerk','Luchthaven','Zwembad','Gevangenis','Bibliotheek','Dierentuin','Festivalweide','Fitness','Kapper','Treinstation','Ruimtestation','Duikboot','Kasteel','Casino','Skipiste','Camping','Studentenkot','Aula','Frituur','Cocktailbar','Politiekantoor','Pretpark','Bowlingbaan','Sauna','Voetbalstadion','Tandarts'],
+ 'Eten en drinken':['Pizza','Sushi','Frieten','Wafel','Spaghetti','Kebab','Hamburger','Croque monsieur','Stoofvlees','Mosselen','Pannenkoek','Chocolademousse','Tiramisu','Lasagne','Taco','Popcorn','Jenever','Mojito','Gin-tonic','Cava','Duvel','Koffie','Smoothie','Ijsje','Donut','Croissant','Curryworst','Bitterballen','Nachos','Fondue'],
+ 'Beroepen':['Dokter','Leraar','Piloot','Kok','Brandweerman','Politieagent','Advocaat','Kapper','Bakker','Tandarts','DJ','Influencer','Boer','Loodgieter','Astronaut','Journalist','Verpleger','Postbode','Architect','Dierenarts','Barman','Clown','Schilder','Rechter','Buschauffeur','Ober','Goochelaar','Bouwvakker','Fotograaf','Programmeur'],
+ 'Dieren':['Olifant','Giraf','Pinguïn','Kangoeroe','Leeuw','Haai','Dolfijn','Koala','Panda','Krokodil','Uil','Papegaai','Slang','Schildpad','Egel','Vos','Wolf','Paard','Koe','Varken','Kip','Hamster','Octopus','Kameel','Zebra','Aap','Beer','Konijn','Muis','Vleermuis'],
+ 'Dingen in huis':['Koelkast','Wasmachine','Tandenborstel','Spiegel','Bank','Matras','Microgolf','Stofzuiger','Afstandsbediening','Lamp','Kussen','Strijkijzer','Föhn','Wekker','Paraplu','Gordijn','Douche','Brievenbus','Kaars','Waterkoker','Broodrooster','Sleutelbos','Vaatwas','Badjas','Pantoffels','Laptop','Kapstok','Plant','Vuilbak','Ladder'],
+ 'Sport en vrije tijd':['Voetbal','Tennis','Skiën','Zwemmen','Bowling','Karaoke','Darts','Paintball','Escape room','Klimmen','Surfen','Wielrennen','Yoga','Boksen','Golf','Basketbal','Hockey','Beerpong','Poker','Minigolf','Kajakken','Schaken','Paardrijden','Joggen','Volleybal','Padel','Snowboarden','Kamperen','Vissen','Dansen']};
+const CATS=Object.keys(WORDS);
+
+/* ===== realtime ===== */
+const sb=window.supabase?window.supabase.createClient(SB_URL,SB_KEY,{realtime:{params:{eventsPerSecond:20}}}):null;
+let ch=null,IS_HOST=false;
+const join=(code,pid,meta,onMsg)=>new Promise(res=>{ch=sb.channel('sp-'+code,{config:{broadcast:{self:false},presence:{key:pid}}});
+  ch.on('broadcast',{event:'m'},({payload})=>onMsg(payload));ch.subscribe(async s=>{if(s==='SUBSCRIBED'){await ch.track(meta);res()}})});
+const send=p=>{ch&&ch.send({type:'broadcast',event:'m',payload:p});if(IS_HOST&&(p.t==='state'||(p.t==='priv'&&p.to===Pl.pid)))setTimeout(()=>onPlayerMsg(p),0)};
+const toHost=p=>IS_HOST?onHostMsg(p):send(p);
+
+/* ===== spelleider (toestel van wie de lobby maakt) ===== */
+const H={code:null,keys:null,players:{},order:[],keyCache:{},phase:'lobby',opt:{spies:0,hint:true,cat:'mix'},spies:[],word:null,cat:null,starter:null,votes:{},ready:{},result:null,caught:null,guess:null,round:0,score:{}};
+const saveH=()=>{const c={...H};delete c.keyCache;c.t=Date.now();ls.set('sp_host',c)};
+const pkey=async pid=>H.keyCache[pid]||(H.keyCache[pid]=await derive(H.keys.priv,H.players[pid].pub));
+const nm=p=>H.players[p]?.n||'?';
+const nSpies=n=>H.opt.spies||(n>=9?2:1);
+const pub=()=>({t:'state',phase:H.phase,code:H.code,hostPub:H.keys.pub,round:H.round,
+  players:H.order.map(p=>({id:p,n:nm(p),ready:!!H.ready[p],voted:!!H.votes[p]})),starter:H.starter?nm(H.starter):null,
+  order:H.phase!=='lobby'?H.talkOrder.map(nm):[],nSpies:H.phase==='lobby'?nSpies(H.order.length):H.spies.length,opt:H.opt,
+  result:H.result,word:H.phase==='end'?H.word:null,cat:H.cat,spies:H.phase==='end'?H.spies.map(nm):null,caught:H.caught?nm(H.caught):null,guess:H.guess,
+  tally:H.phase==='end'?tally():null,score:H.order.map(p=>({n:nm(p),s:H.score[p]||0})),host:Pl.pid});
+const tally=()=>{const c={};Object.values(H.votes).forEach(v=>c[v]=(c[v]||0)+1);return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({n:nm(k),v}))};
+const broadcast=()=>{send(pub());saveH()};
+const priv=async pid=>{const p=H.players[pid];if(!p||!p.pub)return;const k=await pkey(pid);const spy=H.spies.includes(pid);
+  const o={phase:H.phase,spy,word:spy?null:H.word,cat:spy&&!H.opt.hint?null:H.cat,mates:spy?H.spies.filter(x=>x!==pid).map(nm):null,ready:!!H.ready[pid],voted:H.votes[pid]?nm(H.votes[pid]):null};
+  if(H.phase==='vote')o.choices=H.order.filter(x=>x!==pid).map(x=>({id:x,n:nm(x)}));
+  if(H.phase==='guess'&&H.caught===pid)o.guessOpts=H.guessOpts;
+  send({t:'priv',to:pid,...await enc(k,o)})};
+const privAll=()=>H.order.forEach(priv);
+const start=()=>{const n=H.order.length;if(n<3)return;H.round++;const cat=H.opt.cat==='mix'?CATS[Math.random()*CATS.length|0]:H.opt.cat;H.cat=cat;
+  H.word=WORDS[cat][Math.random()*WORDS[cat].length|0];H.spies=shuf(H.order).slice(0,Math.min(nSpies(n),Math.floor((n-1)/2)||1));
+  H.starter=H.order[Math.random()*n|0];const i=H.order.indexOf(H.starter);H.talkOrder=H.order.slice(i).concat(H.order.slice(0,i));
+  H.votes={};H.ready={};H.result=null;H.caught=null;H.guess=null;H.guessOpts=null;H.phase='reveal';broadcast();privAll()};
+const goVote=()=>{H.phase='vote';H.votes={};broadcast();privAll()};
+const resolveVote=()=>{if(H.phase!=='vote')return;const c={};Object.values(H.votes).forEach(v=>c[v]=(c[v]||0)+1);const t=Object.entries(c).sort((a,b)=>b[1]-a[1]);
+  if(!t.length||(t[1]&&t[1][1]===t[0][1])){finish('spies','tie');return}
+  const top=t[0][0];
+  if(H.spies.includes(top)){H.caught=top;H.guessOpts=shuf([H.word].concat(shuf(WORDS[H.cat].filter(w=>w!==H.word)).slice(0,7)));H.phase='guess';broadcast();privAll()}
+  else{H.caught=top;finish('spies','wrong')}};
+const finish=(w,why)=>{H.result={w,why};H.phase='end';const win=w==='spies'?H.spies:H.order.filter(x=>!H.spies.includes(x));win.forEach(x=>H.score[x]=(H.score[x]||0)+(w==='spies'?3:1));broadcast();privAll()};
+const hostAct=(pid,a)=>{const p=H.players[pid];if(!p)return;
+  if(a.kind==='ready'&&H.phase==='reveal'){H.ready[pid]=true;broadcast();priv(pid);return}
+  if(a.kind==='vote'&&H.phase==='vote'&&H.players[a.target]&&a.target!==pid){H.votes[pid]=a.target;beep(700);broadcast();priv(pid);if(Object.keys(H.votes).length>=H.order.length)setTimeout(resolveVote,800);return}
+  if(a.kind==='guess'&&H.phase==='guess'&&pid===H.caught){H.guess=a.w;finish(a.w===H.word?'spies':'village',a.w===H.word?'guessed':'caught');return}
+  if(pid===Pl.pid&&a.kind==='cmd'){({talk:()=>{H.phase='talk';broadcast();privAll()},vote:goVote,close:resolveVote,again:start,lobby:()=>{H.phase='lobby';broadcast();privAll()}}[a.c]||(()=>{}))()}};
+const onHostMsg=async m=>{
+  if(m.t==='join'){const ex=H.players[m.pid];
+    if(!ex){if(H.phase!=='lobby'){send({t:'reject',to:m.pid,why:'Er loopt al een ronde. Wacht tot ze gedaan is en probeer opnieuw.'});return}
+      let nn=m.n.slice(0,16),k=2;while(Object.entries(H.players).some(([id,p])=>id!==m.pid&&p.n.toLowerCase()===nn.toLowerCase()))nn=m.n.slice(0,14)+' '+(k++);
+      H.players[m.pid]={n:nn,pub:m.pub};H.order.push(m.pid);beep(880)}
+    else if(ex.pub!==m.pub){ex.pub=m.pub;delete H.keyCache[m.pid]}
+    broadcast();priv(m.pid);return}
+  if(m.t==='act'&&H.players[m.pid]){let a;try{a=await dec(await pkey(m.pid),m)}catch(e){return}hostAct(m.pid,a)}
+  if(m.t==='hello'){send(pub());priv(m.pid)}};
+const makeCode=()=>Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
+const startHost=async resume=>{IS_HOST=true;const s=ls.get('sp_host',null),me=ls.get('sp_hostme',null);
+  if(resume&&s&&me&&s.players&&s.players[me.pid]&&Date.now()-s.t<6*3.6e6){Object.assign(H,s);H.keyCache={};Object.assign(Pl,me);return startHost2()}
+  H.code=makeCode();H.keys=await genKeys();Pl.pid=rid();Pl.keys=await genKeys();
+  app.innerHTML=`<div style="font-size:80px">🕵️</div><div class="h1">Nieuwe lobby</div><div class="hint">Jij maakt de lobby en speelt gewoon mee.</div><input class="f" id="nm" maxlength="16" placeholder="Je naam" autocomplete="off" value="${esc(ls.get('ww_name',''))}"><button class="btn" id="ok">Maak lobby</button>`;
+  const go=()=>{const v=$('#nm').value.trim();if(!v)return;Pl.n=v.slice(0,16);ls.set('ww_name',Pl.n);startHost2()};$('#ok').onclick=go;$('#nm').onkeydown=e=>{if(e.key==='Enter')go()}};
+const startHost2=async()=>{wake();Pl.code=H.code;ls.set('sp_hostme',{pid:Pl.pid,keys:Pl.keys,n:Pl.n});$('#me').textContent=Pl.n;
+  if(!H.players[Pl.pid]){H.players[Pl.pid]={n:Pl.n,pub:Pl.keys.pub};H.order.unshift(Pl.pid)}
+  app.innerHTML=`<div class="h2">Lobby maken…</div>`;await join(H.code,Pl.pid,{n:Pl.n},onHostMsg);broadcast();privAll()};
+
+/* ===== speler ===== */
+const Pl={pid:null,n:'',keys:null,key:null,code:null,state:null,mine:null,sel:null,show:false};
+const startPlayer=async code=>{Pl.code=code.toUpperCase();const st=ls.get('sp_p_'+Pl.code,null);
+  Pl.pid=st?.pid||rid();Pl.keys=st?.keys||await genKeys();Pl.n=st?.n||ls.get('ww_name','');
+  if(!Pl.n){app.innerHTML=`<div class="mono">Lobby ${esc(Pl.code)}</div><div class="h1">Hoe heet je?</div><input class="f" id="nm" maxlength="16" placeholder="Je naam" autocomplete="off"><button class="btn" id="ok">Doe mee</button>`;
+    const go=()=>{const v=$('#nm').value.trim();if(!v)return;ls.set('ww_name',v);startPlayer(Pl.code)};$('#ok').onclick=go;$('#nm').onkeydown=e=>{if(e.key==='Enter')go()};return}
+  ls.set('sp_p_'+Pl.code,{pid:Pl.pid,keys:Pl.keys,n:Pl.n});$('#me').textContent=Pl.n;app.innerHTML=`<div class="h2">Verbinden…</div>`;
+  await join(Pl.code,Pl.pid,{n:Pl.n},onPlayerMsg);toHost({t:'join',pid:Pl.pid,n:Pl.n,pub:Pl.keys.pub});
+  setTimeout(()=>{if(!Pl.state)app.innerHTML=`<div class="h2">Lobby ${esc(Pl.code)} niet gevonden</div><div class="hint">Klopt de code? Is de lobby nog open bij wie hem maakte?</div><button class="btn" onclick="location.href=location.pathname">Andere code</button>`},6000)};
+const onPlayerMsg=async m=>{
+  if(m.t==='state'){const first=!Pl.state;Pl.state=m;if(!Pl.key||Pl.hostPub!==m.hostPub){Pl.hostPub=m.hostPub;Pl.key=await derive(Pl.keys.priv,m.hostPub)}if(first&&!IS_HOST)toHost({t:'join',pid:Pl.pid,n:Pl.n,pub:Pl.keys.pub});render();return}
+  if(m.t==='priv'&&m.to===Pl.pid&&Pl.key){try{const prev=Pl.mine;Pl.mine=await dec(Pl.key,m);if(!prev||prev.phase!==Pl.mine.phase){Pl.sel=null;Pl.show=false;buzz()}render()}catch(e){}return}
+  if(m.t==='reject'&&m.to===Pl.pid){app.innerHTML=`<div class="h2">${esc(m.why)}</div><button class="btn" onclick="location.href=location.pathname">Terug</button>`}};
+const act=async o=>{const e=await enc(Pl.key,o);toHost({t:'act',pid:Pl.pid,...e});beep(880)};
+const hb=(btns)=>IS_HOST&&btns.length?`<div class="row">${btns.map(([c,l,g])=>`<button class="${g?'tbtn':'btn'}" data-hc="${c}">${l}</button>`).join('')}</div><div class="small">Jij maakte de lobby, dus jij bedient de knoppen.</div>`:'';
+const bindHb=()=>app.querySelectorAll('[data-hc]').forEach(b=>b.onclick=()=>act({kind:'cmd',c:b.dataset.hc}));
+const card=me=>me.spy?`<div class="role" style="--c:#ff4d6d"><div class="emo">🕵️</div><div class="mono">Jij bent</div><div class="rn">De spion</div>${me.cat?`<div class="small">Categorie: <b style="color:#ededed">${esc(me.cat)}</b></div>`:''}${me.mates&&me.mates.length?`<div class="small">Andere spion: <b style="color:#ff4d6d">${me.mates.map(esc).join(', ')}</b></div>`:''}<div class="hint" style="color:#cfcfcf">Je kent het woord niet. Luister goed, doe alsof en raad het woord.</div></div>`
+  :`<div class="role" style="--c:#d4ff3a"><div class="emo">🔑</div><div class="mono">Het geheime woord</div><div class="rn">${esc(me.word||'')}</div><div class="small">Categorie: ${esc(me.cat||'')}</div><div class="hint" style="color:#cfcfcf">Geef hints zonder het woord te verklappen: de spion luistert mee.</div></div>`;
+const render=()=>{const s=Pl.state,me=Pl.mine||{};if(!s)return;
+  if(s.phase==='lobby'){
+    if(IS_HOST){const n=H.order.length,url=location.origin+location.pathname+'?c='+H.code;
+      const seg=(k,o,cur)=>`<div class="seg">${o.map(([v,l])=>`<button class="${String(cur)===String(v)?'on':''}" data-o="${k}" data-v="${v}">${l}</button>`).join('')}</div>`;
+      app.innerHTML=`<div class="mono">Laat de anderen scannen of de code invullen</div><div class="code-big">${H.code}</div><div id="qr"></div>
+        <div class="plist">${H.order.map(p=>`<span class="pchip">${esc(nm(p))}${p===Pl.pid?' (jij)':`<span class="x" data-kick="${p}">✕</span>`}</span>`).join('')}</div>
+        <details class="opts" ${Pl.oo?'open':''}><summary class="peek" style="list-style:none">⚙️ Instellingen</summary><div class="optgrid">
+          <span class="mono">Spionnen</span>${seg('spies',[[0,'Auto'],[1,'1'],[2,'2'],[3,'3']],H.opt.spies)}
+          <span class="mono">Hint spion</span>${seg('hint',[[1,'Categorie'],[0,'Niets']],H.opt.hint?1:0)}
+          <span class="mono">Categorie</span><div class="plist" style="justify-content:flex-start">${['mix'].concat(CATS).map(c=>`<button class="pchip ${H.opt.cat===c?'on2':''}" data-cat="${c}">${c==='mix'?'Alles door elkaar':c}</button>`).join('')}</div></div></details>
+        <div class="hint">${n>=3?`${nSpies(n)} ${nSpies(n)>1?'spionnen':'spion'} met ${n} spelers.`:'Minstens 3 spelers nodig.'}</div>
+        <div class="small" style="color:#ffd23f">⚠️ Het spel draait op jouw toestel: laat deze pagina open tot het gedaan is.</div>
+        <button class="btn" id="go" ${n<3?'disabled':''}>Start (${n} spelers)</button>`;
+      try{new QRCode($('#qr'),{text:url,width:200,height:200,correctLevel:QRCode.CorrectLevel.M})}catch(e){}
+      const d=app.querySelector('details');d.ontoggle=()=>{Pl.oo=d.open};
+      app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{H.opt[b.dataset.o]=b.dataset.o==='hint'?b.dataset.v==='1':+b.dataset.v;broadcast()});
+      app.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{H.opt.cat=b.dataset.cat;broadcast()});
+      app.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{const id=b.dataset.kick;delete H.players[id];H.order=H.order.filter(x=>x!==id);send({t:'reject',to:id,why:'Je werd uit de lobby verwijderd.'});broadcast()});
+      $('#go').onclick=start;return}
+    app.innerHTML=`<div class="mono">Lobby ${esc(s.code)}</div><div class="h1">Je zit erin</div><div class="hint">Wacht tot het spel start.</div><div class="plist">${s.players.map(p=>`<span class="pchip">${esc(p.n)}${p.id===Pl.pid?' (jij)':''}</span>`).join('')}</div>`;return}
+  const peek=`<button class="peek" id="pk">${Pl.show?'Verberg':'Toon'} ${me.spy?'mijn rol':'het woord'}</button><div class="${Pl.show?'':'hide'}" style="width:100%;display:flex;justify-content:center">${card(me)}</div>`;
+  const bindPeek=()=>{const b=$('#pk');if(b)b.onclick=()=>{Pl.show=!Pl.show;render()}};
+  if(s.phase==='reveal'){const nr=s.players.filter(p=>p.ready).length;
+    app.innerHTML=`${card(me)}<div class="small">Hou je scherm verborgen voor de anderen.</div>${me.ready?`<div class="h2">Klaar</div><div class="small">${nr}/${s.players.length} klaar</div>`:'<button class="btn" id="rd">Gezien, ik ben klaar</button>'}${hb([['talk',`Begin (${nr}/${s.players.length} klaar)`]])}`;
+    const r=$('#rd');if(r)r.onclick=()=>act({kind:'ready'});bindHb();return}
+  if(s.phase==='talk'){app.innerHTML=`${peek}<div class="mono">Ronde ${s.round}</div><div class="h2">Om beurten één woord</div><div class="hint">Zeg elk één woord dat bij het geheime woord past. Doe twee rondes, daarna stemmen jullie.</div>
+      <div class="plist">${s.order.map((n,i)=>`<span class="pchip">${i+1}. ${esc(n)}</span>`).join('')}</div>${hb([['vote','Nu stemmen']])}`;bindPeek();bindHb();return}
+  if(s.phase==='vote'){const nv=s.players.filter(p=>p.voted).length;
+    if(me.voted){app.innerHTML=`<div style="font-size:70px">🗳️</div><div class="h2">Je stemde op ${esc(me.voted)}</div><div class="small">${nv}/${s.players.length} stemmen</div>${hb([['close','Sluit stemming']])}`;bindHb();return}
+    app.innerHTML=`<div class="mono">Stemming</div><div class="h2">Wie is de spion?</div><div class="grid">${(me.choices||[]).map(c=>`<button class="choice ${Pl.sel===c.id?'sel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div><button class="btn" id="cf" ${Pl.sel?'':'disabled'}>Bevestig</button>${hb([['close',`Sluit stemming (${nv}/${s.players.length})`,1]])}`;
+    app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{Pl.sel=b.dataset.c;render()});$('#cf').onclick=()=>{if(Pl.sel)act({kind:'vote',target:Pl.sel})};bindHb();return}
+  if(s.phase==='guess'){if(me.guessOpts){app.innerHTML=`<div style="font-size:70px">🕵️</div><div class="h2">Je bent betrapt!</div><div class="hint">Laatste kans: raad het geheime woord. Juist? Dan win je toch.</div><div class="grid">${me.guessOpts.map(w=>`<button class="choice" data-w="${esc(w)}">${esc(w)}</button>`).join('')}</div>`;
+      app.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>act({kind:'guess',w:b.dataset.w}));return}
+    app.innerHTML=`<div style="font-size:70px">🕵️</div><div class="h2">${esc(s.caught)} is betrapt</div><div class="hint">${esc(s.caught)} was inderdaad een spion en krijgt nog één kans om het woord te raden…</div>`;return}
+  if(s.phase==='end'){const r=s.result||{},sw=r.w==='spies',iSpy=me.spy,won=sw===!!iSpy;
+    const why={tie:'Gelijkstand bij de stemming: de spion ontsnapt.',wrong:`Jullie stemden op ${esc(s.caught||'')}, maar dat was geen spion.`,guessed:`${esc(s.caught||'')} werd betrapt, maar raadde het woord: ${esc(s.guess||'')}.`,caught:`${esc(s.caught||'')} werd betrapt en raadde fout (${esc(s.guess||'')}).`}[r.why]||'';
+    app.innerHTML=`<div style="font-size:80px">${sw?'🕵️':'🏡'}</div><div class="h1">${sw?(s.spies.length>1?'De spionnen winnen':'De spion wint'):'Spion betrapt'}</div><div class="hint">${why}</div>
+      <div class="task" style="border-color:#d4ff3a"><span class="mono">Het woord was</span><b style="color:#d4ff3a">${esc(s.word||'')}</b></div><div class="small">${s.spies.length>1?'Spionnen':'Spion'}: <b style="color:#ff4d6d">${s.spies.map(esc).join(', ')}</b></div>
+      <div class="h2" style="color:${won?'var(--acc)':'var(--wolf)'}">${won?'Gewonnen!':'Verloren: drink 2 slokken'}</div>
+      ${s.tally&&s.tally.length?`<div class="small">Stemmen: ${s.tally.map(t=>esc(t.n)+' '+t.v).join(' · ')}</div>`:''}
+      <div class="small">Stand: ${s.score.slice().sort((a,b)=>b.s-a.s).map(x=>esc(x.n)+' '+x.s).join(' · ')}</div>${hb([['again','Nog een ronde'],['lobby','Terug naar lobby',1]])}`;bindHb();return}};
+
+/* ===== start ===== */
+const landing=()=>{app.innerHTML=`<div style="font-size:80px">🕵️</div><div class="h1">De Spion</div><div class="hint">Vul de code in van wie de lobby maakte.</div>
+  <input class="f code" id="cd" maxlength="4" placeholder="CODE" autocomplete="off" autocapitalize="characters"><button class="btn" id="jn">Naar de lobby</button><button class="tbtn" id="hs">Zelf een lobby maken</button>
+  <div class="rlist" style="margin-top:20px"><div class="rc" style="--c:#d4ff3a"><b>Zo werkt het</b><span>Iedereen krijgt hetzelfde geheime woord op zijn gsm, behalve de spion. Om beurten zeg je één woord dat erbij past. Daarna stemmen jullie wie de spion is. Betrapt? Dan mag de spion nog het woord raden. Wie verliest, drinkt 2 slokken.</span></div></div>`;
+  const go=()=>{const c=$('#cd').value.trim().toUpperCase();if(c.length===4)location.href=location.pathname+'?c='+c};$('#jn').onclick=go;$('#cd').onkeydown=e=>{if(e.key==='Enter')go()};
+  $('#hs').onclick=()=>location.href=location.pathname+'?host=1'};
+(async()=>{if(!sb){app.innerHTML='<div class="h2 err">Geen internet: De Spion heeft een verbinding nodig.</div>';return}
+  const q=new URLSearchParams(location.search);
+  if(q.get('host')){const s=ls.get('sp_host',null);if(s&&s.phase!=='lobby'&&Date.now()-s.t<6*3.6e6&&!q.get('new')){app.innerHTML=`<div class="h2">Er loopt nog een spel (code ${esc(s.code)})</div><div class="row"><button class="btn" id="rs">Verder spelen</button><button class="tbtn" id="nw">Nieuw spel</button></div>`;
+      $('#rs').onclick=()=>startHost(true);$('#nw').onclick=()=>startHost(false);return}
+    return startHost(!!(s&&Date.now()-s.t<3.6e6))}
+  if(q.get('c'))return startPlayer(q.get('c'));landing()})();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){wl=null;wake();if(Pl.pid&&ch&&!IS_HOST)send({t:'hello',pid:Pl.pid})}});
+</script>
+</body>
+</html>

@@ -307,6 +307,17 @@
   @media(max-width:700px){.games{grid-template-columns:1fr}}
   @media(max-width:720px){.music{grid-template-columns:1fr}.music a{border-right:0;border-bottom:1px solid var(--line)}}
 a:visited{color:inherit}
+  .tsl{display:flex;flex-direction:column;gap:10px;width:min(560px,100%)}
+  .tsn{border:1px solid var(--line);border-radius:16px;padding:16px;font-size:clamp(20px,2.6vw,28px);font-weight:700;background:var(--card)}
+  .tsn.ok{border-color:var(--acc);color:var(--acct);opacity:.7}
+  .tcard{border:1px solid var(--line);border-radius:22px;padding:24px;width:min(560px,100%);background:var(--card)}
+  .tforb{display:flex;flex-direction:column;gap:6px;margin-top:14px}.tforb span{color:#ff5c6c;font-weight:700;font-size:clamp(18px,2.4vw,26px)}
+  .btn.red{background:#ff5c6c;color:#000}
+  #st .hide{visibility:hidden}
+  #cv{width:100%;height:calc(100vh - 260px);min-height:300px;border:1px solid var(--line);border-radius:18px;background:var(--card);touch-action:none}
+  .bigs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
+  .bigc{border:1px solid var(--line);border-radius:22px;padding:22px;text-align:left;display:flex;flex-direction:column;gap:8px;background:var(--card);color:inherit;text-decoration:none}
+  .bigc .nmx{font-size:26px}.bigc .ic{width:34px;height:34px;fill:none;stroke:var(--acct);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -342,6 +353,7 @@ a:visited{color:inherit}
   <button class="mcard" id="nightb"><div class="mono">Scherm</div><div class="nmx" id="nightt">Nachtmodus</div><div class="small">Donkerder en warmer licht. Gaat na middernacht vanzelf aan.</div></button>
 </div>
 </section>
+<section class="tab" id="t-big"></section>
 <section class="tab" id="t-players"></section>
 <section class="tab" id="t-count"></section>
 <section class="tab" id="t-info"></section>
@@ -352,7 +364,7 @@ a:visited{color:inherit}
  <button data-t="music" class="on"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span>Muziek</span></button>
  <button data-t="games"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r=".8"/><circle cx="18" cy="13" r=".8"/></svg><span>Spellen</span></button>
  <button data-t="count"><svg viewBox="0 0 24 24"><path d="M6 3h12l-1.5 17a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2z"/><path d="M6.5 8h11"/></svg><span>Teller</span></button>
- <button data-t="ww" id="navww"><svg viewBox="0 0 24 24"><path d="M5 4l3 5M19 4l-3 5"/><path d="M5 4c-1 5 0 9 2 12l5 4 5-4c2-3 3-7 2-12"/><circle cx="9.5" cy="12" r=".9"/><circle cx="14.5" cy="12" r=".9"/></svg><span>Weerwolven</span></button>
+ <button data-t="big" id="navww"><svg viewBox="0 0 24 24"><path d="M5 4l3 5M19 4l-3 5"/><path d="M5 4c-1 5 0 9 2 12l5 4 5-4c2-3 3-7 2-12"/><circle cx="9.5" cy="12" r=".9"/><circle cx="14.5" cy="12" r=".9"/></svg><span>Grote spellen</span></button>
  <button data-t="info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>Info</span></button>
 </nav>
 
@@ -414,6 +426,9 @@ const boomSnd=()=>{if(MUTE)return;try{ac=ac||new (window.AudioContext||window.we
 const scr=(h)=>{st.innerHTML=h};
 const joeg=(t='JOEGNEE!',sub='')=>{let j=document.getElementById('jg');if(!j){j=document.createElement('div');j.id='jg';document.body.appendChild(j)}
   j.innerHTML=`<div class="jt">${t}</div>${sub?`<div class="js">${sub}</div>`:''}`;j.classList.remove('go');void j.offsetWidth;j.classList.add('go')};
+const TS_NAMES=['Eden Hazard','Kevin De Bruyne','Romelu Lukaku','Thibaut Courtois','Stromae','Angèle','Lost Frequencies','Dimitri Vegas','Tomorrowland','Manneken Pis','Atomium','Brugge','Antwerpen','Gent','Oostende','De Panne','Ardennen','Kuifje','Suske en Wiske','Smurfen','Jean-Claude Van Damme','Kim Clijsters','Nafi Thiam','Wout van Aert','Remco Evenepoel','Eddy Merckx','Lionel Messi','Cristiano Ronaldo','Kylian Mbappé','Erling Haaland','Real Madrid','FC Barcelona','Champions League','Wereldbeker','Olympische Spelen','Formule 1','Max Verstappen','Lewis Hamilton','Taylor Swift','Beyoncé','Rihanna','Drake','Eminem','Ed Sheeran','Billie Eilish','The Weeknd','Harry Styles','Adele','Michael Jackson','Freddie Mercury','Elvis Presley','The Beatles','Queen','ABBA','Coldplay','Spotify','Netflix','TikTok','Instagram','Snapchat','WhatsApp','Google','Apple','iPhone','Elon Musk','Mark Zuckerberg','Bill Gates','Donald Duck','Mickey Mouse','Harry Potter','Hermelien','Voldemort','Gandalf','Frodo','Darth Vader','Luke Skywalker','Yoda','Batman','Spider-Man','Iron Man','Superman','Shrek','Nemo','Simba','Pikachu','Mario','Sonic','Minecraft','Fortnite','FIFA','Tetris','Pac-Man','Monopoly','Uno','Jenga','Rubiks kubus','Mona Lisa','Eiffeltoren','Big Ben','Vrijheidsbeeld','Chinese Muur','Piramides','Colosseum','Taj Mahal','Mount Everest','Sahara','Amazone','Niagarawatervallen','Titanic','Albert Einstein','Isaac Newton','Napoleon','Julius Caesar','Cleopatra','Columbus','Leonardo da Vinci','Van Gogh','Picasso','Rubens','Magritte','Shakespeare','Sinterklaas','Kerstman','Paashaas','Halloween','Carnaval','Oktoberfest','Valentijn','Frieten','Wafels','Pralines','Stoofvlees','Mosselen','Jenever','Duvel','Jupiler','Stella Artois','Westmalle','Red Bull','Coca-Cola','McDonalds','Burger King','IKEA','Lego','Barbie','Ken','Kinderbueno','Nutella','Pizza','Sushi','Kebab','Croque monsieur','Lasagne','Spaghetti bolognese','Tiramisu','Pannenkoek','Studentendoop','Cantus','Blok','Examen','Kot','Overpoort','Gentse Feesten','Rock Werchter','Pukkelpop','Graspop','Dour','Lichtfeest','De Lijn','NMBS','Vlaanderen','Wallonië','Brussel','Koning Filip','Koningin Mathilde','Prinses Elisabeth','Paus','Obama','Trump','Poetin','Macron','De Mol','Thuis','Familie','F.C. De Kampioenen','Big Brother','Temptation Island','Love Island','Squid Game','Stranger Things','Friends','The Office','Game of Thrones','Breaking Bad','La Casa de Papel','James Bond','Mr. Bean','Rowan Atkinson','Leonardo DiCaprio','Brad Pitt','Angelina Jolie','Tom Cruise','Will Smith','Johnny Depp','Jack Sparrow','Barbie (film)','Oppenheimer','Avatar','Jurassic Park','Toy Story','Frozen','Elsa','Olaf','Rapunzel','Assepoester','Sneeuwwitje','Roodkapje','Pinokkio','Peter Pan','Tinkerbell','Alladin','Kerstmarkt','Skivakantie','Ibiza','Lloret de Mar','Benidorm','Zonnebrandcrème','Selfie','Hashtag','Emoji','Meme','Wifi','Bluetooth','Powerbank','Airpods','Playstation','Xbox','Nintendo Switch','ChatGPT','Robot','Drone','Tesla','Ferrari','Lamborghini','Vespa','Step','Fiets','Tram','Vliegtuig','Raket','Maan','Mars','Zon','Regenboog','Onweer','Sneeuwman','Pinguïn','Giraf','Olifant','Kangoeroe','Panda','Koala','Haai','Dolfijn','Eenhoorn','Draak','Dinosaurus','Vampier','Zombie','Spook','Heks','Piraat','Ridder','Prinses','Cowboy','Astronaut','Brandweerman','Politie','Dokter','Leraar','Kok','DJ','Influencer','YouTuber'];
+const TABOE=[['Bier',['drinken','alcohol','pint','schuim']],['Kot',['student','kamer','huren','Gent']],['Kater',['hoofdpijn','ochtend','drinken','ziek']],['Frieten',['aardappel','frituur','mayonaise','België']],['Examen',['studeren','blok','punten','les']],['Voetbal',['bal','goal','spelen','team']],['Smartphone',['bellen','apps','scherm','iPhone']],['Festival',['muziek','tent','zomer','podium']],['Kerstmis',['december','boom','cadeau','Kerstman']],['Pizza',['Italië','kaas','deeg','levering']],['Zee',['water','strand','zout','golven']],['Koffie',['drinken','ochtend','cafeïne','tas']],['Fiets',['trappen','wielen','rijden','zadel']],['Hond',['blaffen','huisdier','kat','wandelen']],['Verjaardag',['taart','feest','cadeau','jaar']],['Netflix',['serie','film','kijken','streamen']],['Vakantie',['reizen','zomer','vrij','hotel']],['Dansen',['muziek','bewegen','fuif','dansvloer']],['Regen',['water','nat','paraplu','wolk']],['Slapen',['bed','moe','nacht','dromen']],['Leraar',['school','les','klas','uitleggen']],['Trein',['spoor','station','NMBS','reizen']],['Chocolade',['zoet','cacao','praline','snoep']],['Sneeuw',['wit','koud','winter','skiën']],['Tinder',['daten','swipen','app','match']],['Spotify',['muziek','playlist','app','luisteren']],['Selfie',['foto','gsm','jezelf','Instagram']],['Cantus',['zingen','bier','codex','studenten']],['Wekker',['ochtend','opstaan','alarm','snoozen']],['Douche',['water','wassen','badkamer','zeep']],['Kebab',['vlees','pita','snack','nacht']],['Muziek',['liedje','luisteren','zingen','instrument']],['Zon',['warm','licht','zomer','hemel']],['Gitaar',['snaren','muziek','spelen','instrument']],['Strand',['zand','zee','zwemmen','zon']],['Bioscoop',['film','popcorn','scherm','ticket']],['Ziekenhuis',['dokter','ziek','verpleger','bed']],['Kat',['miauwen','huisdier','hond','poes']],['Taart',['verjaardag','gebak','kaars','eten']],['Vliegtuig',['vliegen','luchthaven','piloot','reizen']],['Politie',['agent','boete','misdaad','sirene']],['Bed',['slapen','kussen','laken','matras']],['Ijs',['koud','zomer','bolletje','smelten']],['Lift',['omhoog','gebouw','knop','verdieping']],['Fuif',['feest','dansen','DJ','nacht']],['Geld',['betalen','euro','bank','rijk']],['Paraplu',['regen','nat','openklappen','droog']],['Spiegel',['kijken','reflectie','glas','badkamer']],['Sleutel',['deur','slot','openen','sleutelbos']],['Tandenborstel',['tanden','poetsen','tandpasta','mond']],['Kaas',['geel','melk','Gouda','gaten']],['Wifi',['internet','wachtwoord','verbinding','router']],['Snor',['haar','lip','gezicht','baard']],['Brandweer',['vuur','blussen','ladder','sirene']],['Barbecue',['vlees','zomer','grill','vuur']],['Kroeg',['café','bier','pint','toog']],['Sushi',['vis','rijst','Japan','stokjes']],['Instagram',['foto','app','volgers','story']],['Spin',['acht','poten','web','eng']],['Kampvuur',['hout','vlammen','marshmallow','buiten']]];
+const TEKEN=['Fiets','Huis','Kat','Hond','Boom','Zon','Auto','Bril','Kasteel','Pizza','Gitaar','Olifant','Vliegtuig','Bierglas','Taart','Brug','Slang','Kerstman','Sneeuwman','Raket','Paraplu','Bed','Spook','Draak','Vis','Kip','Banaan','Ananas','Hamburger','Fles','Telefoon','Laptop','Klok','Schoen','Hoed','Kroon','Diamant','Hart','Ster','Maan','Wolk','Bliksem','Regenboog','Vulkaan','Eiland','Palmboom','Schip','Anker','Piraat','Robot','Alien','Ufo','Spin','Vlinder','Bij','Slak','Schildpad','Giraf','Pinguïn','Konijn','Muis','Uil','Haai','Octopus','Krab','Tent','Kampvuur','Berg','Toilet','Douche','Tandenborstel','Schaar','Potlood','Boek','Bal','Voetbalgoal','Fles wijn','Wafel','Frietzak','Ijsje','Donut','Kers','Appel','Wortel','Paddenstoel','Bloem','Cactus','Snor','Baard','Oog','Neus','Tand','Voet','Hand','Skelet','Mummie','Heks','Bezem','Toverstaf','Fee','Ridder','Zwaard','Schild','Kanon','Trein','Bus','Tractor','Helikopter','Duikbril','Surfplank','Ski','Snowboard','Trampoline','Glijbaan','Schommel','Ballon','Cadeau','Kerstboom','Paasei','Pompoen','Atomium','Manneken Pis','Eiffeltoren','Piramide'];
 const G={
  bom:{i(){const n=nightDeck('bom',withC('bom',BOM));$('#gc').textContent='';
    const LEN={kort:[12000,18000,'Kort','±12 tot 30 sec'],normaal:[25000,45000,'Normaal','±25 sec tot ruim 1 min'],lang:[60000,60000,'Lang','±1 tot 2 min']};let len=localStorage.getItem('kp_bomlen')||'normaal';if(!LEN[len])len='normaal';
@@ -703,9 +718,59 @@ Object.assign(G,{
        <div class="small">${U.map(u=>esc(u.n)+' '+score[u.id]).join(' · ')}</div>`);
      $('#ds').onclick=()=>{clr();let s=30;timers.push(setInterval(()=>{s--;const t=$('#dt');if(!t)return clr();t.textContent=s;if(s<=5&&s>0)beep(700,.05,.1);if(s<=0){clr();boomSnd()}},1000))};
      st.querySelectorAll('[data-win]').forEach(bt=>bt.onclick=()=>{clr();score[bt.dataset.win]++;const loser=bt.dataset.win===a.id?b:a;award(bt.dataset.win===a.id?a:b,2,'Teamduel');joeg('JOEGNEE!',esc(loser.n)+' drinkt');round()})};
-   round()}}
+   round()}},
+ ts:{i(){const U=units();if(U.length<2)return needPlayers(2,'Dit spel speel je met minstens 2 teams of spelers. Zet in Spelers de teams aan of duid wie er meedoet.');
+   const n=nightDeck('ts',TS_NAMES),score={};U.forEach(u=>score[u.id]=0);
+   const stand=()=>`<div class="small">${U.map(u=>esc(u.n)+' '+score[u.id]).join(' · ')}</div>`;
+   const ready=()=>{clr();const p=T.next();scr(`${T.tag()}<div class="pr" style="font-size:clamp(34px,5vw,60px)">30 Seconds</div><div class="hint">Eén iemand${p.ids?' van het team':''} krijgt 5 namen en legt ze uit zonder ze te zeggen. De rest raadt.</div><button class="btn" id="go">Start 30 sec</button>${stand()}`);$('#go').onclick=play};
+   const play=()=>{const c=[n(),n(),n(),n(),n()],ok=new Set();let s=30;
+     const draw=()=>{scr(`${T.tag()}<div class="timer" id="tt" style="font-size:90px">${s}</div><div class="tsl">${c.map((x,i)=>`<button class="tsn ${ok.has(i)?'ok':''}" data-i="${i}">${ok.has(i)?'✓ ':''}${esc(x)}</button>`).join('')}</div><div class="small">Tik een naam als hij geraden is.</div>`);
+       st.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;ok.has(i)?ok.delete(i):ok.add(i);beep(ok.has(i)?990:440,.04,.1);draw();if(ok.size===5)end()})};
+     draw();timers.push(setInterval(()=>{s--;const t=$('#tt');if(t)t.textContent=s;if(s<=5&&s>0)beep(700,.05,.1);if(s<=0)end()},1000));
+     function end(){clr();boomSnd();const p=T.p,got=ok.size;score[p.id]+=got;award(p,got,'30 Seconds');const miss=5-got;
+       scr(`<div class="pr">${got} / 5</div><div class="hint">${miss?`${esc(p.n)} drinkt ${miss} ${miss===1?'slok':'slokken'}, eentje per gemiste naam.`:'Alles geraden! Kies iemand die 3 slokken drinkt.'}</div>
+         <div class="small">${c.map((x,i)=>(ok.has(i)?'✓ ':'✗ ')+esc(x)).join(' · ')}</div>${stand()}<button class="btn" id="nx">Volgende beurt</button>`);$('#nx').onclick=ready;if(!miss)joeg('JOEGNEE!','Alles geraden')}};
+   ready()}},
+ taboe:{i(){const U=units();if(U.length<2)return needPlayers(2,'Taboe speel je met minstens 2 teams of spelers. Zet in Spelers de teams aan of duid wie er meedoet.');
+   const n=nightDeck('taboe',TABOE),score={};U.forEach(u=>score[u.id]=0);
+   const stand=()=>`<div class="small">${U.map(u=>esc(u.n)+' '+score[u.id]).join(' · ')}</div>`;
+   const ready=()=>{clr();T.next();scr(`${T.tag()}<div class="pr" style="font-size:clamp(34px,5vw,60px)">Taboe</div><div class="hint">Leg zoveel mogelijk woorden uit in 60 seconden, zonder de verboden woorden te zeggen. De rest kijkt mee of je niet valsspeelt.</div><button class="btn" id="go">Start 60 sec</button>${stand()}`);$('#go').onclick=play};
+   const play=()=>{let s=60,good=0,bad=0,c=n();
+     const draw=()=>{scr(`${T.tag()}<div class="timer" id="tt" style="font-size:80px">${s}</div><div class="tcard"><div class="pr" style="font-size:clamp(40px,6vw,72px)">${esc(c[0])}</div><div class="tforb">${c[1].map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>
+       <div class="row"><button class="btn red" id="tb">✗ Taboe</button><button class="btn ghost" id="ps">Pas</button><button class="btn" id="ok">✓ Geraden</button></div><div class="small">${good} geraden · ${bad} taboe</div>`);
+       $('#ok').onclick=()=>{good++;beep(990,.05,.1);c=n();draw()};$('#tb').onclick=()=>{bad++;beep(200,.12,.12);c=n();draw()};$('#ps').onclick=()=>{c=n();draw()}};
+     draw();timers.push(setInterval(()=>{s--;const t=$('#tt');if(t)t.textContent=s;if(s<=5&&s>0)beep(700,.05,.1);if(s<=0)end()},1000));
+     function end(){clr();boomSnd();const p=T.p,pts=Math.max(0,good-bad);score[p.id]+=pts;award(p,pts,'Taboe');
+       scr(`<div class="pr">${good} geraden</div><div class="hint">${bad?`${bad}× taboe: ${esc(p.n)} drinkt ${bad} ${bad===1?'slok':'slokken'}.`:'Geen enkel taboe, netjes.'}${good>=8?' Meer dan 8 geraden: deel 3 slokken uit.':''}</div>${stand()}<button class="btn" id="nx">Volgende beurt</button>`);$('#nx').onclick=ready}};
+   ready()}},
+ teken:{i(){const U=units();if(U.length<2)return needPlayers(2,'Tekenen speel je met minstens 2 teams of spelers. Zet in Spelers de teams aan of duid wie er meedoet.');
+   const n=nightDeck('teken',TEKEN),score={};U.forEach(u=>score[u.id]=0);
+   const stand=()=>`<div class="small">${U.map(u=>esc(u.n)+' '+score[u.id]).join(' · ')}</div>`;
+   const ready=()=>{clr();T.next();const w=n();scr(`${T.tag()}<div class="pr" style="font-size:clamp(34px,5vw,60px)">Tekenen</div><div class="hint">De tekenaar bekijkt stiekem het woord. Daarna tekent hij op de iPad en ${T.p.ids?'zijn team raadt':'de rest raadt'}. Geen letters of cijfers!</div>
+     <button class="btn ghost" id="sh">Toon woord (enkel tekenaar)</button><div class="pr hide" id="wd" style="font-size:clamp(40px,6vw,72px)">${esc(w)}</div><button class="btn" id="go">Start tekenen · 60 sec</button>${stand()}`);
+     $('#sh').onclick=()=>$('#wd').classList.toggle('hide');$('#go').onclick=()=>play(w)};
+   const play=w=>{let s=60;scr(`<div class="row" style="align-items:center;justify-content:space-between;width:100%"><div class="timer" id="tt" style="font-size:56px">${s}</div><div class="row"><button class="tbtn" id="cl">Wissen</button><button class="btn ghost" id="gv">Opgeven</button><button class="btn" id="ok">✓ Geraden</button></div></div><canvas id="cv"></canvas>`);
+     const cv=$('#cv'),r=cv.getBoundingClientRect(),dpr=devicePixelRatio||1;cv.width=r.width*dpr;cv.height=r.height*dpr;const x=cv.getContext('2d');x.scale(dpr,dpr);x.lineCap='round';x.lineJoin='round';x.lineWidth=5;x.strokeStyle=getComputedStyle(document.body).getPropertyValue('--fg')||'#fff';
+     let dn=false;const pt=e=>{const b=cv.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
+     cv.onpointerdown=e=>{dn=true;cv.setPointerCapture(e.pointerId);const[a,b]=pt(e);x.beginPath();x.moveTo(a,b);x.lineTo(a+.1,b+.1);x.stroke()};
+     cv.onpointermove=e=>{if(!dn)return;const[a,b]=pt(e);x.lineTo(a,b);x.stroke()};cv.onpointerup=cv.onpointercancel=()=>dn=false;
+     $('#cl').onclick=()=>x.clearRect(0,0,cv.width,cv.height);
+     timers.push(setInterval(()=>{s--;const t=$('#tt');if(t)t.textContent=s;if(s<=5&&s>0)beep(700,.05,.1);if(s<=0)end(false)},1000));
+     $('#ok').onclick=()=>end(true);$('#gv').onclick=()=>end(false);
+     function end(g){clr();const p=T.p;if(g){score[p.id]+=2;award(p,2,'Tekenen');beep(990,.08,.15);joeg('JOEGNEE!','Geraden')}else boomSnd();
+       scr(`<div class="mono">Het woord was</div><div class="pr">${esc(w)}</div><div class="hint">${g?`Geraden! ${esc(p.n)} krijgt 2 punten en deelt 2 slokken uit.`:`Niet geraden: ${esc(p.n)} drinkt 2 slokken.`}</div>${stand()}<button class="btn" id="nx">Volgende beurt</button>`);$('#nx').onclick=ready}};
+   ready()}}
 });
 
+/* ===== grote spellen ===== */
+function renderBig(){const card=(ic,n,s,p,attr)=>`<${attr.startsWith('href')?'a':'button'} class="bigc" ${attr}><svg class="ic" viewBox="0 0 24 24">${IC[ic]||''}</svg><div class="mono">${p}</div><div class="nmx">${n}</div><div class="small">${s}</div></${attr.startsWith('href')?'a':'button'}>`;
+  $('#t-big').innerHTML=`<div class="sec mono"><span>Met jullie gsm's</span><span>lobby met code</span></div><div class="bigs">
+   ${card('wolf','Weerwolven','Rollen, nachten en stemmen op je gsm. Eén iemand maakt de lobby en speelt mee.','5-30 spelers','href="ww.html"')}
+   ${card('eye','De Spion','Iedereen krijgt hetzelfde geheime woord, behalve de spion. Wie is het?','4-20 spelers','href="spion.html"')}
+   ${card('bolt','Buzzerquiz','De iPad stelt de vraag, jullie buzzen op je gsm. Wie eerst drukt, mag antwoorden.','2-20 spelers','href="buzz.html?host=1"')}</div>
+   <div class="sec mono" style="margin-top:34px"><span>In teams op de iPad</span><span></span></div><div class="bigs">
+   ${META.filter(m=>m.lvl==='big').map(m=>card(m.ic,m.n,m.s,m.p,`data-big="${m.k}"`)).join('')}</div>`;
+  $('#t-big').querySelectorAll('[data-big]').forEach(b=>b.onclick=()=>openGame(b.dataset.big))}
 /* ===== menu ===== */
 const IC={
  bomb:'<circle cx="10" cy="14" r="7"/><path d="M15 9l3-3M17 4l1 1M20 3v2M21 6h-2"/>',
@@ -745,13 +810,16 @@ const META=[
  {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
  {k:'kara',lvl:'chill',n:'Karaoke',s:'Rad · uitdaging · jury',ic:'mic',tag:'Nieuw',p:'2+ spelers',r:["Het rad kiest wie er moet zingen. Met teams aan zingt het hele team samen.","Je krijgt een categorie (bv. ‘Een Belgische klassieker’) en een uitdaging (bv. ‘met een West-Vlaams accent’).","Tik het nummer in en open de karaoke-versie op YouTube: dan staat de tekst op het scherm. Bluetooth-box aan, en gaan.","Na het nummer beslist de jury: 🔥 ster (deel 3 slokken uit), 👍 prima of 💀 vals (zanger drinkt 2). Weigeren = ad fundum."]},
  {k:'wbi',lvl:'chill',n:'Wie Ben Ik?',s:'Naam op je kop · ja/nee',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie: Bekende Belgen, voetballers, filmpersonages, artiesten, iemand hier aan tafel of een mix.","Hou de iPad op je voorhoofd met het scherm naar de groep. Je ziet de naam niet, de rest wel.","Stel ja/nee-vragen. De groep antwoordt enkel met ja of nee. Je hebt 2 minuten.","Geraden? Hoe sneller, hoe meer slokken je uitdeelt. Opgeven of tijd op: 2 slokken."]},
+ {k:'ts',lvl:'big',n:'30 Seconds',s:'5 namen · 30 seconden',ic:'clock',tag:'Teams',p:'2+ teams',r:["Om beurten krijgt één speler (of iemand van het team) vijf namen: bekende mensen, plaatsen en dingen.","Leg ze uit zonder de naam zelf te zeggen. De rest raadt.","Tik elke geraden naam aan. Na 30 seconden is de beurt om.","Per gemiste naam drink je een slok. Alles geraden? Deel 3 slokken uit."]},
+ {k:'taboe',lvl:'big',n:'Taboe',s:'Uitleggen zonder verboden woorden',ic:'lock',tag:'Teams',p:'2+ teams',r:["Je krijgt een woord met vier verboden woorden eronder.","Leg het woord uit zonder die woorden te zeggen. Je hebt 60 seconden.","Geraden: ✓. Toch een verboden woord gezegd: ✗ Taboe. Te moeilijk: Pas.","Per taboe drink je een slok. Meer dan 8 geraden? Deel 3 slokken uit."]},
+ {k:'teken',lvl:'big',n:'Tekenen',s:'Teken op de iPad, de rest raadt',ic:'eye',tag:'Teams',p:'2+ teams',r:["De tekenaar bekijkt stiekem het woord.","Hij tekent het op de iPad, zonder letters of cijfers. Zijn team (of de rest) raadt.","Geraden binnen 60 seconden: 2 punten en 2 slokken uitdelen.","Niet geraden: de tekenaar drinkt 2 slokken."]},
  {k:'ww',lvl:'solo',n:'Weerwolven',s:'Met jullie gsm\'s · lobby met code',ic:'wolf',tag:'Groot spel',p:'5-30 spelers',r:["Eén iemand maakt de lobby en speelt gewoon mee. Die krijgt een code en een QR-code, de rest scant die met zijn gsm en komt zo in de lobby.","Het spel kiest zelf hoeveel weerwolven en welke rollen er meedoen, afhankelijk van het aantal spelers. Vanaf 6 spelers is er ook een verteller die op zijn gsm de tekst en de knoppen krijgt.","’s Nachts kiest iedereen op zijn gsm. Ook de burgers tikken iets aan, zodat niemand opvalt.","Overdag discussiëren jullie met een timer. Elke weerwolf krijgt een geheime opdracht die hij moet uitvoeren. Betrap ze!","Stemmen gebeurt op de gsm. De burgemeester telt dubbel. Via 📖 Rollen ziet iedereen wat elke rol doet."]},
  {k:'wvo',lvl:'chill',n:'Durf Je',s:'Truth or dare',ic:'flame',p:'3+ spelers',r:["Kies Truth of Dare.","Beantwoord eerlijk of voer de opdracht uit.","Weigeren = drinken. Daarna is de volgende aan de beurt."]}];
 
 const LV={chill:{n:'Chill',s:'Rustig aan · af en toe een slok',d:1},hard:{n:'Full Send',s:'Er wordt constant gedronken',d:3}};
 let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
-function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl!=='solo').length).padStart(2,'0')+' spellen';
+function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill'||m.lvl==='hard').length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
   $('#gl').outerHTML=`<div id="gl">${chaosUI()}${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
@@ -771,8 +839,8 @@ $('#bk').onclick=()=>{clr();PL=null;plBar();$('#ov').classList.remove('open','bo
 /* ===== tabs ===== */
 const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
-  if(t==='count')renderCount();if(t==='players')renderPlayers();try{localStorage.setItem('kp_tab',t)}catch(e){};window.scrollTo(0,0)};
-document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>b.dataset.t==='ww'?(location.href='ww.html'):showTab(b.dataset.t));
+  if(t==='count')renderCount();if(t==='big')renderBig();if(t==='players')renderPlayers();try{localStorage.setItem('kp_tab',t)}catch(e){};window.scrollTo(0,0)};
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
 
 /* ===== teller ===== */
 const DRINKS=[{k:'Pint',s:'25cl · 5,2%',g:10.3},{k:'Speciaal',s:'33cl · 8%',g:20.8},{k:'Wijn',s:'15cl · 12%',g:14.2},{k:'Shot',s:'3cl · 40%',g:9.5},{k:'Long',s:'4cl sterk',g:12.6}];
@@ -950,7 +1018,7 @@ const statsHTML=()=>{const byId=id=>ACC.find(a=>a.id===id),top=(o,low)=>{const e
     ${cell('Populairste spel',gm?gm.n+' · '+g[1]+'×':'')}${cell('Quizkoning',q?esc(q[0].n)+' · '+q[1]:'')}
     ${cell('Beste raadder',k?esc(k[0].n)+' · '+k[1]:'')}${cell('Snelste reflex',r?esc(r[0].n)+' · '+r[1]+'ms':'')}
     ${cell('Waterheld',w?esc(w[0].n)+' · '+w[1]+'×':'')}${cell('Spellen gespeeld',Object.values(STATS.games).reduce((a,b)=>a+b,0)||'')}
-    ${cell('Karaokester',kk?esc(kk[0].n)+' · '+kk[1]+'🔥':'')}${cell('Sinds',hhmm(STATS.t))}</div>`};
+    ${(()=>{const d=ACC.map(x=>[x,(CNT[x.id]&&prof(x.id).d.length)||0]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1])[0];return cell('Meeste drankjes',d?esc(d[0].n)+' · '+d[1]:'')})()}${cell('Karaokester',kk?esc(kk[0].n)+' · '+kk[1]+'🔥':'')}${cell('Sinds',hhmm(STATS.t))}</div>`};
 
 
 /* ===== licht / donker ===== */
@@ -998,7 +1066,7 @@ let PL=null;
 const PRESETS=[{k:'warm',n:'Opwarmer',s:'3 chill, daarna 2 full send',f:()=>shuf(META.filter(m=>m.lvl==='chill'&&!['lot','wed'].includes(m.k))).slice(0,3).concat(shuf(META.filter(m=>m.lvl==='hard'&&m.k!=='pong')).slice(0,2))},
  {k:'chill',n:'Rustige avond',s:'5 chill-spellen',f:()=>shuf(META.filter(m=>m.lvl==='chill'&&!['lot','wed'].includes(m.k))).slice(0,5)},
  {k:'hard',n:'Full send',s:'5 full send-spellen',f:()=>shuf(META.filter(m=>m.lvl==='hard'&&m.k!=='pong')).slice(0,5)},
- {k:'mix',n:'Grote mix',s:'8 spellen, chill en full send door elkaar',f:()=>shuf(META.filter(m=>m.lvl!=='solo'&&!['lot','wed','pong'].includes(m.k))).slice(0,8)}];
+ {k:'mix',n:'Grote mix',s:'8 spellen, chill en full send door elkaar',f:()=>shuf(META.filter(m=>(m.lvl==='chill'||m.lvl==='hard')&&!['lot','wed','pong'].includes(m.k))).slice(0,8)}];
 const plBar=()=>{const b=$('#pln');b.style.display=PL?'':'none';b.onclick=()=>plNext();savePL()};
 const savePL=()=>{try{localStorage.setItem('kp_pl',JSON.stringify(PL?{...PL,t:Date.now()}:null))}catch(e){}};
 const plNext=()=>{if(!PL)return;clr();PL.i++;savePL();if(PL.i>=PL.list.length){PL=null;plBar();joeg('KLAAR!','Joegnee, wat een avond');$('#ov').classList.remove('open','ticking');return}
@@ -1143,7 +1211,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794936371';
+const APPVER='1794949802';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);

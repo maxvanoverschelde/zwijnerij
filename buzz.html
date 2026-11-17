@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#070707">
+<title>Buzzerquiz · Zwijnerij</title>
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#070707;--fg:#ededed;--muted:#7a7a7a;--line:#222;--card:#101010;--acc:#d4ff3a;--wolf:#ff4d6d;--moon:#7aa2ff}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif}
+body{padding:calc(env(safe-area-inset-top,0px) + 20px) max(20px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom,0px) + 24px) max(20px,env(safe-area-inset-left));min-height:100vh;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
+body.night{background:radial-gradient(circle at 50% -10%,#16203d 0%,#070707 60%)}
+button,input{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+.mono{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--muted)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.brand{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;letter-spacing:.01em}
+.brand i{font-style:normal;color:var(--wolf)}
+main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;width:100%;max-width:1100px;margin:0 auto}
+.h1{font-family:'Anton',sans-serif;font-size:clamp(40px,8vw,96px);line-height:.95;text-transform:uppercase}
+.h2{font-family:'Anton',sans-serif;font-size:clamp(28px,5vw,54px);line-height:1;text-transform:uppercase}
+.hint{color:var(--muted);font-size:17px;line-height:1.45;max-width:640px}
+.btn{background:var(--acc);color:#000;font-family:'JetBrains Mono',monospace;font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:15px;padding:20px 38px;border-radius:999px;transition:transform .1s}
+.btn:active{transform:scale(.96)}.btn.ghost{background:none;color:var(--fg);border:1px solid #333}.btn.red{background:var(--wolf);color:#000}
+.btn:disabled{opacity:.35}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
+input.f{background:#111;border:1px solid #2c2c2c;border-radius:16px;padding:18px 20px;font-size:22px;width:min(420px,88vw);outline:none;text-align:center}
+input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;text-transform:uppercase}
+.code-big{font-family:'Anton',sans-serif;font-size:clamp(70px,14vw,150px);letter-spacing:.18em;color:var(--acc);line-height:1}
+.lobby{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center;width:100%}
+#qr{background:#fff;padding:14px;border-radius:20px;display:inline-block}
+#qr img,#qr canvas{display:block;width:220px!important;height:220px!important}
+.plist{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.pchip{border:1px solid #2c2c2c;border-radius:999px;padding:10px 16px;font-size:18px;display:flex;align-items:center;gap:8px}
+.pchip.dead{opacity:.35;text-decoration:line-through}
+.pchip .dot{width:9px;height:9px;border-radius:50%;background:#3cff8a}.pchip .dot.off{background:#555}
+.pchip .x{color:var(--muted);margin-left:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;width:100%;max-width:720px}
+.choice{border:1px solid #2c2c2c;border-radius:18px;padding:20px 12px;font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;background:var(--card)}
+.choice.sel{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 15%,var(--card));color:var(--acc)}
+.choice.wolfsel{border-color:var(--wolf);color:var(--wolf)}
+.role{border-radius:28px;padding:30px 24px;width:min(560px,100%);border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,#0a0a0a);display:flex;flex-direction:column;gap:12px;align-items:center}
+.role .emo{font-size:72px;line-height:1}
+.role .rn{font-family:'Anton',sans-serif;font-size:46px;text-transform:uppercase;color:var(--c);line-height:1}
+.task{border:2px dashed var(--wolf);border-radius:20px;padding:18px;max-width:560px}
+.task b{display:block;font-family:'Anton',sans-serif;font-weight:400;font-size:28px;text-transform:uppercase;color:var(--wolf);margin-top:6px;line-height:1.1}
+.timer{font-family:'Anton',sans-serif;font-size:clamp(70px,14vw,140px);font-variant-numeric:tabular-nums;line-height:1}
+.hide{filter:blur(18px)}
+.peek{border:1px solid #333;border-radius:999px;padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.bar{height:8px;background:#1a1a1a;border-radius:9px;overflow:hidden;width:min(520px,90vw)}.bar i{display:block;height:100%;background:var(--acc)}
+.small{font-size:14px;color:var(--muted)}
+.tbtn{border:1px solid #2c2c2c;border-radius:999px;padding:11px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.seg{display:flex;border:1px solid #2c2c2c;border-radius:999px;overflow:hidden}.seg button{padding:10px 14px;font-size:14px;color:var(--muted)}.seg button.on{background:#ededed;color:#000}
+.log{font-size:15px;color:var(--muted);max-width:640px;line-height:1.6}
+.err{color:var(--wolf)}
+.rlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;width:100%;max-width:900px;text-align:left}
+.rc{border:1px solid color-mix(in srgb,var(--c) 50%,#222);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--c) 6%,#0a0a0a)}
+.rc b{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase;color:var(--c)}.rc span{font-size:14px;color:#bdbdbd;line-height:1.4}
+.script{border:1px solid #333;border-radius:20px;padding:16px 20px;max-width:560px;text-align:left;display:flex;flex-direction:column;gap:10px;font-size:18px;line-height:1.45;background:#0d0d0d}
+.wrow2{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #222;padding:10px 4px;text-align:left}.wrow2.dead{opacity:.4;text-decoration:line-through}
+details summary::-webkit-details-marker{display:none}
+@media(max-width:760px){.lobby{grid-template-columns:1fr;justify-items:center}}
+.leftbox{width:min(560px,100%);display:flex;flex-direction:column;gap:8px;align-items:center;margin-top:6px}
+.leftbox>div{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.lchip{border:1px solid var(--c);color:var(--c);border-radius:999px;padding:6px 12px;font-weight:700;font-size:15px}
+.youare{font-size:20px;margin-top:8px;cursor:pointer}.youare b{display:inline-block}
+.opts{width:min(560px,100%)}.optgrid{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:center;margin-top:14px;text-align:left}
+.rtg{cursor:pointer;opacity:.45}.rtg.ron{opacity:1;border-color:var(--acc);color:var(--acc)}
+@keyframes fl{0%{box-shadow:inset 0 0 0 9999px rgba(212,255,58,.35)}100%{box-shadow:inset 0 0 0 9999px transparent}}body.flash{animation:fl 1.2s ease-out 2}
+a,a:visited{color:inherit}
+#home{color:var(--fg,#ededed)}
+.qq{font-family:'Anton',sans-serif;font-size:clamp(34px,5.5vw,72px);line-height:1.05;text-transform:uppercase;max-width:1000px}
+.ans{font-family:'Anton',sans-serif;font-size:clamp(30px,4.5vw,56px);color:var(--acc);text-transform:uppercase}
+.bz{font-family:'Anton',sans-serif;font-size:clamp(44px,7vw,90px);color:#ffd23f;text-transform:uppercase;animation:pop .4s}
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+.bigbuzz{width:min(78vw,340px);height:min(78vw,340px);border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff7a8c,#e0002a 60%,#7a0016);color:#fff;font-family:'Anton',sans-serif;font-size:56px;letter-spacing:.04em;box-shadow:0 14px 0 #5a0010,0 20px 50px rgba(255,0,60,.35);transition:transform .08s}
+.bigbuzz:active{transform:translateY(8px);box-shadow:0 6px 0 #5a0010}
+.bigbuzz.off{filter:grayscale(1) brightness(.5);box-shadow:0 6px 0 #222}
+.bigbuzz.mine{filter:none;background:radial-gradient(circle at 35% 30%,#f3ff9c,#d4ff3a 60%,#6d8a00);color:#000;box-shadow:0 14px 0 #4a5e00}
+.podium{display:flex;flex-direction:column;gap:8px;width:min(520px,100%)}.pr2{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;border:1px solid #222;border-radius:14px;padding:12px 16px;text-align:left}.pr2 b{font-size:22px}.pr2 span:last-child{color:var(--muted)}
+.pchip b{color:var(--acc)}
+a,a:visited{color:inherit}#home{color:var(--fg)}
+body{-webkit-user-select:none;user-select:none}
+</style>
+</head>
+<body>
+<div class="top"><a href="./" class="tbtn" style="text-decoration:none" id="home">← Zwijnerij</a><div class="brand">Buzzer<i>quiz</i></div><div class="mono" id="me"></div></div>
+<main id="app"><div class="hint">Laden…</div></main>
+<script>
+const QS=[["Wat is de hoofdstad van Australië?","Canberra"],["Hoeveel spelers staan er per ploeg op het veld bij voetbal?","11"],["Welk land won het WK voetbal in 2022?","Argentinië"],["Hoeveel provincies telt België?","10"],["Welke planeet staat het dichtst bij de zon?","Mercurius"],["Wie schilderde de Mona Lisa?","Leonardo da Vinci"],["Wat is het chemische symbool van goud?","Au"],["Hoeveel benen heeft een spin?","8"],["In welke stad staat het Atomium?","Brussel"],["Wat is de grootste oceaan ter wereld?","De Stille Oceaan"],["Welke stripfiguur heeft een hond die Bobbie heet?","Kuifje"],["Hoeveel minuten duurt een voetbalmatch zonder verlengingen?","90"],["Wat is de hoofdstad van Canada?","Ottawa"],["Welk dier is het grootste ter wereld?","De blauwe vinvis"],["Hoeveel kleuren heeft een regenboog?","7"],["Wie zong 'Alors on danse'?","Stromae"],["Wat is de langste rivier van Europa?","De Wolga"],["In welk jaar viel de Berlijnse Muur?","1989"],["Hoeveel tanden heeft een volwassen mens normaal?","32"],["Welk land heeft de meeste inwoners ter wereld?","India"],["Wat is de hoofdstad van Spanje?","Madrid"],["Welke wielrenner won vijf keer de Tour de France en heet 'De Kannibaal'?","Eddy Merckx"],["Hoeveel graden heeft een rechte hoek?","90"],["Wat is het hardste natuurlijke materiaal?","Diamant"],["Wie schreef 'Romeo en Julia'?","William Shakespeare"],["Welke kleur krijg je als je blauw en geel mengt?","Groen"],["Wat is de munteenheid van het Verenigd Koninkrijk?","Het pond (sterling)"],["Hoeveel seconden zitten er in een uur?","3600"],["Welke stad heet ook wel 'De Arteveldestad'?","Gent"],["Wat is de grootste woestijn ter wereld (warm)?","De Sahara"],["Hoeveel ringen staan er op de Olympische vlag?","5"],["Welk gas ademen wij uit?","Koolstofdioxide (CO2)"],["Welk Belgisch bier heeft een duivel in de naam?","Duvel"],["Hoeveel snaren heeft een standaard gitaar?","6"],["Wat is de hoofdstad van Italië?","Rome"],["In welk land liggen de piramides van Gizeh?","Egypte"],["Hoeveel dagen heeft een schrikkeljaar?","366"],["Welke voetballer heeft de bijnaam 'CR7'?","Cristiano Ronaldo"],["Wat is het kleinste land ter wereld?","Vaticaanstad"],["Hoe heet de koning van België?","Filip"],["Welk instrument bespeelde Mozart vooral?","Piano (klavier)"],["Hoeveel botten heeft een volwassen mens ongeveer?","206"],["Wat is de hoogste berg ter wereld?","Mount Everest"],["Welk land heeft de vorm van een laars?","Italië"],["Wat drinkt een koala bijna nooit?","Water"],["Hoeveel uur zit er in een week?","168"],["Welke stad is de hoofdstad van Japan?","Tokio"],["Welk dier staat op het logo van Ferrari?","Een paard"],["In welke stad vindt het Lichtfeest plaats?","Gent"],["Hoe heet de grootste planeet van ons zonnestelsel?","Jupiter"],["Hoeveel spelers heeft een volleybalploeg op het veld?","6"],["Welk land won het meeste WK's voetbal?","Brazilië (5)"],["Wat is de hoofdstad van Nederland?","Amsterdam"],["Uit welk land komt de band ABBA?","Zweden"],["Hoeveel hartkamers heeft een mens?","4 (2 kamers en 2 boezems)"],["Wat is de vaakst gesproken taal ter wereld (moedertaal)?","Chinees (Mandarijn)"],["Welke kleur heeft een smaragd?","Groen"],["Hoe heet het festival in Boom?","Tomorrowland"],["Welke fruitsoort heeft zijn zaadjes aan de buitenkant?","De aardbei"],["Hoeveel nullen heeft een miljard?","9"],["In welke stad staat de Eiffeltoren?","Parijs"],["Welk element heeft het symbool O?","Zuurstof"],["Welk land heeft als hoofdstad Lissabon?","Portugal"],["Hoeveel kaarten zitten er in een spel zonder jokers?","52"],["Welke tennisspeelster won de US Open in 2005, 2009 en 2010?","Kim Clijsters"],["Wat is de snelste landdier?","De jachtluipaard"],["In welk werelddeel ligt Kenia?","Afrika"],["Hoe heet de munt van Japan?","Yen"],["Wat is het bekendste beeldje van Brussel?","Manneken Pis"],["Hoeveel continenten zijn er (klassiek)?","7"],["Welke kleur heeft de zwarte doos van een vliegtuig echt?","Oranje"],["Wie was de eerste mens op de maan?","Neil Armstrong"],["Welk land maakt de auto's van Volvo oorspronkelijk?","Zweden"],["Wat is de hoofdstad van Griekenland?","Athene"],["Hoeveel poten heeft een insect?","6"],["Hoe heet de Belgische nationale voetbalploeg?","De Rode Duivels"],["Welke zee ligt tussen Europa en Afrika?","De Middellandse Zee"],["Hoeveel kilometer is een marathon ongeveer?","42 (42,195)"],["Wat is de hoofdstad van Duitsland?","Berlijn"],["Welke vogel kan achteruit vliegen?","De kolibrie"]];
+
+const SB_URL='https://koenqjuwnngluqxseodq.supabase.co',SB_KEY='sb_publishable_FV0_pSspnXUlZXFES5Ga4w_gzlX2kFm';
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const ls={get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const rid=()=>Math.random().toString(36).slice(2,10);
+let actx;const beep=(f=660,d=.1,v=.2,t='sine')=>{try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+d)}catch(e){}};
+const buzzSnd=()=>{beep(180,.35,.35,'square');setTimeout(()=>beep(140,.35,.3,'square'),120)};
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+let wl=null;const wake=async()=>{try{if('wakeLock' in navigator&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>wl=null)}}catch(e){}};document.addEventListener('click',wake);
+const sb=window.supabase?window.supabase.createClient(SB_URL,SB_KEY,{realtime:{params:{eventsPerSecond:20}}}):null;
+let ch=null;
+const join=(code,pid,meta,onMsg)=>new Promise(res=>{ch=sb.channel('bq-'+code,{config:{broadcast:{self:false},presence:{key:pid}}});
+  ch.on('broadcast',{event:'m'},({payload})=>onMsg(payload));ch.subscribe(async s=>{if(s==='SUBSCRIBED'){await ch.track(meta);res()}})});
+const send=p=>ch&&ch.send({type:'broadcast',event:'m',payload:p});
+
+/* ===== quizmaster: de iPad ===== */
+const H={code:null,players:{},order:[],phase:'lobby',deck:[],qi:-1,q:null,buzz:null,locked:[],score:{},wrong:{},n:0,max:15};
+const saveH=()=>ls.set('bq_host',{...H,t:Date.now()});
+const nm=p=>H.players[p]?.n||'?';
+const pub=()=>({t:'state',phase:H.phase,code:H.code,players:H.order.map(p=>({id:p,n:nm(p),s:H.score[p]||0})),buzz:H.buzz,buzzN:H.buzz?nm(H.buzz):null,locked:H.locked,n:H.n,max:H.max});
+const broadcast=()=>{send(pub());saveH();renderHost()};
+const next=()=>{if(H.n>=H.max){H.phase='end';broadcast();return}if(!H.deck.length||H.qi>=H.deck.length-1){H.deck=shuf(QS.map((_,i)=>i));H.qi=-1}
+  H.qi++;H.q=QS[H.deck[H.qi]];H.n++;H.buzz=null;H.locked=[];H.reveal=false;H.phase='q';beep(520,.12);broadcast()};
+const onHostMsg=m=>{
+  if(m.t==='join'){if(!H.players[m.pid]){let nn=m.n.slice(0,16),k=2;while(Object.values(H.players).some(p=>p.n.toLowerCase()===nn.toLowerCase()))nn=m.n.slice(0,14)+' '+(k++);H.players[m.pid]={n:nn};H.order.push(m.pid);beep(880)}broadcast();return}
+  if(m.t==='buzz'&&H.phase==='q'&&!H.buzz&&H.players[m.pid]&&!H.locked.includes(m.pid)){H.buzz=m.pid;buzzSnd();broadcast();return}
+  if(m.t==='hello')send(pub())};
+const judge=ok=>{const p=H.buzz;if(!p)return;if(ok){H.score[p]=(H.score[p]||0)+1;H.reveal=true;H.phase='shown';beep(990,.15);beep(1320,.2)}
+  else{H.wrong[p]=(H.wrong[p]||0)+1;H.locked.push(p);H.buzz=null;beep(150,.3,.3,'sawtooth');if(H.locked.length>=H.order.length){H.reveal=true;H.phase='shown'}}broadcast()};
+const renderHost=()=>{
+  if(H.phase==='lobby'){const n=H.order.length,url=location.origin+location.pathname+'?c='+H.code;
+    app.innerHTML=`<div class="lobby"><div><div id="qr"></div></div><div style="text-align:left;display:flex;flex-direction:column;gap:16px"><div class="mono">Scan de QR-code of ga naar Grote spellen › Buzzerquiz en vul in</div><div class="code-big">${H.code}</div>
+      <div class="plist" style="justify-content:flex-start">${H.order.map(p=>`<span class="pchip">${esc(nm(p))}<span class="x" data-kick="${p}">✕</span></span>`).join('')||'<span class="small">Nog niemand…</span>'}</div>
+      <div class="row" style="justify-content:flex-start"><span class="mono">Aantal vragen</span><div class="seg">${[10,15,25].map(x=>`<button class="${H.max===x?'on':''}" data-max="${x}">${x}</button>`).join('')}</div></div>
+      <button class="btn" id="go" ${n<1?'disabled':''}>Start de quiz (${n} ${n===1?'speler':'spelers'})</button></div></div>`;
+    try{new QRCode($('#qr'),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){}
+    app.querySelectorAll('[data-max]').forEach(b=>b.onclick=()=>{H.max=+b.dataset.max;broadcast()});
+    app.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{const id=b.dataset.kick;delete H.players[id];H.order=H.order.filter(x=>x!==id);send({t:'reject',to:id});broadcast()});
+    $('#go').onclick=()=>{H.n=0;H.score={};H.wrong={};next()};return}
+  const board=`<div class="plist">${H.order.slice().sort((a,b)=>(H.score[b]||0)-(H.score[a]||0)).map(p=>`<span class="pchip ${H.locked.includes(p)?'dead':''}">${esc(nm(p))} <b>${H.score[p]||0}</b></span>`).join('')}</div>`;
+  if(H.phase==='end'){const r=H.order.slice().sort((a,b)=>(H.score[b]||0)-(H.score[a]||0)),low=Math.min(...r.map(p=>H.score[p]||0));
+    app.innerHTML=`<div style="font-size:80px">🏆</div><div class="h1">${r.length?esc(nm(r[0])):''} wint</div><div class="podium">${r.map((p,i)=>`<div class="pr2"><span class="mono">${i+1}</span><b>${esc(nm(p))}</b><span>${H.score[p]||0} juist · ${H.wrong[p]||0} fout</span></div>`).join('')}</div>
+      <div class="hint">${r.filter(p=>(H.score[p]||0)===low).map(p=>esc(nm(p))).join(' en ')} ${r.filter(p=>(H.score[p]||0)===low).length>1?'drinken':'drinkt'} 3 slokken. ${r.length?esc(nm(r[0]))+' deelt er 3 uit.':''}</div>
+      <div class="row"><button class="btn" id="ag">Nog een quiz</button><button class="tbtn" id="lb">Terug naar lobby</button></div>`;
+    $('#ag').onclick=()=>{H.n=0;H.score={};H.wrong={};next()};$('#lb').onclick=()=>{H.phase='lobby';broadcast()};return}
+  const q=H.q;
+  app.innerHTML=`<div class="mono">Vraag ${H.n} / ${H.max}</div><div class="qq">${esc(q[0])}</div>
+    ${H.reveal?`<div class="ans">${esc(q[1])}</div>`:''}
+    ${H.phase==='q'&&H.buzz?`<div class="bz">🔔 ${esc(nm(H.buzz))}</div><div class="hint">${esc(nm(H.buzz))} mag antwoorden. Fout? Dan drinkt ${esc(nm(H.buzz))} een slok en mogen de anderen opnieuw buzzen.</div>
+      <div class="row"><button class="btn red" id="no">✗ Fout</button><button class="btn" id="ok">✓ Juist</button></div>`
+    :H.phase==='q'?`<div class="hint">Buzzers staan open${H.locked.length?` (niet voor ${H.locked.map(p=>esc(nm(p))).join(', ')})`:''}. Wie eerst drukt, mag antwoorden.</div><div class="row"><button class="tbtn" id="sk">Niemand weet het · toon antwoord</button></div>`
+    :`<div class="row"><button class="btn" id="nx">${H.n>=H.max?'Naar de uitslag':'Volgende vraag'}</button></div>`}
+    ${board}`;
+  const b=id=>$(id);if(b('#ok'))b('#ok').onclick=()=>judge(true);if(b('#no'))b('#no').onclick=()=>judge(false);
+  if(b('#sk'))b('#sk').onclick=()=>{H.reveal=true;H.phase='shown';broadcast()};if(b('#nx'))b('#nx').onclick=next};
+const makeCode=()=>Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
+const startHost=async resume=>{wake();const s=ls.get('bq_host',null);
+  if(resume&&s&&Date.now()-s.t<6*3.6e6){Object.assign(H,s)}else{H.code=makeCode()}
+  app.innerHTML=`<div class="h2">Lobby maken…</div>`;await join(H.code,'host',{host:1},onHostMsg);broadcast()};
+
+/* ===== speler: gsm als buzzer ===== */
+const Pl={pid:null,n:'',code:null,state:null};
+const startPlayer=async code=>{Pl.code=code.toUpperCase();const st=ls.get('bq_p_'+Pl.code,null);Pl.pid=st?.pid||rid();Pl.n=st?.n||ls.get('ww_name','');
+  if(!Pl.n){app.innerHTML=`<div class="mono">Quiz ${esc(Pl.code)}</div><div class="h1">Hoe heet je?</div><input class="f" id="nm" maxlength="16" placeholder="Je naam" autocomplete="off"><button class="btn" id="ok">Doe mee</button>`;
+    const go=()=>{const v=$('#nm').value.trim();if(!v)return;ls.set('ww_name',v);startPlayer(Pl.code)};$('#ok').onclick=go;$('#nm').onkeydown=e=>{if(e.key==='Enter')go()};return}
+  ls.set('bq_p_'+Pl.code,{pid:Pl.pid,n:Pl.n});$('#me').textContent=Pl.n;app.innerHTML=`<div class="h2">Verbinden…</div>`;
+  await join(Pl.code,Pl.pid,{n:Pl.n},onPlayerMsg);send({t:'join',pid:Pl.pid,n:Pl.n});
+  setTimeout(()=>{if(!Pl.state)app.innerHTML=`<div class="h2">Quiz ${esc(Pl.code)} niet gevonden</div><div class="hint">Klopt de code? Staat de quiz nog open op de iPad?</div><button class="btn" onclick="location.href=location.pathname">Andere code</button>`},6000)};
+const onPlayerMsg=m=>{
+  if(m.t==='state'){const first=!Pl.state,prev=Pl.state;Pl.state=m;if(first)send({t:'join',pid:Pl.pid,n:Pl.n});
+    if(m.buzz===Pl.pid&&(!prev||prev.buzz!==Pl.pid))vib([200,80,200]);renderPlayer();return}
+  if(m.t==='reject'&&m.to===Pl.pid){app.innerHTML=`<div class="h2">Je werd uit de quiz verwijderd.</div>`}};
+const renderPlayer=()=>{const s=Pl.state;if(!s)return;const me=s.players.find(p=>p.id===Pl.pid);
+  if(s.phase==='lobby'){app.innerHTML=`<div class="mono">Quiz ${esc(s.code)}</div><div class="h1">Je zit erin</div><div class="hint">Wacht tot de quiz start op de iPad.</div>`;return}
+  if(s.phase==='end'){const r=s.players.slice().sort((a,b)=>b.s-a.s);app.innerHTML=`<div class="h1">Gedaan</div><div class="h2">${me?me.s:0} juist</div><div class="hint">Plaats ${r.findIndex(p=>p.id===Pl.pid)+1} van ${r.length}. Kijk naar de iPad.</div>`;return}
+  const locked=s.locked.includes(Pl.pid),mine=s.buzz===Pl.pid,open=s.phase==='q'&&!s.buzz&&!locked;
+  app.innerHTML=`<div class="mono">Vraag ${s.n} / ${s.max} · ${me?me.s:0} punten</div>
+    <button class="bigbuzz ${open?'':'off'} ${mine?'mine':''}" id="bz" ${open?'':'disabled'}>${mine?'JIJ!':s.buzz?esc(s.buzzN):locked?'GEBLOKT':s.phase==='q'?'BUZZ':'…'}</button>
+    <div class="hint">${mine?'Jij was eerst: geef je antwoord hardop.':s.buzz?esc(s.buzzN)+' mag antwoorden.':locked?'Fout geantwoord: je wacht deze vraag over.':s.phase==='q'?'Lees de vraag op de iPad en druk als je het weet.':'Wacht op de volgende vraag.'}</div>`;
+  const b=$('#bz');if(open)b.onpointerdown=e=>{e.preventDefault();send({t:'buzz',pid:Pl.pid});b.classList.add('off');vib(60)}};
+
+/* ===== start ===== */
+const landing=()=>{app.innerHTML=`<div style="font-size:80px">🔔</div><div class="h1">Buzzerquiz</div><div class="hint">Vul de code in die op de iPad staat.</div>
+  <input class="f code" id="cd" maxlength="4" placeholder="CODE" autocomplete="off" autocapitalize="characters"><button class="btn" id="jn">Meedoen</button><button class="tbtn" id="hs">Quiz starten op dit toestel</button>`;
+  const go=()=>{const c=$('#cd').value.trim().toUpperCase();if(c.length===4)location.href=location.pathname+'?c='+c};$('#jn').onclick=go;$('#cd').onkeydown=e=>{if(e.key==='Enter')go()};
+  $('#hs').onclick=()=>location.href=location.pathname+'?host=1'};
+(async()=>{if(!sb){app.innerHTML='<div class="h2 err">Geen internet: de Buzzerquiz heeft een verbinding nodig.</div>';return}
+  const q=new URLSearchParams(location.search);
+  if(q.get('host')){const s=ls.get('bq_host',null);return startHost(!!(s&&s.phase!=='lobby'&&s.phase!=='end'&&Date.now()-s.t<3.6e6&&!q.get('new')))}
+  if(q.get('c'))return startPlayer(q.get('c'));landing()})();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){wl=null;wake();if(Pl.pid&&ch)send({t:'hello',pid:Pl.pid})}});
+</script>
+</body>
+</html>
