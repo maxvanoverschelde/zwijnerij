@@ -241,6 +241,15 @@
   #chrule i{font-style:normal;opacity:.6}
   #ov.open~#chrule,body:has(#ov.open) #chrule{bottom:calc(env(safe-area-inset-bottom,0px) + 18px)}
   @media(max-width:760px){.chaosbox{grid-template-columns:1fr}.jury{grid-template-columns:1fr}}
+  .chaosbox.comp.on{border-color:#ffb703;background:color-mix(in srgb,#ffb703 8%,var(--card))}
+  .chaosbox.comp .tag{background:#ffb703}
+  #ptoast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);right:20px;z-index:25;background:#ffb703;color:#000;border-radius:999px;padding:10px 18px;font-weight:600;opacity:0;pointer-events:none;display:flex;gap:8px;align-items:center}
+  #ptoast b{font-family:'Anton',sans-serif;font-weight:400;font-size:22px}#ptoast span{opacity:.7;font-size:13px}
+  #ptoast.go{animation:pt 2.4s ease forwards}@keyframes pt{0%{opacity:0;transform:translateY(-20px)}10%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+  .podium{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end;width:min(640px,92vw)}
+  .pod{display:flex;flex-direction:column;align-items:center;gap:6px}.pod b{font-family:'Anton',sans-serif;font-weight:400;font-size:24px;text-transform:uppercase}.pod span{color:var(--muted)}
+  .pod .blk{width:100%;border-radius:14px 14px 0 0;display:grid;place-items:center;font-family:'Anton',sans-serif;font-size:40px;color:#000}
+  .pod.p1 .blk{height:150px;background:#ffd23f}.pod.p2 .blk{height:110px;background:#cfd8dc}.pod.p3 .blk{height:80px;background:#e0a96d}
   .tbtn{border:1px solid var(--line2);border-radius:999px;padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
   .srch{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:22px;padding:8px 8px 8px 20px;background:var(--card)}
   .srch svg{width:22px;height:22px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex:none}
@@ -358,27 +367,10 @@ const $=s=>document.querySelector(s),st=$('#st');
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const deck=l=>{let p=shuf(l);return()=>{if(!p.length)p=shuf(l);return p.pop()}};
 
-const NOOIT=["een examen gehaald zonder de cursus te openen","een les gebrost om te slapen","iemand gestalkt tot ver in hun Instagram-archief",
-"een bericht naar de verkeerde persoon gestuurd","gelogen om onder een afspraak uit te komen","iemand van deze groep gekust",
-"de laatste trein gemist en ter plaatse gebleven","een date geghost","een kater gehad in een examen","de Overpoort gesloten",
-"geld van mijn ouders gevraagd voor iets anders dan ik zei","een groepswerk laten dragen door anderen","op een datingapp gezeten",
-"mijn ex om 3u gestuurd","mijn kotsleutel verloren","eten van een kotgenoot gepikt","een verjaardag van een goede vriend vergeten",
-"een bierglas meegenomen van een café","in slaap gevallen op een feest","iets gebroken en het verzwegen","mijn gsm laten vallen in het toilet",
-"een volledige serie in één weekend gekeken","op een tafel gedanst","gehuild om een film","een fietsboete gekregen",
-"gedaan alsof ik iemand niet zag op straat","een screenshot gemaakt van een gesprek om door te sturen","ontbijt gegeten om 15u",
-"een examen gebist","met iemand gedate die een vriend(in) leuk vond"];
-const WIE=["trouwt als eerste","verliest vanavond zijn gsm","valt als eerste in slaap","wordt rijk zonder te werken","verhuist naar het buitenland",
-"zit binnen tien jaar in een reality-show","start een eigen bedrijf","belt vanavond nog een ex","haalt om 4u nog frieten","mist de laatste trein",
-"overleeft een zombie-apocalyps het langst","wordt DJ","staat als eerste op de tafel","vergeet waar hij woont","laat de rekening liggen",
-"loopt ooit een marathon","krijgt als eerste kinderen","wordt beroemd om de verkeerde reden","eindigt in de politiek","zit volgend jaar nog op kot"];
-const WAAR=["Wat is het gênantste dat je op een feest hebt gedaan?","Wie hier zou je kussen als het moest?","Wat is het laatste dat je hebt gegoogeld?",
-"Slechtste date ooit?","Iets wat je ouders nooit mogen weten?","Welke app zou je nooit laten zien?","Grootste guilty pleasure?",
-"Welke leugen vertel je het vaakst?","Wie hier heeft de beste stijl, en wie de slechtste?","Wat zou je doen met een miljoen?",
-"Je raarste gewoonte?","Wie was je laatste crush?","Waar ben je stiekem jaloers op?","Wat spijt je het meest van dit jaar?"];
-const DURF=["Laat je laatste foto in je galerij zien.","Tien pushups. Nu.","Twee rondes lang alles met een accent.","Laat iemand een story posten op je account.",
-"Dertig seconden je beste dansmove.","Rest van de ronde praat je in de derde persoon.","Stuur ‘ik mis je’ naar je derde chat.",
-"Groep kiest je nieuwe profielfoto.","Imiteer iemand in de kamer.","Vertel een mop. Niemand lacht? Drinken.","Eén minuut plank.",
-"Glas leeg.","Laat de groep je laatste zoekopdracht zien."];
+const NOOIT=["iemand gekust van wie ik de naam niet meer weet", "een ex teruggestuurd na middernacht", "iemand van deze groep stiekem knap gevonden", "gelogen over hoeveel ex'en ik heb", "iemand geghost na een date", "een screenshot van een chat doorgestuurd naar de verkeerde", "op een datingapp gezeten terwijl ik eigenlijk niet single was", "iemand gekust om iemand anders jaloers te maken", "een kater gehad op een examen", "ontbeten na 15u", "naakt gezwommen", "in een vreemd bed wakker geworden", "stiekem iemands Instagram tot 2016 gestalkt", "een dronken telefoontje gepleegd dat ik me niet herinner", "een relatie uitgemaakt via bericht", "met twee mensen tegelijk aan het daten geweest", "de laatste trein gemist en bij een ‘vriend’ geslapen", "iets gestolen uit een café", "op de Overpoort tot sluitingstijd gebleven en daarna nog verder getrokken", "een date laten betalen en nooit meer iets laten horen", "een sexy foto gestuurd die ik nu betreur", "gelogen tegen mijn ouders over waar ik sliep", "op een feestje gekust met iemand die bezet was", "een kotgenoot zijn drank leeggedronken en het ontkend", "iemand gekust van deze groep", "overgegeven in een taxi", "een tattoo of piercing overwogen na een avondje uit", "met mijn baas of prof geflirt", "een liefdesbrief of -bericht geschreven dat ik nooit verstuurd heb", "doen alsof ik iemand niet zag om niet te moeten praten", "een fake naam gegeven aan iemand op café", "geld geleend dat ik nooit heb teruggegeven", "een groepswerk volledig laten dragen door de anderen", "een ex van een vriend(in) gekust", "ruzie gemaakt met een uitsmijter", "een afspraak afgezegd met een verzonnen ziekte", "iemand zijn telefoon doorzocht", "in de douche of het toilet in slaap gevallen na het stappen", "een volledig examen gegokt en geslaagd", "een dronken bestelling gedaan op internet"];
+const WIE=["heeft de meeste ex'en", "stuurt het eerst een dronken bericht vanavond", "is stiekem het best in bed, denk je", "kust vanavond nog iemand", "wordt het eerst ontrouw", "heeft de raarste zoekgeschiedenis", "eindigt vanavond in de verkeerde kot", "heeft ooit iemand van deze groep gekust", "liegt het vaakst over waar hij was", "gaat als eerste trouwen voor het geld", "zou meedoen aan Temptation Island", "heeft de gênantste crush", "stuurt nog berichten naar zijn ex", "valt vanavond als eerste in slaap op de zetel", "zou een OnlyFans beginnen als het slecht ging", "heeft de slechtste smaak in partners", "eindigt het vaakst met een kater op maandag", "is het meest jaloers in een relatie", "zou een geheim het snelst verklappen", "flirt met iedereen, ook als hij bezet is", "heeft het meeste geld uitgegeven op één avond", "maakt het eerst ruzie met de uitsmijter", "wordt vanavond het dronkenst", "doet morgen alsof hij zich niks herinnert", "wordt het eerst gearresteerd op reis", "zou daten met een prof", "heeft het langste lijstje datingmatches", "schaamt zich het meest voor zijn eerste kus", "zou nooit toegeven dat hij verliefd is", "is het slechtst in geheimen bewaren"];
+const WAAR=["Met wie hier zou je een nacht opgesloten willen zitten?", "Wat is het gênantste dat je ooit hebt gedaan om iemand te versieren?", "Wie was je slechtste kus, en waarom?", "Wat is je grootste turn-off?", "Wat staat er in je laatste verwijderde chat?", "Op wie van deze groep zou je kunnen vallen?", "Wat is het spannendste bericht dat je ooit hebt gekregen?", "Wat is het meest gestoorde dat je ooit dronken hebt gedaan?", "Wat zou je ex over jou zeggen?", "Wat is de grootste leugen die je ooit aan een partner vertelde?", "Wat is je raarste fantasie (soft versie)?", "Wie zou je ghosten als je hier één persoon moest kiezen?", "Wat was je slechtste date ooit, in detail?", "Wat is iets dat je nog nooit aan iemand hebt verteld?", "Wat vind je het aantrekkelijkst aan de persoon links van je?", "Wat is het langste dat je zonder kus bent geweest?", "Heb je ooit iemand gekust die bezet was?", "Wat zit er in je verborgen foto's?", "Welke ex zou je terugnemen als het moest?", "Wat is je grootste guilty pleasure in bed of op date?", "Hoeveel mensen heb je al gekust? Ongeveer mag.", "Wat is het domste dat je hebt gedaan uit jaloezie?", "Wie hier heeft volgens jou de beste kus?", "Welke app op je gsm zou je nooit laten zien?", "Wat zou je doen als je een dag onzichtbaar was?"];
+const DURF=["Stuur ‘ik denk aan je 😏’ naar de derde persoon in je chats.", "Laat de groep je laatste 5 foto's zien.", "Geef de persoon rechts van je een lapdance van 10 seconden. Of drink 3.", "Laat iemand een bericht typen naar een contact naar keuze. Jij drukt op verzenden.", "Doe je beste verleidingsblik naar iemand tot hij lacht.", "Fluister iets ondeugends in het oor van je linkerbuur.", "Laat de groep je Spotify-geschiedenis zien.", "Bel je ex en zeg ‘sorry, verkeerd nummer’.", "Doe 20 seconden een sexy dans op een nummer naar keuze van de groep.", "Laat iemand een story posten op je Instagram.", "Zeg tegen iedereen hier één ding dat je aantrekkelijk vindt aan hen.", "Drink je glas leeg zonder je handen te gebruiken.", "Laat de groep je laatste zoekopdracht voorlezen.", "Ruil een kledingstuk met iemand naar keuze van de groep.", "Lees je laatste verstuurde bericht luidop voor.", "Laat iemand je profielfoto voor 24 uur kiezen.", "Imiteer hoe je iemand zou versieren op de Overpoort.", "Speel ‘zeven minuten in de hemel’ light: 1 minuut in de gang met iemand naar keuze.", "Doe een ad fundum of vertel je gênantste dronken verhaal.", "Stuur een spraakbericht naar je moeder: ‘Mama, ik heb nieuws.’ Leg het morgen uit."];
 const KR={A:["Waterval","Iedereen drinkt. Je stopt pas als je rechterbuur stopt."],2:["Jij","Wijs iemand aan die drinkt."],3:["Ik","Jij drinkt."],
 4:["Vloer","Laatste die de vloer raakt, drinkt."],5:["Mannen","Alle mannen drinken."],6:["Vrouwen","Alle vrouwen drinken."],
 7:["Hemel","Laatste hand in de lucht, drinkt."],8:["Partner","Kies een partner. Jij drinkt, hij drinkt."],9:["Rijm","Zeg een woord. Wie geen rijm vindt, drinkt."],
@@ -386,45 +378,8 @@ const KR={A:["Waterval","Iedereen drinkt. Je stopt pas als je rechterbuur stopt.
 Q:["Vragen","Wie jouw vraag beantwoordt, drinkt. Tot de volgende Q."],K:["King","Schenk bij in de cup. Vierde king drinkt hem leeg."]};
 const RAD=["Iedereen","Links","Rechts","Jij · 2x","Deel 3 uit","Safe","Ad fundum","Neus · laatste"];
 
-const BOM=["Wie hier is het slechtst in sms'en terugsturen?","Wie zou het langst overleven zonder gsm?","Wie heeft de slechtste muzieksmaak?",
-"Wie wordt het eerst verliefd op een kotgenoot?","Wie is het vaakst te laat?","Wie zou slagen in een reality-show?","Wie heeft de meeste ex'en?",
-"Wie liegt het best?","Wie zou als eerste flauwvallen in een horrorfilm?","Wie heeft de meest gênante zoekgeschiedenis?","Wie wordt later de rijkste?",
-"Wie is het slechtst met geld?","Wie danst het slechtst?","Wie zou een geheim het snelst verklappen?","Wie heeft vanavond het meeste gedronken?",
-"Wie gaat het eerst naar huis?","Wie zou je bellen om een lijk te helpen verbergen?","Wie heeft het grootste ego?","Wie stuurt de beste memes?",
-"Wie heeft de beste kot-kookkunsten?","Wie zou het snelst gearresteerd worden op reis?","Wie heeft de raarste crush gehad?","Wie is stiekem het slimst?",
-"Wie haalt morgen het slechtste rapport?","Wie zou het langst in een relatie blijven?","Wie zou een TikTok-ster worden?","Wie belt het vaakst zijn mama?",
-"Wie maakt de beste eerste indruk?","Wie verliest het snelst zijn geduld?","Wie zou een week in de bossen overleven?"];
-BOM.push(...["Wie stuurt het vaakst een dronken bericht?","Wie heeft de beste smoesjes?","Wie zou als eerste een Tinder-date naar het kot meebrengen?","Wie spendeert het meeste geld aan eten?",
-"Wie zou het snelst zijn gsm-code verklappen?","Wie heeft de langste douches?","Wie zou het eerst een tattoo spijt hebben?","Wie zingt het luidst onder de douche?",
-"Wie checkt het vaakst zijn eigen Instagram-stories?","Wie heeft de meest chaotische kamer?","Wie zou het eerst verdwalen in Gent?","Wie is de beste BOB?",
-"Wie heeft de meeste screenshots van andermans chats?","Wie zou een geheime relatie kunnen verbergen?","Wie wordt het eerst emotioneel na een paar pinten?",
-"Wie is de slechtste verliezer?","Wie heeft de beste dansmoves?","Wie zou je meenemen naar een sollicitatie als moral support?","Wie kookt het slechtst?",
-"Wie zou het langst in bed blijven op een zondag?","Wie is de grootste drama queen?","Wie heeft de meest gênante oude profielfoto?","Wie is het meest competitief?",
-"Wie vergeet het vaakst verjaardagen?","Wie zou het eerst een podcast starten?","Wie heeft het meeste onnodige spullen gekocht online?","Wie lacht het hardst om zijn eigen moppen?",
-"Wie zou het snelst een fout bekennen?","Wie heeft de slechtste oriëntatie?","Wie wordt een strenge ouder?","Wie wordt een coole ouder?","Wie heeft de raarste eetgewoonte?",
-"Wie zou je om 3u 's nachts bellen voor een frietje?","Wie is het meest bijgelovig?","Wie zou als eerste een marathon opgeven?","Wie heeft het grootste hart?",
-"Wie kan het slechtst een geheim bewaren?","Wie zou het best overleven in de jungle?","Wie is stiekem de grootste romanticus?","Wie heeft de meeste apps op zijn gsm?",
-"Wie zou het eerst zijn studie veranderen?","Wie zou het snelst een fout examen goedpraten?","Wie stuurt de langste spraakberichten?","Wie heeft de slechtste handschrift?",
-"Wie zou in een horrorfilm als eerste sterven?","Wie zou in een horrorfilm als laatste overleven?","Wie is de beste in ruzies sussen?","Wie begint de meeste ruzies?",
-"Wie zou het eerst een kot in brand steken bij het koken?","Wie houdt het langst vol zonder koffie?","Wie heeft de meest uitgesproken mening over voetbal?",
-"Wie zou het snelst uitgenodigd worden op een VIP-feest?","Wie zou een dag als koning het slechtst misbruiken?","Wie is het vaakst afgeleid in de les?",
-"Wie zou het eerst een selfie met een beroemdheid durven vragen?","Wie neemt de meeste foto's op een avond?","Wie zou het eerst een fout tattoo-woord laten zetten?",
-"Wie gaat het vaakst terug naar een ex?","Wie is het meest verslaafd aan zijn gsm?","Wie zou het best een leugen detecteren?","Wie is de beste in Mario Kart, denkt hij?",
-"Wie heeft het meeste moeite met vroeg opstaan?","Wie zou het eerst flauwvallen bij een bloedafname?","Wie zou het eerst een eigen merk lanceren?",
-"Wie heeft de raarste zoekopdracht van deze week?","Wie zou het snelst een huisdier kopen zonder na te denken?","Wie praat het meest in zijn slaap?",
-"Wie zou het snelst een Erasmus-romance hebben?","Wie is het slechtst in Wordle?","Wie zou je je bankkaart toevertrouwen?","Wie zou je nooit je bankkaart toevertrouwen?",
-"Wie maakt de beste playlist?","Wie heeft de slechtste muziek op de afterparty?","Wie zou het eerst zijn eigen verjaardag vergeten?","Wie is het meest ijdel?",
-"Wie zou een avond in de cel het best doorstaan?","Wie heeft de meest overdreven reacties?","Wie stuurt het vaakst 'onderweg' terwijl hij nog thuis is?",
-"Wie is de beste om mee op reis te gaan?","Wie is de slechtste om mee op reis te gaan?","Wie zou het eerst bij de leraar slijmen?","Wie zou het snelst blut zijn op reis?",
-"Wie heeft het meeste geluk in het leven?","Wie zou een quiz over deze groep winnen?","Wie zou het eerst verliefd worden op vakantie?","Wie heeft de beste lach?",
-"Wie zou nooit een avond overslaan?","Wie is als eerste weg op een feest zonder iets te zeggen?","Wie maakt het vaakst een Franse aftocht?","Wie heeft de meest bizarre familie?",
-"Wie zou het langst zonder social media kunnen?","Wie zou in een ander leven een rockster zijn?","Wie zou het eerst 'ik hou van jou' zeggen?","Wie heeft de beste kot-hacks?",
-"Wie is de beste leugenaar bij weerwolven?","Wie geeft het meeste uit aan kleren?","Wie heeft vandaag het minst gestudeerd?","Wie zou als eerste een eigen huis kopen?",
-"Wie zou het snelst ruzie krijgen met de buren?","Wie heeft de meest herkenbare stem?","Wie zou je in een escape room willen hebben?","Wie zou je zeker niet in een escape room willen?",
-"Wie zou het eerst in een musical meespelen?","Wie heeft het grootste hoofd 's ochtends?","Wie heeft de beste kater-remedie?","Wie gaat het vaakst naar de fitness, zegt hij?",
-"Wie zou een talentenjacht winnen?","Wie maakt de grappigste typfouten?","Wie heeft de meest onverwachte guilty pleasure?","Wie zou het snelst zijn wachtwoord vergeten?",
-"Wie is het slechtst in tijdsinschatting?","Wie zou de beste president zijn?","Wie zou de slechtste president zijn?","Wie zou als eerste een tweede kans geven aan een ex?",
-"Wie is het meest koppig?","Wie zou het eerst een vriendschap verbreken om een kleinigheid?","Wie zou als eerste viraal gaan?","Wie heeft de mooiste ogen hier?"]);
+const BOM=["Wie heeft de meeste ex'en?", "Wie stuurt vanavond als eerste een dronken bericht?", "Wie kust vanavond nog iemand?", "Wie is het best in bed, denk je?", "Wie zou het eerst vreemdgaan?", "Wie heeft de raarste zoekgeschiedenis?", "Wie eindigt vanavond op het verkeerde kot?", "Wie heeft ooit iemand van deze groep gekust?", "Wie liegt het best tegen zijn ouders?", "Wie zou meedoen aan Temptation Island?", "Wie heeft de gênantste crush?", "Wie stuurt nog berichten naar zijn ex?", "Wie heeft de slechtste smaak in partners?", "Wie wordt vanavond het dronkenst?", "Wie doet morgen alsof hij zich niks herinnert?", "Wie flirt met iedereen, ook als hij bezet is?", "Wie geeft het meeste geld uit op een avond?", "Wie heeft de spannendste foto's in zijn gsm?", "Wie zou het eerst een OnlyFans beginnen?", "Wie is het meest jaloers?", "Wie zou daten met een prof?", "Wie heeft het grootste ego?", "Wie verliest het eerst zijn telefoon vanavond?", "Wie maakt het eerst ruzie met de uitsmijter?", "Wie heeft de meeste datingmatches?", "Wie is stiekem verliefd op iemand hier?", "Wie heeft de slechtste kus, denk je?", "Wie zou het eerst trouwen in Vegas?", "Wie verbergt het meest voor zijn partner?", "Wie belt het vaakst dronken zijn moeder?", "Wie zou als eerste naakt de Leie in springen?", "Wie ghost het vaakst mensen?", "Wie heeft de langste ‘het is ingewikkeld’-relatie?", "Wie geeft het slechtste advies over liefde?", "Wie zou je meenemen naar een swingersparty, als grap?", "Wie wordt het eerst verliefd op vakantie?", "Wie heeft ooit gelogen over zijn leeftijd om binnen te geraken?", "Wie zou het snelst zijn ex terugnemen?", "Wie heeft het meeste geheimen voor deze groep?", "Wie is de grootste drama queen?", "Wie slaapt het vaakst ergens anders dan op zijn eigen kot?", "Wie zou het langst overleven zonder seks?", "Wie is het slechtst in sms'en terugsturen naar een date?", "Wie heeft de raarste turn-on?", "Wie zou het eerst een ex van een vriend daten?", "Wie heeft de meeste screenshots van andermans chats?", "Wie stuurt de meest cringe openingszinnen?", "Wie zou het eerst een tattoo laten zetten na een avond stappen?", "Wie heeft het grootste hart, maar de slechtste keuzes?", "Wie is het meest verslaafd aan zijn gsm?", "Wie zingt het luidst als hij zat is?", "Wie zou het snelst ontslagen worden?", "Wie liegt het vaakst over waar hij was?", "Wie zou een avond in de cel het best doorstaan?", "Wie heeft de beste lach?", "Wie is het meest koppig?", "Wie heeft de mooiste ogen hier?", "Wie zou de beste pornonaam hebben?", "Wie heeft het vaakst een kater op maandag?", "Wie wordt het eerst emotioneel na een paar pinten?", "Wie doet het vaakst een Franse aftocht?", "Wie zou het eerst zijn eigen verjaardag vergeten?", "Wie heeft de meest bizarre familie?", "Wie zou viraal gaan om de verkeerde reden?", "Wie heeft de slechtste dansmoves?", "Wie heeft de beste smoesjes?", "Wie zou het eerst een Tinder-date naar het kot meebrengen?", "Wie checkt het vaakst zijn eigen stories?", "Wie heeft de meest chaotische kamer?", "Wie vergeet het vaakst verjaardagen?", "Wie lacht het hardst om zijn eigen moppen?", "Wie zou het best een leugen detecteren?", "Wie gaat het vaakst terug naar een ex?", "Wie zou je je bankkaart toevertrouwen?", "Wie zou je nooit je bankkaart toevertrouwen?", "Wie maakt de beste playlist?", "Wie zou het snelst blut zijn op reis?", "Wie heeft vandaag het minst gestudeerd?", "Wie zou als eerste een eigen huis kopen?", "Wie heeft het grootste hoofd 's ochtends?", "Wie zou het eerst een tweede kans geven aan een ex?"];
+
 /* geen herhaling op één avond: per spel bijgehouden, 12 uur geldig */
 const nightDeck=(key,list)=>{const K='kp_used_'+key;let st0={t:Date.now(),u:[]};
   try{const s=JSON.parse(localStorage.getItem(K)||'null');if(s&&Date.now()-s.t<12*3.6e6)st0=s}catch(e){}
@@ -519,24 +474,9 @@ const G={
      timers.push(setTimeout(()=>{b=false;if(!$('#rs'))return;$('#rs').textContent=RAD[p];T.next();$('#tg').innerHTML=T.tag('Volgende')},4600))}}}
 };
 /* ===== extra data ===== */
-const DOD=[["Nooit meer frieten","nooit meer pizza"],["Je gsm-scherm een dag op de beamer","je zoekgeschiedenis voorgelezen"],["Altijd 10 minuten te laat","altijd 20 minuten te vroeg"],
-["Een week zonder internet","een week zonder douche"],["Je ex als kotgenoot","je ouders als kotgenoten"],["Kunnen vliegen","onzichtbaar zijn"],["Gratis bier voor het leven","gratis reizen voor het leven"],
-["Elke dag dezelfde outfit","elke dag een willekeurige outfit"],["Alles horen wat mensen over je zeggen","alles weten wat mensen over je denken"],["Op de Overpoort wonen","naast de Boekentoren slapen"],
-["Champions League winnen als speler","de Lotto winnen"],["Nooit meer muziek","nooit meer films"],["Altijd zeggen wat je denkt","nooit meer iets kunnen zeggen"],["Een jaar in Tokio","een jaar in New York"],
-["Je examen gegarandeerd halen","gegarandeerd een geweldige zomer"],["Elke ochtend om 5u op","elke nacht pas om 5u slapen"],["Zingen bij elk gesprek","dansen bij elke stap"],
-["Je eerste kus herbeleven","je eerste kater herbeleven"],["Beroemd maar arm","rijk maar onbekend"],["Een week geen gsm","een week geen bed"]];
-const PARA=["Wie hier zou je het liefst daten?","Wie is het slechtst in bed, denk je?","Wie hier vertrouw je het minst?","Wie zou je mee nemen naar een onbewoond eiland?",
-"Wie hier is stiekem het meest jaloers?","Wie zou je nooit je wachtwoord geven?","Wie heeft de raarste ex?","Wie zou je bellen als je vastzit op het politiekantoor?",
-"Wie hier is het meest fake?","Wie is het knapst in deze kamer?","Wie zou je het liefst als kotgenoot hebben?","Wie wordt het eerst dronken vanavond?",
-"Wie zou je bij een break-up als eerste bellen?","Wie heeft het meeste geheimen?","Wie zou je nooit voorstellen aan je ouders?","Wie is de grootste flirt?"];
-const CHAOS=["{a} deelt 3 slokken uit.","{a} en {b} drinken samen.","{a}, kies een maatje. Tot het einde van het spel drinken jullie samen.",
-"Iedereen die {a} ooit een bericht heeft gestuurd na middernacht, drinkt.","{a}, imiteer {b}. Lacht niemand? Drinken.","{a} en {b}: steen-papier-schaar. Verliezer drinkt 2.",
-"Regel: niemand mag nog ‘ja’ zeggen. Wie het doet, drinkt. Bedacht door {a}.","{a}, noem 5 voetballers in 10 seconden of drink.","{a} mag een regel verzinnen.",
-"Iedereen drinkt behalve {a}.","{a}, vertel je slechtste date. Weigeren = 3 slokken.","{a} en {b} wisselen van drankje voor de volgende ronde.",
-"De laatste die zijn neus aanraakt, drinkt.","{a} kiest wie 2 slokken drinkt.","{a}, laat de groep je laatst gesprongen Spotify-nummer zien.",
-"Alle singles drinken.","Iedereen met een iPhone drinkt.","{a}, wie hier zou je kussen? Weigeren = ad fundum.","{a} en {b} staren elkaar aan. Wie eerst lacht, drinkt.",
-"{a} wordt Vragenmeester. Wie zijn vraag beantwoordt, drinkt.","Waterval, {a} begint.","{a}, beoordeel ieders outfit. De slechtste drinkt.",
-"{a}: rijm op ‘kot’. Om beurten verder. Wie faalt, drinkt.","Iedereen die vandaag al gedronken heeft voor 18u, drinkt.","{a} drinkt zoveel slokken als {b} kiest (max 4)."];
+const DOD=[["Je ex zien zoenen met je beste vriend", "je ouders betrappen in bed"], ["Je zoekgeschiedenis op groot scherm", "je chats met je ex voorgelezen"], ["Een date met je prof", "een date met je ex"], ["Altijd zeggen wat je denkt", "nooit meer liegen tegen je partner"], ["Een week geen seks", "een week geen alcohol"], ["Wakker worden naast een vreemde", "wakker worden zonder geheugen"], ["Je crush leest al je berichten", "je moeder leest al je berichten"], ["Een tattoo van je ex' naam", "een tattoo van je eigen naam op je voorhoofd"], ["Nooit meer kussen", "nooit meer pintjes"], ["Je eerste keer opnieuw", "je eerste kater opnieuw"], ["Op Temptation Island", "op Blind Getrouwd"], ["Ontrouw van je partner weten", "nooit weten en gelukkig blijven"], ["Dronken een speech geven op een trouw", "nuchter een striptease op een vrijgezellen"], ["Een relatie met iemand van deze groep", "altijd single"], ["Je ouders zien je dronkenste foto", "je baas ziet je dronkenste foto"], ["Één nacht met een celebrity", "een jaar gratis bier"], ["Je ex wordt je kotgenoot", "je ouders worden je kotgenoten"], ["Alles horen wat mensen over je zeggen", "alles zien wat ze over je typen"], ["Kussen met iemand die slecht kust", "nooit meer kussen"], ["Je gsm onbewaakt een uur bij deze groep laten", "een uur je ex bellen"]];
+const PARA=["Wie hier zou je het liefst daten?", "Met wie zou je een nacht in een hotelkamer willen delen?", "Wie is volgens jou het best in bed?", "Wie zou je nooit voorstellen aan je ouders?", "Wie heeft vanavond de meeste kans om iemand te kussen?", "Wie zou je zoenen als het moest?", "Wie vertrouw je het minst met je geheimen?", "Wie is het meest fake?", "Wie heeft volgens jou de meeste ex'en?", "Wie zou je bellen om een lijk te helpen verbergen?", "Wie zou je het liefst als ex hebben?", "Wie heeft volgens jou de raarste fantasieën?", "Op wie had je ooit een crush?", "Wie is het knapst in deze kamer?", "Wie zou het slechtst zijn in een relatie?", "Wie hier zou je meenemen als date naar een trouwfeest?", "Wie heeft het meeste geheimen voor zijn partner?", "Wie zou je een sexy foto sturen, als het moest?"];
+const CHAOS=["{a} deelt 3 slokken uit.", "{a} en {b} drinken samen, armen in elkaar gehaakt.", "{a}, kies een maatje. Tot het einde drinken jullie samen.", "Iedereen die {a} ooit een bericht stuurde na middernacht, drinkt.", "{a}, imiteer hoe {b} iemand zou versieren. Lacht niemand? Drinken.", "{a} en {b}: steen-papier-schaar. Verliezer drinkt 2.", "Regel: niemand mag nog ‘ja’ zeggen. Bedacht door {a}.", "{a}, noem 5 voetballers in 10 seconden of drink.", "{a} mag een regel verzinnen.", "Iedereen drinkt behalve {a}.", "{a}, vertel je slechtste date. Weigeren = 3 slokken.", "{a} en {b} wisselen van drankje.", "De laatste die zijn neus aanraakt, drinkt.", "{a} kiest wie 2 slokken drinkt.", "{a}, wie hier zou je kussen? Weigeren = ad fundum.", "{a} en {b} staren elkaar aan. Wie eerst lacht, drinkt.", "{a}, geef {b} een compliment over zijn uiterlijk, of drink 2.", "Alle singles drinken.", "Iedereen die ooit een ex heeft teruggestuurd, drinkt.", "{a}, laat je laatste foto zien of drink 3.", "{a} fluistert iets in het oor van {b}. {b} beslist of {a} drinkt.", "{a} en {b} doen samen een ad fundum.", "Iedereen die vanavond al iemand knap vond hier, drinkt. Eerlijk zijn.", "{a}, beoordeel ieders outfit. De slechtste drinkt.", "{a} drinkt zoveel slokken als {b} kiest (max 4).", "{a}, vertel met wie hier je zou trouwen, wie je zou kussen en wie je zou ghosten.", "{a} en {b}: wie heeft de meeste ex'en? Die drinkt.", "Iedereen die een datingapp heeft, drinkt.", "{a}, lees je laatste verstuurde bericht voor of drink 3.", "{a} wordt Vragenmeester. Wie zijn vraag beantwoordt, drinkt."];
 const COLORS=['#d4ff3a','#ff5c8a','#4cc9f0','#ffb703','#a78bfa','#34d399','#fb7185','#f97316','#60a5fa','#e879f9'];
 let ACC=[];try{ACC=JSON.parse(localStorage.getItem('kp_acc')||'[]')}catch(e){}
 try{const old=JSON.parse(localStorage.getItem('kp_players')||'[]');if(!ACC.length&&old.length)ACC=old.map((n,i)=>({id:'a'+Date.now()+i,n,c:COLORS[i%COLORS.length]}))}catch(e){}
@@ -602,13 +542,13 @@ Object.assign(G,{
      scr(`${T.tag('In de bus')}<div class="row">${hand.map(cardH).join('')||'<div class="hint">Nog geen kaarten</div>'}</div>
        ${step<4?`<div class="pr" style="font-size:clamp(32px,4.6vw,56px)">${Q[step][0]}</div><div class="hint" style="color:${ok===false?'#ff4d4d':'var(--muted)'}">${msg||'Fout = drinken en opnieuw beginnen.'}</div>
        <div class="row">${Q[step][1].map(a=>`<button class="btn ${a==='Hoger'||a==='Zwart'||a==='Buiten'?'':'ghost'}" data-a="${a}">${a}</button>`).join('')}</div>`
-       :`<div class="pr" style="color:var(--acct)">Uit de bus</div><div class="hint">Gehaald na ${tries} ${tries>1?'pogingen':'poging'}. Volgende speler.</div><button class="btn" id="ag">Volgende speler</button>`}`);
+       :`${(!view.done&&(view.done=1,award(T.p,Math.max(1,4-tries),'De Bus')),'')}<div class="pr" style="color:var(--acct)">Uit de bus</div><div class="hint">Gehaald na ${tries} ${tries>1?'pogingen':'poging'}. Volgende speler.</div><button class="btn" id="ag">Volgende speler</button>`}`);
      st.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>answer(b.dataset.a));const ag=$('#ag');if(ag)ag.onclick=go};
    const answer=a=>{if(!dk.length)dk=fullDeck();const c=dk.pop();
      if(check(c,a)){hand.push(c);step++;beep(880,.06,.1,'triangle');view('Juist.')}
      else{const s=step+1;hand=[];step=0;tries++;beep(140,.25,.15,'sawtooth');
        scr(`${cardH(c)}<div class="pr" style="color:#ff4d4d">Fout</div>${(joeg('JOEGNEE!','Terug naar af'),'')}<div class="hint">Drink ${s} ${s>1?'slokken':'slok'} en begin opnieuw.</div><button class="btn" id="rt">Opnieuw</button>`);$('#rt').onclick=()=>view()}};
-   const go=()=>{dk=fullDeck();hand=[];step=0;tries=1;T.next();view()};go()}},
+   const go=()=>{dk=fullDeck();hand=[];step=0;tries=1;view.done=0;T.next();view()};go()}},
  derby:{i(){let pos,dk,win=null;const H=[['♠',0],['♥',1],['♦',1],['♣',0]],L=8;
    const view=(last)=>{scr(`<div class="track">${H.map((h,i)=>`<div class="lane ${h[1]?'red':''}">${[...Array(L+1)].map((_,j)=>`<div>${j===pos[i]?'A'+h[0]:(j===L?'🏁':'')}</div>`).join('')}</div>`).join('')}</div>
      ${last?`<div class="row" style="align-items:center">${cardH(last).replace('class="card','class="card" style="width:110px;font-size:22px" data-x="')}<div class="hint" style="text-align:left">${win!==null?'':'Aas '+last[1]+' gaat één vak vooruit.'}</div></div>`:'<div class="hint">Iedereen kiest een teken en zet slokken in. Winnaar deelt zijn inzet ×2 uit, de rest drinkt zijn inzet.</div>'}
@@ -629,7 +569,7 @@ Object.assign(G,{
      timers.push(setTimeout(()=>{if(order.length===n)return;live=true;t0=Date.now();st.querySelector('.zones').classList.add('go');beep(1400,.12,.2);
        zs.forEach(z=>{if(!z.classList.contains('bad')&&!z.classList.contains('done'))z.innerHTML=`${pname(+z.dataset.z)}<br><span class="mono" style="color:#000">TIK!</span>`})},1800+Math.random()*4500));
      const finish=()=>{clr();timers.push(setTimeout(()=>{st.style.position='';const ok=order.filter(o=>o.t>=0).sort((a,b)=>a.t-b.t),bad=order.filter(o=>o.t<0);
-       if(ok.length){const f=ok[0],a=active()[f.i%Math.max(1,active().length)];if(a){const cur=STATS.reflex[a.id];if(!cur||f.t<cur){STATS.reflex[a.id]=f.t;saveS()}}}
+       if(ok.length){const fu=units()[ok[0].i%Math.max(1,units().length)];award(fu,2,'Reflex');const f=ok[0],a=active()[f.i%Math.max(1,active().length)];if(a){const cur=STATS.reflex[a.id];if(!cur||f.t<cur){STATS.reflex[a.id]=f.t;saveS()}}}
        const loser=bad.length?bad.map(o=>pname(o.i)).join(' & '):pname(ok[ok.length-1].i);
        joeg('JOEGNEE!',loser+' drinkt');scr(`<div class="mono">Drinkt</div><div class="pr">${loser}</div><div class="hint">${ok.length?'Snelste: '+pname(ok[0].i)+' ('+ok[0].t+' ms)':''}</div><div class="row"><button class="btn ghost" id="pk">Spelers</button><button class="btn" id="ag">Opnieuw</button></div>`);
        $('#ag').onclick=run;$('#pk').onclick=pick},900))}};
@@ -667,7 +607,7 @@ Object.assign(G,{
    const ask=()=>{c++;T.next();$('#gc').textContent=String(c).padStart(2,'0');const[q,ans]=n(),ok=ans[0],opts=shuf(ans);
      scr(`${T.tag()}<div class="pr" style="font-size:clamp(32px,4.6vw,56px)">${q}</div>
        <div class="qgrid">${opts.map(o=>`<button class="qo" data-o="${esc(o)}">${o}</button>`).join('')}</div>`);
-     st.querySelectorAll('.qo').forEach(b=>b.onclick=()=>{const good=b.dataset.o===ok;if(good&&T.p)bump('quiz',T.p.id);st.querySelectorAll('.qo').forEach(x=>{x.disabled=true;if(x.dataset.o===ok)x.classList.add('ok');else if(x===b)x.classList.add('no')});
+     st.querySelectorAll('.qo').forEach(b=>b.onclick=()=>{const good=b.dataset.o===ok;if(good&&T.p){bump('quiz',T.p.id);award(T.p,1,'Kotquiz')}st.querySelectorAll('.qo').forEach(x=>{x.disabled=true;if(x.dataset.o===ok)x.classList.add('ok');else if(x===b)x.classList.add('no')});
        beep(good?880:160,good?.08:.25,.12,good?'triangle':'sawtooth');
        st.insertAdjacentHTML('beforeend',`<div class="hint" style="color:${good?'#b9f27a':'#ff8a65'}">${good?'Juist. Deel 1 slok uit.':(joeg('JOEGNEE!','Fout, 1 slok'),'Fout. Neem 1 slok.')}</div><button class="btn" id="nx">Volgende vraag</button>`);$('#nx').onclick=ask})};
    ask()}},
@@ -683,7 +623,7 @@ Object.assign(G,{
      $('#kk').onclick=()=>{score++;log.push([$('#kw').textContent,1]);beep(1000,.08,.15,'triangle');show()};
      $('#kp').onclick=()=>{log.push([$('#kw').textContent,0]);beep(200,.12,.12,'sawtooth');show()};
      timers.push(setInterval(()=>{left--;const t=$('#kt');if(!t)return clr();t.textContent=left;if(left<=5&&left>0)beep(700,.05,.1);
-       if(left<=0){clr();boomSnd();st.style.position='';if(T.p)bump('kop',T.p.id,score,true);const who=T.p?esc(T.p.n):'Jij';
+       if(left<=0){clr();boomSnd();st.style.position='';if(T.p)bump('kop',T.p.id,score,true);award(T.p,score>=10?3:score>=5?1:0,'Op Je Kop');const who=T.p?esc(T.p.n):'Jij';
          scr(`<div class="mono">${who} raadde</div><div class="timer">${score}</div><div class="chips">${log.map(([w,g])=>`<span class="chip" style="${g?'border-color:var(--acct);color:var(--acct)':'opacity:.45'}">${w}</span>`).join('')}</div>
            <div class="hint">Minder dan 5 geraden? 1 slok. Meer dan 10? Deel 2 slokken uit.</div><button class="btn" id="ag">Volgende speler</button>`);$('#ag').onclick=pick}},1000))};
    pick()}}
@@ -732,7 +672,7 @@ Object.assign(G,{
      <button class="btn" id="wc">Bereken</button>`);
      st.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const[s,d]=b.dataset.r.split('|');r[+s]=Math.max(0,r[+s]+ +d);result(r)});
      $('#wc').onclick=()=>{const sg=x=>Math.sign(x[0]-x[1]);const out=Object.entries(c.p).map(([id,p])=>{const u=ACC.find(x=>x.id===id);if(!u)return'';
-         const exact=p[0]===r[0]&&p[1]===r[1],win=sg(p)===sg(r);return `<div class="wrow">${av(u,36)}<b>${esc(u.n)}</b><span class="small">${p[0]}-${p[1]}</span><span style="color:${exact||win?'var(--acct)':'#ff5c6c'}">${exact?'Exact! Deel 3 slokken uit':win?'Juiste winnaar: deel 1 uit':'Fout: 1 slok'}</span></div>`}).join('');
+         const exact=p[0]===r[0]&&p[1]===r[1],win=sg(p)===sg(r);award(u,exact?3:win?1:0,'Wedkantoor');return `<div class="wrow">${av(u,36)}<b>${esc(u.n)}</b><span class="small">${p[0]}-${p[1]}</span><span style="color:${exact||win?'var(--acct)':'#ff5c6c'}">${exact?'Exact! Deel 3 slokken uit':win?'Juiste winnaar: deel 1 uit':'Fout: 1 slok'}</span></div>`}).join('');
        BETS.hist.push({m:c.m,r:r.join('-')});BETS.cur=null;saveB();joeg('JOEGNEE!','Afrekenen');
        scr(`<div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${esc(c.m)} · ${r.join('-')}</div><div class="wl">${out}</div><button class="btn" id="wh">Nieuwe weddenschap</button>`);$('#wh').onclick=home}};
    home()}},
@@ -742,7 +682,7 @@ Object.assign(G,{
      scr(`<div class="pong">${[0,1].map(k=>`<div class="pside" style="--c:${U[k].c}"><div class="row" style="align-items:center">${av(U[k],40)}<b class="pt">${esc(U[k].n)}</b></div>${U[k].ids?`<div class="small">${members(U[k])}</div>`:''}<div class="ptri">${tri(k)}</div><div class="mono">${left[k]} bekers over</div></div>`).join('<div class="pvs">VS</div>')}</div>
        <div class="hint">Raak je een beker van de tegenstander? Tik hem weg. Zij drinken hem.</div><div class="row"><button class="tbtn" id="pu">Ongedaan</button><button class="tbtn" id="pr">Opnieuw</button></div>`);
      st.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const[k,i]=b.dataset.c.split('|').map(Number);if(!cups[k][i])return;cups[k][i]=0;hist.push([k,i]);beep(900,.05,.1,'triangle');
-       const l=cups[k].reduce((a,b)=>a+b,0);if(l===0)joeg(esc(U[1-k].n).toUpperCase()+' WINT!','Joegnee');draw()});
+       const l=cups[k].reduce((a,b)=>a+b,0);if(l===0){joeg(esc(U[1-k].n).toUpperCase()+' WINT!','Joegnee');if(U[1-k].ids)award(U[1-k],3,'Beerpong')}draw()});
      $('#pu').onclick=()=>{const h=hist.pop();if(h){cups[h[0]][h[1]]=1;draw()}};$('#pr').onclick=()=>{cups=[[...Array(10)].map(()=>1),[...Array(10)].map(()=>1)];hist=[];draw()}};
    draw()}},
  duel:{i(){const U=units();if(U.length<2)return needPlayers(2,'Zet in Spelers de teams aan (bv. 2 teams) voor een teamduel. Zonder teams speelt elke speler voor zichzelf.');
@@ -754,7 +694,7 @@ Object.assign(G,{
        <div class="row"><button class="btn ghost" data-win="${a.id}">${esc(a.n)}</button><button class="btn ghost" data-win="${b.id}">${esc(b.n)}</button></div>
        <div class="small">${U.map(u=>esc(u.n)+' '+score[u.id]).join(' · ')}</div>`);
      $('#ds').onclick=()=>{clr();let s=30;timers.push(setInterval(()=>{s--;const t=$('#dt');if(!t)return clr();t.textContent=s;if(s<=5&&s>0)beep(700,.05,.1);if(s<=0){clr();boomSnd()}},1000))};
-     st.querySelectorAll('[data-win]').forEach(bt=>bt.onclick=()=>{clr();score[bt.dataset.win]++;const loser=bt.dataset.win===a.id?b:a;joeg('JOEGNEE!',esc(loser.n)+' drinkt');round()})};
+     st.querySelectorAll('[data-win]').forEach(bt=>bt.onclick=()=>{clr();score[bt.dataset.win]++;const loser=bt.dataset.win===a.id?b:a;award(bt.dataset.win===a.id?a:b,2,'Teamduel');joeg('JOEGNEE!',esc(loser.n)+' drinkt');round()})};
    round()}}
 });
 
@@ -796,6 +736,7 @@ const META=[
  {k:'pong',lvl:'hard',n:'Beerpong',s:'Scorebord · teams',ic:'cup',tag:'Teams',p:'2 teams',r:["Zet in Spelers 2 teams aan, of speel met Team A en Team B.","Elk team heeft 10 bekers in een driehoek.","Raak je een beker van de tegenstander? Tik hem weg op het scherm. Zij drinken hem leeg.","Eerste team zonder bekers verliest."]},
  {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
  {k:'kara',lvl:'chill',n:'Karaoke',s:'Rad · uitdaging · jury',ic:'mic',tag:'Nieuw',p:'2+ spelers',r:["Het rad kiest wie er moet zingen. Met teams aan zingt het hele team samen.","Je krijgt een categorie (bv. ‘Een Belgische klassieker’) en een uitdaging (bv. ‘met een West-Vlaams accent’).","Tik het nummer in en open de karaoke-versie op YouTube: dan staat de tekst op het scherm. Bluetooth-box aan, en gaan.","Na het nummer beslist de jury: 🔥 ster (deel 3 slokken uit), 👍 prima of 💀 vals (zanger drinkt 2). Weigeren = ad fundum."]},
+ {k:'wbi',lvl:'chill',n:'Wie Ben Ik?',s:'Naam op je kop · ja/nee',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie: Bekende Belgen, voetballers, filmpersonages, artiesten, iemand hier aan tafel of een mix.","Hou de iPad op je voorhoofd met het scherm naar de groep. Je ziet de naam niet, de rest wel.","Stel ja/nee-vragen. De groep antwoordt enkel met ja of nee. Je hebt 2 minuten.","Geraden? Hoe sneller, hoe meer slokken je uitdeelt. Opgeven of tijd op: 2 slokken."]},
  {k:'ww',lvl:'chill',n:'Weerwolven',s:'Met jullie gsm\'s · lobby met code',ic:'wolf',tag:'Groot spel',p:'4-20 spelers',r:["De iPad is de spelleider: hij toont een code en een QR-code. Iedereen scant hem met zijn eigen gsm en komt zo in de lobby.","Iedereen krijgt in het geheim zijn rol op zijn gsm: weerwolf, ziener, dokter, jager of burger.","’s Nachts kiest iedereen op zijn gsm. Ook de burgers tikken iets aan, zodat niemand opvalt.","Overdag discussiëren jullie met een timer. Elke weerwolf krijgt een geheime opdracht (bv. ‘zeg twee keer eerlijk gezegd’) die hij moet uitvoeren. Betrap ze!","Stemmen gebeurt op de gsm. Wie opgehangen of verscheurd wordt, drinkt. Het verliezende kamp: ad fundum."]},
  {k:'wvo',lvl:'chill',n:'Durf Je',s:'Truth or dare',ic:'flame',p:'3+ spelers',r:["Kies Truth of Dare.","Beantwoord eerlijk of voer de opdracht uit.","Weigeren = drinken. Daarna is de volgende aan de beurt."]}];
 
@@ -804,11 +745,11 @@ let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function renderGames(){$('#gn').textContent=String(META.length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
-  $('#gl').outerHTML=`<div id="gl">${chaosUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
+  $('#gl').outerHTML=`<div id="gl">${chaosUI()}${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
   document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{lvSel=b.dataset.lv;try{localStorage.setItem('kp_lv',lvSel)}catch(e){}renderGames()});
   document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g));
-  bindChaos();
+  bindChaos();bindComp();
   $('#pla').onclick=()=>openPL();
   $('#rnd').onclick=()=>{const l=META.filter(m=>m.lvl===lvSel),m=l[Math.random()*l.length|0];beep(660,.05,.1,'triangle');openGame(m.k)}}
 const openGame=k=>{clr();plBar();const m=META.find(x=>x.k===k);$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
@@ -867,7 +808,7 @@ function overview(){/* iedereen die vanavond iets dronk, ook wie al vertrokken i
    <table class="lb" style="max-width:860px">${rows.map(r=>{const[lv]=level(r.b,r.L);return `<tr><td>${av(r.a,40)}</td><td class="n">${esc(r.a.n)}${ACT.ids.includes(r.a.id)?'':' <span class="small">(vertrokken)</span>'}</td><td>${r.c} ${r.c===1?'drankje':'drankjes'}</td>
      <td style="font-family:'Anton',sans-serif;font-size:28px;color:${LCc()[lv]}">${r.b.toFixed(2).replace('.',',')}‰</td>
      <td>${r.b>=r.L?'Positief tot <b>'+hhmm(r.l)+'</b>'+((r.b-r.L)/BETA>=8?' morgen':''):'<span style="color:#b9f27a">Blaast niet positief</span>'}</td></tr>`}).join('')||'<tr><td>Nog niets geteld.</td></tr>'}</table>
-   ${statsHTML()}<div class="hint">Iedereen boven de limiet gaat te voet, met een taxi, het openbaar vervoer of een BOB naar huis. Voel je je slecht of krijg je iemand niet wakker? Bel 112.</div>
+   ${COMP.on&&standings().some(x=>x.p)?'<div class="mono" style="margin-top:6px">Zwijn van de Avond</div>'+podiumHTML():''}${statsHTML()}<div class="hint">Iedereen boven de limiet gaat te voet, met een taxi, het openbaar vervoer of een BOB naar huis. Voel je je slecht of krijg je iemand niet wakker? Bel 112.</div>
    <button class="btn" id="ok">Terug naar teller</button>`);
   $('#ok').onclick=()=>{$('#ov').classList.remove('open');renderCount()}}
 
@@ -1095,7 +1036,7 @@ Object.assign(G,{
      $('#kr').onclick=()=>{c.cat=nc();card()};$('#kd').onclick=jury};
    const jury=()=>{const c=cur;scr(`<div class="mono">De jury beslist</div><div class="pr" style="font-size:clamp(30px,4.4vw,54px)">Hoe was ${esc(c.who.n)}?</div>
      <div class="jury">${KJURY.map(j=>`<button data-j="${j.k}"><b>${j.e}</b><span class="jn">${j.n}</span><span class="small">${j.d}</span></button>`).join('')}</div>`);
-     st.querySelectorAll('[data-j]').forEach(bt=>bt.onclick=()=>{const j=KJURY.find(x=>x.k===bt.dataset.j);j.s();if(j.k==='ster'&&c.who.id)bump('kara',c.who.id);
+     st.querySelectorAll('[data-j]').forEach(bt=>bt.onclick=()=>{const j=KJURY.find(x=>x.k===bt.dataset.j);j.s();award(c.who,j.k==='ster'?3:j.k==='ok'?1:0,'Karaoke');if(j.k==='ster'&&c.who.id)bump('kara',c.who.id);
        joeg(j.k==='ster'?'STER!':j.k==='vals'?'JOEGNEE!':'NETJES!',j.d);
        scr(`<div class="pr">${j.e} ${j.n}</div><div class="hint">${j.d}.</div><button class="btn" id="kn">Volgende zanger</button>`);$('#kn').onclick=spin})};
    spin()}}
@@ -1144,10 +1085,56 @@ const chaosUI=()=>`<div class="chaosbox ${CH.on?'on':''}"><div><div class="lvn" 
 const bindChaos=()=>{document.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{const v=b.dataset.ch;if(v==='off'){CH.on=false;CH.rule=null;clearTimeout(chT)}else{CH.on=true;CH.lvl=v;chSchedule();beep(1000,.06,.1,'square')}saveCH();drawRule();renderGames()});
   const n=$('#chnow');if(n)n.onclick=()=>chFire()};
 if(CH.on)chSchedule();drawRule();
+/* ===== AVONDCOMPETITIE ===== */
+let COMP={on:false,t:Date.now(),pts:{},log:[]};try{const s=JSON.parse(localStorage.getItem('kp_comp')||'null');if(s&&Date.now()-s.t<14*3.6e6)COMP=s}catch(e){}
+const saveComp=()=>{try{localStorage.setItem('kp_comp',JSON.stringify(COMP))}catch(e){}};
+const award=(u,n,why)=>{if(!COMP.on||!u||!n)return;const ids=u.ids||[u.id];ids.forEach(id=>COMP.pts[id]=(COMP.pts[id]||0)+n);COMP.log.push({t:Date.now(),ids,n,why});saveComp();
+  let t=document.getElementById('ptoast');if(!t){t=document.createElement('div');t.id='ptoast';document.body.appendChild(t)}
+  t.innerHTML=`<b>+${n}</b> ${esc(u.n)} <span>${esc(why)}</span>`;t.classList.remove('go');void t.offsetWidth;t.classList.add('go')};
+const standings=()=>ACC.filter(a=>COMP.pts[a.id]!=null||ACT.ids.includes(a.id)).map(a=>({a,p:COMP.pts[a.id]||0})).sort((x,y)=>y.p-x.p);
+const podiumHTML=()=>{const s=standings(),top=[s[1],s[0],s[2]];
+  const teamTot=TM.on?units().map(t=>({t,p:t.ids.reduce((sum,id)=>sum+(COMP.pts[id]||0),0)})).sort((x,y)=>y.p-x.p):[];
+  return `<div class="podium">${top.map((x,i)=>x?`<div class="pod p${[2,1,3][i]}">${av(x.a,[56,72,48][i])}<b>${esc(x.a.n)}</b><span>${x.p} pt</span><div class="blk">${[2,1,3][i]}</div></div>`:'<div class="pod"></div>').join('')}</div>
+    <div class="wl">${s.slice(3).map((x,i)=>`<div class="wrow"><span class="mono">${i+4}</span>${av(x.a,30)}<b>${esc(x.a.n)}</b><span>${x.p} pt</span></div>`).join('')}</div>
+    ${teamTot.length?`<div class="mono" style="margin-top:8px">Teams</div><div class="wl">${teamTot.map((x,i)=>`<div class="wrow">${av(x.t,30)}<b>${esc(x.t.n)}</b><span>${x.p} pt</span>${i===0?'<span>👑</span>':''}</div>`).join('')}</div>`:''}`};
+const openPodium=()=>{clr();PL=null;plBar();$('#gt').textContent='Stand van de avond';$('#gc').textContent='';$('#ov').classList.add('open');
+  const s=standings();scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">${s[0]&&s[0].p?'👑 '+esc(s[0].a.n)+' leidt':'Nog geen punten'}</div>${podiumHTML()}
+   <div class="hint">Punten verdien je in Kotquiz, Op Je Kop, Wie Ben Ik, Reflex, Karaoke, De Bus, Teamduel, Beerpong en het Wedkantoor.</div>
+   <div class="row"><button class="tbtn" id="cpr">Competitie resetten</button><button class="btn" id="cpk">Terug naar de spellen</button></div>`);
+  if(s[0]&&s[0].p)joeg(esc(s[0].a.n).toUpperCase()+'!','👑 leidt de avond');
+  $('#cpk').onclick=()=>{$('#ov').classList.remove('open')};$('#cpr').onclick=e=>{const b=e.currentTarget;if(b.dataset.sure){COMP.pts={};COMP.log=[];COMP.t=Date.now();saveComp();openPodium()}else{b.dataset.sure=1;b.textContent='Zeker? Tik nog eens'}}};
+const compUI=()=>`<div class="chaosbox comp ${COMP.on?'on':''}"><div><div class="lvn" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase">Avondcompetitie ${COMP.on?'<span class="tag">AAN</span>':''}</div>
+  <div class="small" style="margin-top:6px">Verdien punten in de spellen. Op het einde: een podium en de Zwijn van de Avond.${COMP.on&&standings()[0]&&standings()[0].p?' Nu leidt <b style="color:var(--fg)">'+esc(standings()[0].a.n)+'</b> met '+standings()[0].p+' pt.':''}</div></div>
+  <div class="seg"><span class="sg ${!COMP.on?'on':''}" data-cp="off">Uit</span><span class="sg ${COMP.on?'on':''}" data-cp="on">Aan</span></div>
+  ${COMP.on?'<button class="tbtn" id="cpst">🏆 Stand</button>':''}</div>`;
+const bindComp=()=>{document.querySelectorAll('[data-cp]').forEach(b=>b.onclick=()=>{COMP.on=b.dataset.cp==='on';if(COMP.on&&!COMP.log.length)COMP.t=Date.now();saveComp();renderGames()});const s=$('#cpst');if(s)s.onclick=openPodium};
+
+/* ===== WIE BEN IK ===== */
+const WBI={'Bekende Belgen':['Stromae','Eden Hazard','Kevin De Bruyne','Romelu Lukaku','Angèle','Tom Waes','Wout van Aert','Remco Evenepoel','Nafi Thiam','Jacques Brel','Kim Clijsters','Jeroen Meus','Gert Verhulst','Natalia','Dimitri Vegas','Lost Frequencies','Tom Boonen','Eddy Merckx','Jean-Claude Van Damme','Thibaut Courtois','Jeremy Doku','Lize Feryn','Pieter Paul Rubens','Hergé','Loïc Nottet','Matteo Simoni','Hanne Troonbeeckx','Andreas Vangrieken'],
+ 'Voetballers':['Lionel Messi','Cristiano Ronaldo','Kylian Mbappé','Erling Haaland','Jude Bellingham','Vinícius Júnior','Harry Kane','Mohamed Salah','Lamine Yamal','Luka Modrić','Neymar','Zlatan Ibrahimović','Robert Lewandowski','Karim Benzema','Pedri','Bukayo Saka','Jamal Musiala','Virgil van Dijk','Florian Wirtz','Zinedine Zidane','Ronaldinho','David Beckham'],
+ 'Filmpersonages':['Harry Potter','Shrek','Darth Vader','James Bond','Barbie','De Joker','Jack Sparrow','Forrest Gump','Rocky Balboa','Elsa','Gollum','Batman','Spider-Man','Hannibal Lecter','Dory','Buzz Lightyear','Mr. Bean','Indiana Jones','Wednesday Addams','Iron Man','Pikachu','Samson','Plop','Dracula'],
+ 'Artiesten':['Taylor Swift','Beyoncé','Drake','Rihanna','Ed Sheeran','Billie Eilish','Bad Bunny','Dua Lipa','The Weeknd','Lady Gaga','Eminem','Adele','Bruno Mars','Shakira','Harry Styles','Travis Scott','Sabrina Carpenter','Kendrick Lamar','Michael Jackson','Madonna','Freddie Mercury','Elvis Presley']};
+Object.assign(G,{
+ wbi:{i(){let cat=null;
+   const pick=()=>{clr();T.next();const cats=Object.keys(WBI).concat(active().length>=3?['Iemand hier aan tafel']:[]);
+     scr(`${T.tag('Raadt')}<div class="pr" style="font-size:clamp(34px,5vw,60px)">Kies een categorie</div><div class="qgrid">${cats.map(k=>`<button class="qo" data-k="${k}">${k}</button>`).join('')}<button class="qo" data-k="Mix">🎲 Mix van alles</button></div>`);
+     st.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{cat=b.dataset.k;ready()})};
+   const getName=()=>{if(cat==='Iemand hier aan tafel'){const me=T.p?(T.p.ids||[T.p.id]):[];const o=active().filter(a=>!me.includes(a.id));return o.length?o[Math.random()*o.length|0].n:'Jezelf'}
+     const all=cat==='Mix'?Object.values(WBI).flat():WBI[cat];return nightDeck('wbi_'+(cat==='Mix'?'mix':cat),all)()};
+   const ready=()=>{scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">iPad op je voorhoofd</div><div class="hint">Scherm naar de groep. Stel ja/nee-vragen (‘Ben ik een man?’, ‘Speel ik voetbal?’). De groep antwoordt enkel ja of nee. Je hebt 2 minuten.</div><button class="btn" id="go">Start</button>`);$('#go').onclick=run};
+   const run=()=>{const name=getName(),t0=Date.now();let left=120;st.style.position='relative';
+     scr(`<div class="kop"><button class="kz pas" id="wq">Opgeven</button><div class="kw"><div class="mono">${esc(cat)}</div><div class="pr" style="font-size:clamp(46px,8vw,110px)">${esc(name)}</div><div class="timer" id="wt" style="font-size:64px">2:00</div></div><button class="kz ok" id="wg">Geraden!</button></div>`);
+     const end=g=>{clr();st.style.position='';const sec=Math.round((Date.now()-t0)/1000);let pts=0,msg;
+       if(g){pts=sec<45?3:sec<90?2:1;msg=`Geraden in ${sec} seconden! Deel ${pts} ${pts>1?'slokken':'slok'} uit.`;SB[3].f();joeg('JOEGNEE!',name)}else{msg=`Het was <b style="color:var(--fg)">${esc(name)}</b>. Drink 2 slokken.`;SB[5].f()}
+       award(T.p,pts,'Wie Ben Ik');scr(`<div class="pr">${g?'🎯 Juist':'💀 Mis'}</div><div class="hint">${msg}</div><button class="btn" id="nx">Volgende speler</button>`);$('#nx').onclick=pick};
+     $('#wg').onclick=()=>end(true);$('#wq').onclick=()=>end(false);
+     timers.push(setInterval(()=>{left--;const t=$('#wt');if(!t)return clr();t.textContent=Math.floor(Math.max(0,left)/60)+':'+String(Math.max(0,left)%60).padStart(2,'0');if(left<=10&&left>0)beep(700,.05,.1);if(left<=0)end(false)},1000))};
+   pick()}}
+});
 
 renderGames();
 /* ===== automatisch updaten ===== */
-const APPVER='1794933636';
+const APPVER='1794933819';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
