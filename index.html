@@ -830,7 +830,7 @@ function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill
   $('#rnd').onclick=()=>{const l0=META.filter(m=>m.lvl===lvSel),l=l0.length>1?l0.filter(m=>m.k!==window._lastRnd):l0,m=l[Math.random()*l.length|0];window._lastRnd=m.k;beep(660,.05,.1,'triangle');openGame(m.k)}}
 const openGame=k=>{clr();plBar();const m=META.find(x=>x.k===k);$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="ic" style="width:84px;height:84px;margin:0;border-radius:22px"><svg viewBox="0 0 24 24" style="width:42px;height:42px">${IC[m.ic]}</svg></div>
-    ${PL?`<div class="mono" style="color:var(--acct)">Spellenavond · spel ${PL.i+1} van ${PL.list.length}</div>`:''}<div class="pr">${m.n}</div><div class="meta"><span>${LV[m.lvl].n}</span><span>${m.p}</span><span>${m.s}</span></div>
+    ${PL?`<div class="mono" style="color:var(--acct)">Spellenavond · spel ${PL.i+1} van ${PL.list.length}</div>`:''}<div class="pr">${m.n}</div><div class="meta"><span>${(LV[m.lvl]||{n:'Groot spel'}).n}</span><span>${m.p}</span><span>${m.s}</span></div>
     <ol class="rules">${m.r.map(x=>`<li><span>${x}</span></li>`).join('')}</ol><button class="btn" id="sg">Start</button>`);
   $('#sg').onclick=()=>{bump('games',k);try{wake()}catch(e){}try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}G[k].i()}};
 
@@ -1211,7 +1211,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794949802';
+const APPVER='1794949894';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
