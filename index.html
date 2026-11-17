@@ -302,6 +302,7 @@
   .music .nm{font-size:clamp(30px,3.6vw,46px)!important}
   @media(max-width:900px){.mrow,.stats{grid-template-columns:1fr 1fr}}
   @media(max-width:1100px){#nav button{padding:14px 15px;gap:7px;font-size:12px;letter-spacing:.06em}}
+  @media(max-width:900px){#nav button{padding:12px 11px;gap:6px;font-size:11px;letter-spacing:.03em}#nav button svg{width:21px;height:21px}}
   @media(max-width:760px){#nav{gap:2px;padding:6px}#nav button{padding:14px 16px}#nav button span{display:none}}
   @media(max-width:700px){.games{grid-template-columns:1fr}}
   @media(max-width:720px){.music{grid-template-columns:1fr}.music a{border-right:0;border-bottom:1px solid var(--line)}}
@@ -1137,7 +1138,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794936006';
+const APPVER='1794936082';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
