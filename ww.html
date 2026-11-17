@@ -133,7 +133,7 @@ const rolesInGame=()=>{const s=new Set(inGame().map(p=>H.players[p].role).filter
 const cfgRoles=()=>['wolf','vil'].concat(H.cfg.witch?['witch']:[],H.cfg.cupid?['cupid']:[],H.cfg.seer?['seer']:[],H.cfg.doc?['doc']:[],H.cfg.hunter?['hunter']:[],H.cfg.mayor?['mayor']:[],H.cfg.nar?['nar']:[]);
 const pub=()=>({t:'state',phase:H.phase,round:H.round,hostPub:H.keys.pub,code:H.code,mayor:H.mayor,nar:H.nar,
   players:H.order.map(p=>({id:p,n:nm(p),alive:H.players[p].alive,nar:H.players[p].role==='nar',role:(H.phase==='end'||(!H.players[p].alive&&H.players[p].role!=='nar'))?H.players[p].role:null})),
-  roles:H.phase==='lobby'?cfgRoles():rolesInGame(),timerEnd:H.timerEnd,winner:H.winner,lastNews:H.log.slice(-1)[0]||null,votesIn:Object.keys(H.votes).length,nightIn:Object.keys(H.night).length,need:alive().length});
+  roles:H.phase==='lobby'?(()=>{const c=comp(H.order.length);return ['wolf','vil'].concat(c.witch?['witch']:[],c.cupid?['cupid']:[],c.seer?['seer']:[],c.hunter?['hunter']:[],c.doc?['doc']:[],c.mayor?['mayor']:[],c.nar?['nar']:[])})():rolesInGame(),timerEnd:H.timerEnd,winner:H.winner,lastNews:H.log.slice(-1)[0]||null,votesIn:Object.keys(H.votes).length,nightIn:Object.keys(H.night).length,need:alive().length});
 const broadcast=()=>{send(pub());saveH();renderHost()};
 const wolvesDone=()=>alive().filter(p=>H.players[p].role==='wolf').every(p=>H.night[p]);
 const calcVictim=()=>{const wv={};Object.values(H.night).filter(v=>v.kind==='wolf').forEach(v=>wv[v.target]=(wv[v.target]||0)+1);
@@ -149,7 +149,7 @@ const priv=async pid=>{const p=H.players[pid];if(!p||!p.pub)return;const k=await
   if(H.lovers&&H.lovers.includes(pid))o.lover=nm(H.lovers.find(x=>x!==pid));
   if(p.role==='witch')o.potions=H.potions;
   if(H.phase==='night'&&p.alive&&p.role!=='nar'){o.done=!!H.night[pid];
-    if(p.role==='wolf'){o.choices=a.filter(x=>H.players[x].role!=='wolf').map(x=>({id:x,n:nm(x)}));o.wolfVotes=Object.entries(H.night).filter(([k,v])=>v.kind==='wolf').map(([k,v])=>({by:nm(k),to:nm(v.target)}))}
+    if(p.role==='wolf'){const myLove=H.lovers&&H.lovers.includes(pid)?H.lovers.find(x=>x!==pid):null;o.choices=a.filter(x=>H.players[x].role!=='wolf'&&x!==myLove).map(x=>({id:x,n:nm(x)}));o.wolfVotes=Object.entries(H.night).filter(([k,v])=>v.kind==='wolf').map(([k,v])=>({by:nm(k),to:nm(v.target)}))}
     else if(p.role==='doc')o.choices=a.filter(x=>x!==p.lastDoc).map(x=>({id:x,n:nm(x)}));
     else if(p.role==='cupid'&&H.round===1){o.cupid=true;o.choices=a.map(x=>({id:x,n:nm(x)}))}
     else if(p.role==='witch'){o.wait=!wolvesDone();if(!o.wait){o.victim=H.victim?nm(H.victim):null;o.choices=others}}
@@ -174,7 +174,7 @@ const hostAct=(pid,a)=>{const p=H.players[pid];
       const heal=!!a.heal&&H.potions.heal&&!!H.victim,poison=a.poison&&H.potions.poison?a.poison:null;
       if(heal)H.potions.heal=false;if(poison)H.potions.poison=false;H.night[pid]={kind:'witch',heal,poison}}
     else if(p.role==='cupid'&&H.round===1){if(a.kind!=='cupid'||!a.a||!a.b||a.a===a.b)return;H.lovers=[a.a,a.b];H.night[pid]={kind:'cupid',target:a.a,target2:a.b};H.lovers.forEach(priv)}
-    else if(a.kind==='night'){H.night[pid]={kind:p.role==='wolf'?'wolf':p.role,target:a.target};
+    else if(a.kind==='night'){if(p.role==='wolf'&&H.lovers&&H.lovers.includes(pid)&&H.lovers.includes(a.target))return;H.night[pid]={kind:p.role==='wolf'?'wolf':p.role,target:a.target};
       if(p.role==='seer'&&H.players[a.target])p.seen=(p.seen||[]).concat([{n:nm(a.target),wolf:H.players[a.target].role==='wolf'}])}
     else return;
     beep(700);if(p.role==='wolf'&&wolvesDone()){H.victim=calcVictim();privAll()}else if(p.role==='wolf')inGame().filter(x=>H.players[x].role==='wolf').forEach(priv);else priv(pid);
@@ -190,11 +190,15 @@ const startHost=async(resume)=>{
   $('#me').textContent='Spelscherm';
   await join(H.code,'host',{host:true},onHostMsg,st=>{H.online={};Object.keys(st).forEach(k=>H.online[k]=true);renderHost()});
   broadcast();privAll();if(H.phase==='day')tickTalk()};
-const assign=()=>{let ids=shuf(H.order);H.nar=null;
-  if(H.cfg.nar&&ids.length>=5){H.nar=ids.shift();H.players[H.nar].role='nar';H.players[H.nar].alive=false}
-  const n=ids.length;let w=H.cfg.wolves||Math.max(1,Math.round(n/4.5));
+const comp=n=>{const nar=n>=6,p=nar?n-1:n;const w=p<=6?1:p<=10?2:p<=15?3:p<=20?4:Math.floor(p/5);
+  const r={wolf:w,witch:p>=5,cupid:p>=6,seer:p>=7,hunter:p>=9,doc:p>=11,mayor:p>=4,nar};return r};
+const compText=n=>{const c=comp(n);return [`${c.wolf} ${c.wolf>1?'weerwolven':'weerwolf'}`].concat(c.witch?['heks']:[],c.cupid?['cupido']:[],c.seer?['ziener']:[],c.hunter?['jager']:[],c.doc?['beschermer']:[],c.mayor?['burgemeester']:[],c.nar?['verteller']:[]).join(' · ')};
+const talkTime=()=>{const a=alive().length;return a<=5?120:a<=9?180:240};
+const assign=()=>{const C=comp(H.order.length);Object.assign(H.cfg,{wolves:C.wolf,witch:C.witch,cupid:C.cupid,seer:C.seer,hunter:C.hunter,doc:C.doc,mayor:C.mayor,nar:C.nar});let ids=shuf(H.order);H.nar=null;
+  if(H.cfg.nar){H.nar=ids.shift();H.players[H.nar].role='nar';H.players[H.nar].alive=false}
+  const n=ids.length;let w=H.cfg.wolves;
   const roles=[];for(let i=0;i<w;i++)roles.push('wolf');
-  if(H.cfg.witch&&n>=4)roles.push('witch');if(H.cfg.cupid&&n>=5)roles.push('cupid');if(H.cfg.seer&&n>=5)roles.push('seer');if(H.cfg.doc&&n>=6)roles.push('doc');if(H.cfg.hunter&&n>=6)roles.push('hunter');
+  if(H.cfg.witch)roles.push('witch');if(H.cfg.cupid)roles.push('cupid');if(H.cfg.seer)roles.push('seer');if(H.cfg.doc)roles.push('doc');if(H.cfg.hunter)roles.push('hunter');
   while(roles.length<n)roles.push('vil');
   const tasks=shuf(TASKS);ids.forEach((id,i)=>{const p=H.players[id];p.role=roles[i];p.alive=true;p.seen=[];p.lastDoc=null;p.task=p.role==='wolf'?tasks[i%tasks.length]:null});
   H.mayor=H.cfg.mayor?ids[Math.random()*ids.length|0]:null;H.potions={heal:true,poison:true};H.lovers=null;H.log=[]};
@@ -214,7 +218,7 @@ const loveDeaths=deaths=>{if(!H.lovers)return deaths;const out=deaths.slice();H.
 const mayorCheck=deaths=>{if(H.mayor&&deaths.includes(H.mayor)){const a=alive();const nw=a.length?a[Math.random()*a.length|0]:null;const old=nm(H.mayor);H.mayor=nw;if(nw)H.log[H.log.length-1]+=` 🎖️ Burgemeester ${old} is dood: ${nm(nw)} is de nieuwe burgemeester.`}};
 const afterDeaths=(next,deaths=[])=>{deaths=loveDeaths(deaths);mayorCheck(deaths);const h=deaths.find(d=>H.players[d].role==='hunter');
   if(h){H.phase='hunter';H.hunterPid=h;H.hunterNext=next;broadcast();privAll();return}
-  if(checkWin())return;if(next==='day'){H.phase='day';H.timerEnd=Date.now()+H.cfg.talk*1000;broadcast();privAll();tickTalk()}else goNight()};
+  if(checkWin())return;if(next==='day'){H.phase='day';H.timerEnd=Date.now()+talkTime()*1000;broadcast();privAll();tickTalk()}else goNight()};
 const tickTalk=()=>{clearInterval(timers.talk);timers.talk=setInterval(()=>{if(H.phase!=='day'){clearInterval(timers.talk);return}const l=Math.round((H.timerEnd-Date.now())/1000);
   const t=$('#ht');if(t)t.textContent=fmt(l);if(l<=0){clearInterval(timers.talk);goVote()}},500)};
 const goVote=()=>{if(H.phase!=='day')return;clearInterval(timers.talk);H.phase='vote';H.votes={};broadcast();privAll()};
@@ -233,20 +237,14 @@ const roleCards=list=>`<div class="rlist">${list.map(r=>{const R=r==='mayor'?MAY
 const renderHost=()=>{const chips=H.order.map(chip).join('');const url=location.origin+location.pathname+'?c='+H.code;
   const narLine=H.nar?`<div class="small">🎙️ Verteller: <b style="color:var(--acc)">${esc(nm(H.nar))}</b>, die volgt alles op zijn gsm.</div>`:'';
   const ctrl=(btns)=>H.nar?`<div class="small">De verteller gaat verder via zijn gsm.</div><details><summary class="small">Knoppen op dit scherm</summary><div class="row" style="margin-top:10px">${btns}</div></details>`:`<div class="row">${btns}</div>`;
-  if(H.phase==='lobby'){const n=H.order.length,np=H.cfg.nar&&n>=5?n-1:n,w=H.cfg.wolves||Math.max(1,Math.round(np/4.5));
+  if(H.phase==='lobby'){const n=H.order.length;
     app.innerHTML=`<div class="lobby"><div><div id="qr"></div><div class="small" style="margin-top:10px">Scan met je gsm</div></div>
       <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start;text-align:left"><div class="mono">Ga naar de lobby met code</div><div class="code-big">${H.code}</div>
       <div class="small">Of open <b>${esc(location.host+location.pathname)}</b> op je gsm en vul de code in.</div>
       <div class="plist" style="justify-content:flex-start">${chips||'<span class="small">Nog niemand binnen…</span>'}</div></div></div>
-      <div class="row"><span class="mono">Weerwolven</span><div class="seg">${[0,1,2,3].map(k=>`<button data-w="${k}" class="${H.cfg.wolves===k?'on':''}">${k===0?'Auto ('+w+')':k}</button>`).join('')}</div>
-        <span class="mono" style="margin-left:10px">Praattijd</span><div class="seg">${[120,180,300].map(s=>`<button data-t="${s}" class="${H.cfg.talk===s?'on':''}">${s/60} min</button>`).join('')}</div></div>
-      <div class="row"><span class="mono">Rollen</span>${[['witch',ROLES.witch],['cupid',ROLES.cupid],['mayor',MAYOR],['nar',NAR],['seer',ROLES.seer],['doc',ROLES.doc],['hunter',ROLES.hunter]].map(([k,R])=>`<button class="tbtn" data-r="${k}" style="${H.cfg[k]?'background:#ededed;color:#000':''}">${R.e} ${R.n}</button>`).join('')}</div>
-      <div class="small">Het spel kiest zelf wie welke rol krijgt${H.cfg.nar?' en wie de verteller is (vanaf 5 spelers)':''}.</div>
+      <div class="hint">${n>=4?`Met ${n} spelers: <b style="color:var(--fg)">${compText(n)}</b>, de rest burgers.`:'Minstens 4 spelers nodig.'} Het spel kiest zelf wie welke rol krijgt.</div>
       <button class="btn" id="go" ${n<4?'disabled':''}>Start (${n} spelers${n<4?', min. 4':''})</button>`;
     try{new QRCode($('#qr'),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){$('#qr').innerHTML='<div style="color:#000;padding:20px">QR niet geladen</div>'}
-    app.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{H.cfg.wolves=+b.dataset.w;broadcast()});
-    app.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{H.cfg[b.dataset.r]=!H.cfg[b.dataset.r];broadcast()});
-    app.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{H.cfg.talk=+b.dataset.t;broadcast()});
     app.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{const id=b.dataset.kick;delete H.players[id];H.order=H.order.filter(x=>x!==id);send({t:'reject',to:id,why:'Je werd uit de lobby verwijderd.'});broadcast()});
     $('#go').onclick=()=>{assign();H.phase='roles';broadcast();privAll()};return}
   if(H.phase==='roles'){app.innerHTML=`<div class="h1">Bekijk je rol</div><div class="hint">Iedereen kijkt stiekem op zijn eigen gsm.${H.mayor?` 🎖️ <b style="color:#ffd23f">${esc(nm(H.mayor))}</b> is burgemeester.`:''}</div>${narLine}
