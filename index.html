@@ -859,6 +859,12 @@ const openQuick=id=>{const a=ACC.find(x=>x.id===id);if(!a)return;let s=document.
 const SPK='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',SPX='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
 const drawSnd=()=>{$('#snd').innerHTML=MUTE?SPX:SPK};$('#snd').onclick=()=>{MUTE=!MUTE;try{localStorage.setItem('kp_mute',MUTE?'1':'0')}catch(e){}drawSnd();if(!MUTE)beep(880,.06,.1,'triangle')};drawSnd();
 try{const t=localStorage.getItem('kp_tab');if(!active().length)showTab('players');else if(t)showTab(t)}catch(e){}
+
+/* ===== automatisch updaten ===== */
+const APPVER='1794920396';
+const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
+  if(v&&v!==APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
 </script>
 </body>
 </html>
