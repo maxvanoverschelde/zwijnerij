@@ -222,7 +222,7 @@ const renderHost=()=>{const P=H.order.map(id=>({id,...H.players[id]}));
       <div class="hint">${H.winner==='village'?'Alle weerwolven zijn ontmaskerd. Weerwolven: ad fundum.':'De weerwolven hebben het dorp opgegeten. Alle burgers: ad fundum.'}</div>
       <div class="plist">${P.map(p=>`<span class="pchip">${ROLES[p.role].e} ${esc(p.n)} · ${ROLES[p.role].n}${p.role==='wolf'?` <span class="small">(“${esc(p.task)}”)</span>`:''}</span>`).join('')}</div>
       <div class="log">${H.log.map(esc).join('<br>')}</div>
-      <div class="row"><button class="btn" id="again">Nieuw spel, zelfde groep</button><button class="tbtn" id="new">Nieuwe lobby</button></div>`;
+      <div class="row"><button class="btn" id="again">Nieuw spel, zelfde groep</button><button class="tbtn" id="new">Nieuwe lobby</button><a class="btn ghost" href="./" style="text-decoration:none">Terug naar Zwijnerij</a></div>`;
     $('#again').onclick=()=>{H.order.forEach(id=>{H.players[id].alive=true;H.players[id].role=null});H.phase='lobby';H.round=0;H.log=[];H.winner=null;broadcast();privAll()};
     $('#new').onclick=()=>{ls.set('ww_host',null);location.href=location.pathname+'?host=1'};return}};
 
