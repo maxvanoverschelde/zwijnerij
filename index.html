@@ -306,6 +306,7 @@
   @media(max-width:760px){#nav{gap:2px;padding:6px}#nav button{padding:14px 16px}#nav button span{display:none}}
   @media(max-width:700px){.games{grid-template-columns:1fr}}
   @media(max-width:720px){.music{grid-template-columns:1fr}.music a{border-right:0;border-bottom:1px solid var(--line)}}
+a:visited{color:inherit}
 </style>
 </head>
 <body>
@@ -721,7 +722,7 @@ const IC={
  wolf:'<path d="M4 4l4 5h8l4-5v9l-3 5-5 3-5-3-3-5z"/><circle cx="9.5" cy="12" r=".8"/><circle cx="14.5" cy="12" r=".8"/>',
  flame:'<path d="M12 22c4 0 7-3 7-7 0-5-5-7-5-12-3 2-4 5-4 7-1-1-2-2-2-4-2 2-3 5-3 9 0 4 3 7 7 7z"/>'};
 const META=[
- {k:'bom',lvl:'hard',n:'Kaboom',s:'Lees · geef door · boem',ic:'bomb',p:'3+ spelers',r:["Tik op Start. De bom begint te tikken, maar niemand weet hoe lang hij heeft: ergens tussen 25 en 70 seconden.","Lees de stelling luidop voor (bv. ‘Wie liegt het best?’).","Geef de iPad aan de persoon op wie de stelling het best past. Discussie mag, maar de tijd loopt.","Die tikt op Volgende, leest de nieuwe stelling voor en geeft weer door.","Het tikken versnelt. Bij de knal drinkt wie de iPad vasthoudt."]},
+ {k:'bom',lvl:'hard',n:'Kaboom',s:'Lees · geef door · boem',ic:'bomb',p:'3+ spelers',r:["Tik op Start. De bom begint te tikken, maar niemand weet hoe lang hij heeft: kort, normaal of lang, dat kies je vooraf.","Lees de stelling luidop voor (bv. ‘Wie liegt het best?’).","Geef de iPad aan de persoon op wie de stelling het best past. Discussie mag, maar de tijd loopt.","Die tikt op Volgende, leest de nieuwe stelling voor en geeft weer door.","Het tikken versnelt. Bij de knal drinkt wie de iPad vasthoudt."]},
  {k:'chaos',lvl:'hard',n:'Chaos',s:'Opdrachten met jullie namen',ic:'bolt',p:'2+ spelers',r:["Gebruikt de spelers die je in het venster Spelers hebt aangeduid.","Elke kaart is een opdracht, regel of uitdaging met willekeurige namen erin.","Lees voor, doe wat er staat en tik op Volgende.","Regels blijven gelden tot iemand ze vergeet. Vergeten = drinken."]},
  {k:'kings',lvl:'hard',n:"King's Cup",s:'52 kaarten · 4 koningen',ic:'crown',p:'3+ spelers',r:["Zet een lege beker in het midden.","Om beurten trek je een kaart. Elke kaart heeft een regel die op het scherm verschijnt.","Bij elke koning schenk je wat van je drankje in de middelste beker.","Wie de vierde koning trekt, drinkt de beker leeg. Einde spel."]},
  {k:'bus',lvl:'hard',n:'De Bus',s:'Vier kaarten · geen fouten',ic:'bus',p:'Om beurten',r:["Eén speler tegelijk probeert ‘uit de bus’ te geraken.","Vier vragen op rij: rood of zwart, hoger of lager, tussen of buiten, en welk teken.","Bij een fout drink je evenveel slokken als de vraag waar je zat (1 tot 4) en begin je opnieuw.","Alle vier juist? Je bent eruit. Volgende speler."]},
@@ -1142,7 +1143,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794936300';
+const APPVER='1794936371';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
