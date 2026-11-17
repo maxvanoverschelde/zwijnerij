@@ -354,7 +354,6 @@ a:visited{color:inherit}
 <div id="gl"></div>
 <div class="row" style="justify-content:flex-start;margin-top:20px"><button class="tbtn" id="cq">+ Eigen vragen toevoegen</button><button class="tbtn" id="hr">Huisregels</button></div>
 <div class="sec mono" style="margin-top:34px"><span>Extra's</span><span></span></div>
-<div class="sbd" id="sbd"></div>
 <div class="mrow">
   <button class="mcard" id="boothb"><div class="mono" style="color:var(--acct)">Fotobooth</div><div class="nmx">Foto's van de avond</div><div class="small">3-2-1 en klik, met een Zwijnerij-kader. Op het einde een diavoorstelling.</div></button>
   <button class="mcard" id="spillb"><div class="mono" style="color:var(--acct)">💦 Gemorst!</div><div class="nmx">Strafrad</div><div class="small">Iemand morst? Draai aan het rad voor zijn straf. Ook via 💦 bovenaan.</div></button>
@@ -1137,8 +1136,6 @@ const SB=[
  {k:'Ba-dum-tss',e:'😂',f(){tone(160,0,.12,'sine',.5,90);tone(140,.18,.14,'sine',.5,80);noise(.36,.7,.5,6000,1.2)}},
  {k:'Fail',e:'📉',f(){[0,.35,.7].forEach((t,i)=>tone([392,370,349][i],t,.32,'sawtooth',.18));tone(330,1.05,.9,'sawtooth',.18,300)}},
  {k:'Knor',e:'🐽',f(){[0,.28].forEach(t=>{tone(150,t,.18,'sawtooth',.3,95);noise(t,.18,.25,500,1.5)})}}];
-$('#sbd').innerHTML=SB.map((s,i)=>`<button data-sb="${i}"><b>${s.e}</b>${s.k}</button>`).join('');
-document.querySelectorAll('[data-sb]').forEach(b=>b.onclick=()=>{if(MUTE){MUTE=false;try{localStorage.setItem('kp_mute','0')}catch(e){}drawSnd()}SB[+b.dataset.sb].f()});
 /* ===== offline ===== */
 try{if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js')}catch(e){}
 
@@ -1292,7 +1289,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794951182';
+const APPVER='1794951313';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
