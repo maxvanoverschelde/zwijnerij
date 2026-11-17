@@ -287,42 +287,6 @@ const checkWin=()=>{const a=alive(),w=a.filter(p=>H.players[p].role==='wolf').le
 const chip=p=>{const pl=H.players[p];return `<span class="pchip ${pl.role==='nar'||pl.alive||H.phase==='lobby'?'':'dead'}"><span class="dot ${H.online[p]?'':'off'}"></span>${H.mayor===p?'🎖️ ':''}${pl.role==='nar'?'🎙️ ':''}${esc(pl.n)}${(H.phase==='end'||(!pl.alive&&pl.role!=='nar'&&H.phase!=='lobby'))&&pl.role&&pl.role!=='nar'?' · '+ROLES[pl.role].e:''}${H.phase==='lobby'?`<span class="x" data-kick="${p}">✕</span>`:''}</span>`};
 const roleCards=list=>`<div class="rlist">${list.map(r=>{const R=r==='mayor'?MAYOR:r==='nar'?NAR:ROLES[r];return `<div class="rc" style="--c:${R.c}"><b>${R.e} ${R.n}</b><span>${R.d}</span></div>`}).join('')}</div>`;
 const renderHost=()=>{};
-const renderHost0=()=>{const chips=H.order.map(chip).join('');const url=location.origin+location.pathname+'?c='+H.code;
-  const narLine=H.nar?`<div class="small">🎙️ Verteller: <b style="color:var(--acc)">${esc(nm(H.nar))}</b>, die volgt alles op zijn gsm.</div>`:'';
-  const ctrl=(btns)=>H.nar?`<div class="small">De verteller gaat verder via zijn gsm.</div><details><summary class="small">Knoppen op dit scherm</summary><div class="row" style="margin-top:10px">${btns}</div></details>`:`<div class="row">${btns}</div>`;
-  if(H.phase==='lobby'){const n=H.order.length;
-    app.innerHTML=`<div class="lobby"><div><div id="qr"></div><div class="small" style="margin-top:10px">Scan met je gsm</div></div>
-      <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start;text-align:left"><div class="mono">Ga naar de lobby met code</div><div class="code-big">${H.code}</div>
-      <div class="small">Of open <b>${esc(location.host+location.pathname)}</b> op je gsm en vul de code in.</div>
-      <div class="plist" style="justify-content:flex-start">${chips||'<span class="small">Nog niemand binnen…</span>'}</div></div></div>
-      <div class="hint">${n>=4?`Met ${n} spelers: <b style="color:var(--fg)">${compText(n)}</b>, de rest burgers.`:'Minstens 4 spelers nodig.'} Het spel kiest zelf wie welke rol krijgt.</div>
-      <button class="btn" id="go" ${n<4?'disabled':''}>Start (${n} spelers${n<4?', min. 4':''})</button>`;
-    try{new QRCode($('#qr'),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){$('#qr').innerHTML='<div style="color:#000;padding:20px">QR niet geladen</div>'}
-    app.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{const id=b.dataset.kick;delete H.players[id];H.order=H.order.filter(x=>x!==id);send({t:'reject',to:id,why:'Je werd uit de lobby verwijderd.'});broadcast()});
-    $('#go').onclick=()=>{assign();H.phase='roles';broadcast();privAll()};return}
-  if(H.phase==='roles'){app.innerHTML=`<div class="h1">Bekijk je rol</div><div class="hint">Iedereen kijkt stiekem op zijn eigen gsm.${H.mayor?` 🎖️ <b style="color:#ffd23f">${esc(nm(H.mayor))}</b> is burgemeester.`:''}</div>${narLine}
-      ${roleCards(rolesInGame())}<div class="plist">${chips}</div>${ctrl('<button class="btn" id="n">Start de nacht</button>')}`;const b=$('#n');if(b)b.onclick=goNight;return}
-  if(H.phase==='night'){const need=alive().length,inn=Object.keys(H.night).length;
-    app.innerHTML=`<div style="font-size:80px">🌙</div><div class="h1">Nacht ${H.round}</div><div class="hint">Iedereen ogen dicht, behalve om je gsm te bedienen. Ook burgers tikken iets aan, zodat niemand opvalt.</div>
-      <div class="bar"><i style="width:${need?inn/need*100:0}%"></i></div><div class="mono">${inn} / ${need} klaar</div>${ctrl('<button class="tbtn" id="f">Forceer ochtend</button>')}`;const f=$('#f');if(f)f.onclick=resolveNight;return}
-  if(H.phase==='hunter'){app.innerHTML=`<div style="font-size:80px">🎯</div><div class="h1">De jager valt…</div><div class="hint">${esc(nm(H.hunterPid))} was de jager en kiest op zijn gsm wie hij meeneemt.</div>`;return}
-  if(H.phase==='day'){const l=Math.round((H.timerEnd-Date.now())/1000);
-    app.innerHTML=`<div class="mono">Dag ${H.round}</div><div class="h2" style="max-width:900px">${esc(H.log.slice(-1)[0]||'')}</div><div class="timer" id="ht">${fmt(l)}</div>
-      <div class="hint">Wie is de weerwolf? <b style="color:var(--wolf)">${esc(VTIPS[H.round%VTIPS.length])}</b></div><div class="plist">${chips}</div>
-      ${ctrl('<button class="tbtn" id="ex">+1 minuut</button><button class="btn" id="v">Nu stemmen</button>')}`;
-    const ex=$('#ex'),v=$('#v');if(ex)ex.onclick=()=>{H.timerEnd+=60000;broadcast()};if(v)v.onclick=goVote;return}
-  if(H.phase==='vote'){const need=alive().length,inn=Object.keys(H.votes).length;
-    app.innerHTML=`<div style="font-size:70px">🗳️</div><div class="h1">Stemmen</div><div class="hint">Iedereen stemt op zijn gsm.${H.mayor?` De stem van burgemeester ${esc(nm(H.mayor))} telt dubbel.`:''}</div>
-      <div class="bar"><i style="width:${need?inn/need*100:0}%"></i></div><div class="mono">${inn} / ${need} stemmen</div>${ctrl('<button class="tbtn" id="f">Stemming afsluiten</button>')}`;const f=$('#f');if(f)f.onclick=resolveVote;return}
-  if(H.phase==='reveal'){app.innerHTML=`<div class="h2" style="max-width:900px">${esc(H.log.slice(-1)[0])}</div><div class="plist">${chips}</div>${ctrl('<button class="btn" id="n">Verder</button>')}`;
-    const b=$('#n');if(b)b.onclick=()=>afterDeaths('night',H.pending);return}
-  if(H.phase==='end'){app.innerHTML=`<div style="font-size:90px">${H.winner==='village'?'🏡':H.winner==='lovers'?'💘':'🐺'}</div><div class="h1">${H.winner==='village'?'Het dorp wint':H.winner==='lovers'?'De geliefden winnen':'De weerwolven winnen'}</div>
-      ${H.lovers?`<div class="small">💘 Geliefden: ${H.lovers.map(nm).map(esc).join(' & ')}</div>`:''}<div class="plist">${inGame().map(p=>`<span class="pchip">${ROLES[H.players[p].role].e} ${esc(nm(p))} · ${ROLES[H.players[p].role].n}${H.players[p].role==='wolf'?` <span class="small">(“${esc(H.players[p].task)}”)</span>`:''}</span>`).join('')}</div>
-      <div class="log">${H.log.map(esc).join('<br>')}</div>
-      <div class="row"><button class="btn" id="again">Nieuw spel, zelfde groep</button><button class="tbtn" id="new">Nieuwe lobby</button><a class="btn ghost" href="./" style="text-decoration:none">Terug naar Zwijnerij</a></div>`;
-    $('#again').onclick=()=>{H.order.forEach(id=>{H.players[id].alive=true;H.players[id].role=null});H.phase='lobby';H.round=0;H.log=[];H.winner=null;H.mayor=null;H.nar=null;broadcast();privAll()};
-    $('#new').onclick=()=>{ls.set('ww_host',null);location.href=location.pathname+'?host=1'};return}};
-
 /* ============================================================
    SPELER (gsm)
    ============================================================ */
