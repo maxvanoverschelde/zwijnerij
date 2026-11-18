@@ -371,6 +371,9 @@ a:visited{color:inherit}
 #ov.open~#chrule{bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
 @media(max-width:600px){#chrule{font-size:13px;padding:8px 14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:calc(100vw - 24px)}#chrule span{margin-right:6px}#chrule i{margin-left:6px}
   #cho{padding:12px}.chb{padding:22px 18px;gap:14px;max-height:calc(100vh - 24px);overflow-y:auto}.cht{font-size:clamp(26px,8vw,40px)}.chr b{font-size:22px}}
+.qo{min-height:48px}#nav button{min-width:44px}
+@media(max-width:600px){.bar{gap:6px}#gt{font-size:18px;padding:0 4px}#gc{font-size:10px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mcard .nmx{font-size:24px!important;overflow-wrap:anywhere}}
+@media(max-width:420px){#bk{font-size:0;padding:8px 14px;min-width:44px}#bk::before{content:'←';font-size:18px}.back.ib{padding:6px 9px}}
 </style>
 </head>
 <body>
@@ -977,7 +980,7 @@ function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill
 const rulesHtml=r=>{const small=innerHeight<720||innerWidth<560,n=small&&r.length>2?2:r.length;
   return `<ol class="rules">${r.map((x,i)=>`<li class="${i>=n?'hid':''}"><span>${x}</span></li>`).join('')}</ol>${n<r.length?`<button class="tbtn" id="rmore">Alle regels (${r.length}) ▾</button>`:''}`};
 let CURG=null;
-const openGame=k=>{const m=META.find(x=>x.k===k);if(!m){PL=null;return}CURG=m;$('#ov').classList.add('game');clr();plBar();$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
+const openGame=k=>{const m=META.find(x=>x.k===k);if(!m){PL=null;return}CURG=m;document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));$('#ov').classList.add('game');clr();plBar();$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="ic" style="width:84px;height:84px;margin:0;border-radius:22px"><svg viewBox="0 0 24 24" style="width:42px;height:42px">${IC[m.ic]}</svg></div>
     ${PL?`<div class="mono" style="color:var(--acct)">Spellenavond · spel ${PL.i+1} van ${PL.list.length}</div>`:''}<div class="pr">${m.n}</div><div class="meta"><span>${(LV[m.lvl]||{n:'Groot spel'}).n}</span><span>${m.p}</span><span>${m.s}</span></div>
     ${rulesHtml(m.r)}<button class="btn" id="sg">Start</button>`);
@@ -1000,7 +1003,7 @@ const wraak=()=>{const P=active();if(P.length<2){joeg('WRAAK?','Eerst minstens 2
 const otherGame=()=>{const lv=CURG&&CURG.lvl,same=['chill','hard'].includes(lv),pool=META.filter(m=>m.k!==(CURG&&CURG.k)&&['chill','hard'].includes(m.lvl)&&(!same||m.lvl===lv));
   const m=pool[Math.random()*pool.length|0];if(!m)return;try{localStorage.removeItem('kp_last')}catch(e){}camStop();clr();$('#ov').classList.remove('boom','ticking');PL=null;openGame(m.k)};
 $('#wrk').onclick=wraak;$('#rgm').onclick=otherGame;
-$('#bk').onclick=()=>{CURG=null;$('#ov').classList.remove('game');try{localStorage.removeItem('kp_last')}catch(e){}const jg=document.getElementById('jg');if(jg)jg.classList.remove('go');camStop();clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
+$('#bk').onclick=()=>{document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));CURG=null;$('#ov').classList.remove('game');try{localStorage.removeItem('kp_last')}catch(e){}const jg=document.getElementById('jg');if(jg)jg.classList.remove('go');camStop();clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
 
 /* ===== tabs ===== */
 const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
@@ -1136,7 +1139,7 @@ document.addEventListener('click',()=>wake(),{once:false,passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')wake()});
 let nightPref=null;try{nightPref=localStorage.getItem('kp_night')}catch(e){}
 const isNightHour=()=>false;
-const applyNight=()=>{const on=!document.body.classList.contains('light')&&(nightPref==='on'||(nightPref!=='off'&&isNightHour()));document.body.classList.toggle('night',on);$('#nightt').textContent=on?'Nachtmodus: aan':'Nachtmodus: uit';const ns=document.querySelector('#nightb .small');if(ns)ns.textContent=on?'Tik om het scherm weer feller te zetten.':'Tik om het scherm te dimmen, zelfde kleuren.'};
+const applyNight=()=>{const on=!document.body.classList.contains('light')&&(nightPref==='on'||(nightPref!=='off'&&isNightHour()));document.body.classList.toggle('night',on);$('#nightt').textContent='Nachtmodus';const ns=document.querySelector('#nightb .small');if(ns)ns.innerHTML=on?'<b style="color:var(--acct)">Aan</b> · tik om het scherm weer feller te zetten.':'<b>Uit</b> · tik om het scherm te dimmen, zelfde kleuren.'};
 $('#nightb').onclick=()=>{const on=document.body.classList.contains('night');nightPref=on?'off':'on';try{localStorage.setItem('kp_night',nightPref)}catch(e){}applyNight()};
 applyNight();setInterval(applyNight,60000);
 
@@ -1404,7 +1407,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795004401';
+const APPVER='1795005549';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
