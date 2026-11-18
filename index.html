@@ -375,6 +375,13 @@ a:visited{color:inherit}
 @media(max-width:600px){.bar{gap:6px}#gt{font-size:18px;padding:0 4px}#gc{font-size:10px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mcard .nmx{font-size:24px!important;overflow-wrap:anywhere}}
 @media(max-width:420px){#bk{font-size:0;padding:8px 14px;min-width:44px}#bk::before{content:'←';font-size:18px}.back.ib{padding:6px 9px}}
 #st>*{flex-shrink:0}
+#betbar{position:fixed;top:0;left:0;right:0;z-index:35;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 6px) max(16px,env(safe-area-inset-right)) 6px max(16px,env(safe-area-inset-left));background:var(--acc);color:#000;font-size:15px}
+#betbar .bt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#betbar b{font-weight:700}
+#betbar button{flex:none;background:#000;color:var(--acc);border-radius:999px;padding:0 16px;min-height:40px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+body.hasbet{padding-top:calc(env(safe-area-inset-top,0px) + 80px)!important}body.hasbet #ov{padding-top:calc(env(safe-area-inset-top,0px) + 72px)!important}
+@media(max-width:600px){#betbar .bs{display:none}#betbar{font-size:14px}}
+.wfix{font-family:'Anton',sans-serif;font-size:30px;margin-left:auto}
+@media(max-width:600px){.wl{width:100%}.wrow{gap:6px;padding:8px 10px;flex-wrap:wrap;justify-content:center}.wrow>.av{display:none}.wrow b{font-size:20px;flex:1 1 100%;text-align:center}.sc{gap:4px}.sc .tbtn{padding:0;min-width:40px;min-height:44px}.sc span{font-size:24px;min-width:20px}.qhint{display:none}}
 </style>
 </head>
 <body>
@@ -724,7 +731,13 @@ const DUEL=["Noem om beurten een voetbalclub. Wie herhaalt of stilvalt, verliest
 "Wie raadt het dichtst bij: hoeveel stappen naar de voordeur?","Speed-ronde: noem 5 Champions League-winnaars in 15 seconden. Lukt het? Gewonnen.","Noem om beurten een studierichting aan de UGent."];
 const LOT=['BOB van de avond','Doet de afwas','Haalt de volgende ronde','DJ van de avond','Ruimt vanavond nog op','Kiest het volgende spel'];
 let BETS={cur:null,hist:[]};try{BETS=JSON.parse(localStorage.getItem('kp_bets')||'{"cur":null,"hist":[]}')}catch(e){}
-const saveB=()=>{try{localStorage.setItem('kp_bets',JSON.stringify(BETS))}catch(e){}};
+let WED_RES=false;
+const saveB=()=>{try{localStorage.setItem('kp_bets',JSON.stringify(BETS))}catch(e){}try{drawBet()}catch(e){}};
+const drawBet=()=>{let b=document.getElementById('betbar');const c=BETS.cur,show=c&&c.lock;
+  document.body.classList.toggle('hasbet',!!show);if(!show){if(b)b.remove();return}
+  if(!b){b=document.createElement('div');b.id='betbar';document.body.appendChild(b)}
+  b.innerHTML=`<span class="bt">⚽ <b>${esc(c.m)}</b><span class="bs"> · vergeet de einduitslag niet</span></span><button id="betgo">Uitslag invullen</button>`;
+  $('#betgo').onclick=()=>{WED_RES=true;document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));try{camStop()}catch(e){}clr();$('#ov').classList.remove('boom','ticking');openGame('wed');$('#sg').click()}};
 Object.assign(G,{
  fles:{i(){const od=deck(FLES_OPD);const U=units();let rot=0,busy=false;const n=U.length;
    const pos=U.map((u,i)=>{const a=i/n*2*Math.PI-Math.PI/2;return{u,x:50+42*Math.cos(a),y:50+42*Math.sin(a),deg:i/n*360}});
@@ -748,14 +761,17 @@ Object.assign(G,{
    const home=()=>{const c=BETS.cur;
      if(!c){scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Nieuwe weddenschap</div><input class="nm" id="wm" placeholder="Bv. Real Madrid - Bayern" maxlength="40" style="width:min(520px,80vw)"><button class="btn" id="wn">Start</button>
        ${BETS.hist.length?`<div class="small">Vorige: ${BETS.hist.slice(-3).reverse().map(x=>esc(x.m)+' '+x.r).join(' · ')}</div>`:''}`);
-       $('#wn').onclick=()=>{const m=$('#wm').value.trim();if(!m)return $('#wm').focus();if(active().length<1)return needPlayers(1);BETS.cur={m,p:{},open:true};active().forEach(a=>BETS.cur.p[a.id]=[1,1]);saveB();home()};return}
-     const rows=Object.entries(c.p).map(([id,[a,b]])=>{const u=ACC.find(x=>x.id===id);return u?`<div class="wrow">${av(u,36)}<b>${esc(u.n)}</b>
+       $('#wn').onclick=()=>{const m=$('#wm').value.trim();if(!m)return $('#wm').focus();if(active().length<1)return needPlayers(1);BETS.cur={m,p:{},open:true,lock:false};active().forEach(a=>BETS.cur.p[a.id]=[1,1]);saveB();home()};return}
+     const L=c.lock,rows=Object.entries(c.p).map(([id,[a,b]])=>{const u=ACC.find(x=>x.id===id);return u?(L?`<div class="wrow">${av(u,36)}<b>${esc(u.n)}</b><span class="wfix">${a} - ${b}</span></div>`:`<div class="wrow">${av(u,36)}<b>${esc(u.n)}</b>
        <div class="sc"><button class="tbtn" data-w="${id}|0|-1">−</button><span>${a}</span><button class="tbtn" data-w="${id}|0|1">+</button></div><span class="mono">-</span>
-       <div class="sc"><button class="tbtn" data-w="${id}|1|-1">−</button><span>${b}</span><button class="tbtn" data-w="${id}|1|1">+</button></div></div>`:''}).join('');
-     scr(`<div class="mono">Voorspellingen</div><div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${esc(c.m)}</div><div class="wl">${rows}</div>
-       <div class="row"><button class="tbtn" id="wx">Annuleer</button><button class="btn" id="wu">Uitslag invullen</button></div>`);
+       <div class="sc"><button class="tbtn" data-w="${id}|1|-1">−</button><span>${b}</span><button class="tbtn" data-w="${id}|1|1">+</button></div></div>`):''}).join('');
+     scr(`<div class="mono">${L?'Voorspellingen liggen vast':'Voorspellingen'}</div><div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${esc(c.m)}</div><div class="wl">${rows}</div>
+       ${L?'<div class="hint">Speel gerust iets anders. Het balkje bovenaan brengt je terug zodra de match gedaan is.</div>':'<div class="hint">Stel ieders score in en zet ze vast. Daarna kan je de hele avond iets anders spelen tot de match gedaan is.</div>'}
+       <div class="row"><button class="tbtn" id="wx">Annuleer</button>${L?'<button class="tbtn" id="wed2">Wijzig</button><button class="btn ghost" id="wpl">Speel verder</button>':'<button class="btn" id="wlk">✓ Vastzetten · speel verder</button>'}<button class="${L?'btn':'tbtn'}" id="wu">Uitslag invullen</button></div>`);
+     const lk=$('#wlk'),pl=$('#wpl'),ed=$('#wed2');const away=()=>{if(PL){plNext()}else{clr();$('#ov').classList.remove('open','ingame');CURG=null;try{localStorage.removeItem('kp_last')}catch(e){}showTab('games')}};
+     if(lk)lk.onclick=()=>{c.lock=true;saveB();joeg('VAST!','Vergeet de uitslag niet');away()};if(pl)pl.onclick=away;if(ed)ed.onclick=()=>{c.lock=false;saveB();home()};
      st.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{const[id,s,d]=b.dataset.w.split('|');c.p[id][+s]=Math.max(0,c.p[id][+s]+ +d);saveB();home()});
-     $('#wx').onclick=()=>{BETS.cur=null;saveB();home()};$('#wu').onclick=()=>result([0,0])};
+     $('#wx').onclick=e=>{const b=e.currentTarget;if(!b.dataset.sure){b.dataset.sure=1;b.textContent='Zeker? Tik nog eens';return}BETS.cur=null;saveB();home()};$('#wu').onclick=()=>result([0,0])};
    const result=r=>{const c=BETS.cur;scr(`<div class="mono">Eindstand</div><div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${esc(c.m)}</div>
      <div class="wrow" style="justify-content:center"><div class="sc"><button class="tbtn" data-r="0|-1">−</button><span>${r[0]}</span><button class="tbtn" data-r="0|1">+</button></div><span class="mono">-</span><div class="sc"><button class="tbtn" data-r="1|-1">−</button><span>${r[1]}</span><button class="tbtn" data-r="1|1">+</button></div></div>
      <button class="btn" id="wc">Bereken</button>`);
@@ -764,7 +780,7 @@ Object.assign(G,{
          const exact=p[0]===r[0]&&p[1]===r[1],win=sg(p)===sg(r);award(u,exact?3:win?1:0,'Wedkantoor');return `<div class="wrow">${av(u,36)}<b>${esc(u.n)}</b><span class="small">${p[0]}-${p[1]}</span><span style="color:${exact||win?'var(--acct)':'var(--bad)'}">${exact?'Exact! Deel 3 slokken uit':win?'Juiste winnaar: deel 1 uit':'Fout: 1 slok'}</span></div>`}).join('');
        BETS.hist.push({m:c.m,r:r.join('-')});BETS.cur=null;saveB();joeg('JOEGNEE!','Afrekenen');
        scr(`<div class="pr" style="font-size:clamp(30px,4.4vw,52px)">${esc(c.m)} · ${r.join('-')}</div><div class="wl">${out}</div><button class="btn" id="wh">Nieuwe weddenschap</button>`);$('#wh').onclick=home}};
-   home()}},
+   if(WED_RES&&BETS.cur){WED_RES=false;result([0,0])}else{WED_RES=false;home()}}},
  pong:{i(){const U=TM.on&&units().length>=2?units().slice(0,2):[{n:'Team A',c:COLORS[0]},{n:'Team B',c:COLORS[1]}];let cups=[[...Array(10)].map(()=>1),[...Array(10)].map(()=>1)],hist=[];
    const tri=(k)=>{let rows=[4,3,2,1],idx=0;return rows.map(r=>`<div class="prow">${[...Array(r)].map(()=>{const i=idx++;return `<button class="cup ${cups[k][i]?'':'gone'}" data-c="${k}|${i}"></button>`}).join('')}</div>`).join('')};
    const draw=()=>{const left=cups.map(c=>c.reduce((a,b)=>a+b,0));
@@ -961,7 +977,7 @@ const META=[
  {k:'kop',lvl:'chill',n:'Op Je Kop',s:'iPad op je voorhoofd · raden',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie. De speler die aan de beurt is, houdt de iPad tegen zijn voorhoofd, met het scherm naar de groep.","De groep legt het woord uit zonder het te zeggen. Uitbeelden mag.","Geraden? Tik rechts op het scherm. Te moeilijk? Tik links om te passen.","60 seconden. Minder dan 5 geraden is 1 slok, meer dan 10 betekent 2 slokken uitdelen."]},
  {k:'fles',lvl:'chill',n:'Draai de Fles',s:'iPad plat in het midden',ic:'bottle',tag:'Nieuw',p:'3+ spelers',r:["Leg de iPad plat in het midden van de tafel. De namen staan rond de fles, zet je ongeveer op je plek.","Tik op Draai. Naar wie de fles wijst, kiest: 2 slokken drinken of de kleine opdracht die verschijnt.","Met teams aan wijst de fles naar een team."]},
  {k:'lot',lvl:'chill',n:'De Loting',s:'BOB · afwas · volgende ronde',ic:'lot',tag:'Nieuw',p:'Iedereen',r:["Kies wat er geloot wordt: BOB, afwas, wie de volgende ronde haalt…","Tik op Loot. De namen draaien en vertragen tot er één overblijft.","Geen discussie: het lot heeft gesproken."]},
- {k:'wed',lvl:'chill',n:'Wedkantoor',s:'Voorspel de match',ic:'ball',tag:'Nieuw',p:'2+ spelers',r:["Vul de match in, bv. Real Madrid - Bayern.","Iedereen stelt zijn voorspelde score in.","Na de match vul je de uitslag in. Exacte score: deel 3 slokken uit. Juiste winnaar: deel 1 uit. Fout: 1 slok.","De weddenschap blijft bewaard tot je de uitslag invult, ook als je de app sluit."]},
+ {k:'wed',lvl:'chill',n:'Wedkantoor',s:'Voorspel de match',ic:'ball',tag:'Nieuw',p:'2+ spelers',r:["Vul de match in, bv. Real Madrid - Bayern.","Iedereen stelt zijn voorspelde score in.","Na de match vul je de uitslag in. Exacte score: deel 3 slokken uit. Juiste winnaar: deel 1 uit. Fout: 1 slok.","Zet de voorspellingen vast en speel gerust iets anders. Een balkje bovenaan herinnert je eraan de uitslag in te vullen, ook als je de app sluit."]},
  {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
  {k:'kara',lvl:'chill',n:'Karaoke',s:'Rad · uitdaging · jury',ic:'mic',tag:'Nieuw',p:'2+ spelers',r:["Het rad kiest wie er moet zingen. Met teams aan zingt het hele team samen.","Je krijgt een categorie (bv. ‘Een Belgische klassieker’) en een uitdaging (bv. ‘met een West-Vlaams accent’).","Tik het nummer in en open het op YouTube: het origineel mét zang en de tekst in beeld. Bluetooth-box aan, en gaan.","Na het nummer beslist de jury: 🔥 ster (deel 3 slokken uit), 👍 prima of 💀 vals (zanger drinkt 2). Weigeren = ad fundum."]},
  {k:'wbi',lvl:'chill',n:'Wie Ben Ik?',s:'Naam op je kop · ja/nee',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie: Bekende Belgen, voetballers, filmpersonages, artiesten, iemand hier aan tafel of een mix.","Hou de iPad op je voorhoofd met het scherm naar de groep. Je ziet de naam niet, de rest wel.","Stel ja/nee-vragen. De groep antwoordt enkel met ja of nee. Je hebt 2 minuten.","Geraden? Hoe sneller, hoe meer slokken je uitdeelt. Opgeven of tijd op: 2 slokken."]},
@@ -1203,6 +1219,7 @@ const applyTheme=()=>{document.body.classList.toggle('light',theme==='light');$(
 $('#thm').onclick=()=>{theme=theme==='light'?'dark':'light';try{localStorage.setItem('kp_theme',theme)}catch(e){}applyTheme()};
 applyTheme();
 renderHead();
+try{drawBet()}catch(e){}
 $('#hs').onclick=e=>{const q=e.target.closest('[data-q]');if(!q){showTab('players');return}openQuick(q.dataset.q)};
 const openQuick=id=>{const a=ACC.find(x=>x.id===id);if(!a)return;let s=document.getElementById('qs');if(!s){s=document.createElement('div');s.id='qs';document.body.appendChild(s)}
   const draw=msg=>{const p=prof(id),b=bacOf(p,a);s.innerHTML=`<div class="qsb"><div class="row" style="justify-content:space-between;align-items:center;width:100%">${av(a,44)}<div style="flex:1;text-align:left;margin-left:12px"><div class="nmx" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;line-height:1">${esc(a.n)}</div><div class="small">${p.d.length} ${p.d.length===1?'drankje':'drankjes'} · ${b.toFixed(2).replace('.',',')}‰ geschat</div></div><button class="tbtn" id="qx">Sluit</button></div>
@@ -1410,7 +1427,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795007553';
+const APPVER='1795007885';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
