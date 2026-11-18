@@ -16,6 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{--yt:#ededed;--chaos:#d4ff3a;--bad:#ffffff;--suit:#d4ff3a;--chill:#ededed;--hard:#d4ff3a;--hot:#d4ff3a;--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:#141414}
+  body.latem{--yt:#ffffff;--chaos:#ffffff;--bad:#ffd6d6;--suit:#ffffff;--chill:#9cc3ec;--hard:#ffffff;--hot:#ffffff;--bg:#0b2340;--line:#1d4473;--fg:#ffffff;--muted:#9db4d3;--acc:#ffffff;--acct:#ffffff;--card:#0f2c50;--card2:#12335d;--card3:#183c6c;--line2:#2a5486;--line3:#3a67a0;--soft:#d6e2f2;--inv:#ffffff;--noise:.03;--navbg:#0f2c50}
   body.light{--yt:#FF0033;--chaos:#ff3bd4;--bad:#e8002d;--suit:#e8002d;--chill:#00a3ff;--hard:#ff2d55;--hot:#ffb703;--bg:#ffffff;--line:#e2e2e2;--fg:#000;--muted:#6a6a6a;--acc:#c6ff00;--acct:#4a8f00;--card:#f6f6f6;--card2:#eeeeee;--card3:#e4e4e4;--line2:#d0d0d0;--line3:#b5b5b5;--soft:#2a2a2a;--inv:#000;--noise:.02;--navbg:#ffffff}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif;min-height:100vh;
@@ -403,16 +404,37 @@ body.hasbet{padding-top:calc(env(safe-area-inset-top,0px) + 80px)!important}body
 .albg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}.albg img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;border:1px solid var(--line2);cursor:pointer}
 .albcard{width:100%;display:flex;align-items:center;gap:16px;border:1px solid var(--line2);border-radius:22px;padding:16px 20px;margin:0 0 30px;text-align:left;background:var(--card)}
 .albcard .e{font-size:34px}.albcard>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:4px}.albcard b{font-family:'Anton',sans-serif;font-weight:400;font-size:24px;text-transform:uppercase}.albcard .ar{font-size:26px;color:var(--acct)}
+.ltm{padding:0;overflow:hidden}.ltm img{width:30px;height:30px;object-fit:contain;display:block}body.latem .ltm{border-color:#fff;background:#fff}
+.hlogo{display:none}body.latem .hlogo{display:inline-block;width:62px;height:62px;object-fit:contain;vertical-align:middle;float:left;margin:-4px 12px 0 0}
+@media(max-width:600px){body.latem .hlogo{width:44px;height:44px;margin-right:8px}}
+body.latem{background:repeating-linear-gradient(90deg,#0b2340 0 90px,#0d2747 90px 180px)}
+body.latem::after{content:'';position:fixed;right:-60px;bottom:90px;width:min(60vw,520px);aspect-ratio:1;background:url(fclatem.png) center/contain no-repeat;opacity:.06;pointer-events:none;z-index:0}
+body.latem main,body.latem header{position:relative;z-index:1}
+body.latem #ov{background:radial-gradient(circle at 50% 50%,#12335d 0,#0b2340 70%)}
+body.latem #ov::before{content:'';position:absolute;left:50%;top:50%;width:min(70vw,560px);aspect-ratio:1;transform:translate(-50%,-50%);background:url(fclatem.png) center/contain no-repeat;opacity:.05;pointer-events:none}
+body.latem #ov>*{position:relative}
+body.latem .btn:not(.ghost),body.latem .qstart,body.latem #nav button.on,body.latem .resume,body.latem #betbar{background:#fff;color:#0b2340}
+body.latem .qstart{background:linear-gradient(135deg,#fff 0 70%,#dfe9f6 70%)}body.latem .qstart::after{content:'';position:absolute;right:18px;top:50%;width:74px;height:74px;transform:translateY(-50%);background:url(fclatem.png) center/contain no-repeat}body.latem .qstart{position:relative}
+.rlogo{width:110px;height:110px;object-fit:contain;margin:4px auto}
+body.latem .brand i{color:#9cc3ec}body.latem .p1 .blk{background:#fff;color:#0b2340}
+.hbtns{position:relative;z-index:3}
+body.latem .lvl0,body.latem .lvl1{background:#12335d;color:#fff}body.latem .lvl2{background:#183c6c;color:#fff;border:1px solid #fff}body.latem .lvl3{background:#fff;color:#0b2340}
+body.latem .qstart{padding-right:110px}@media(max-width:600px){body.latem .qstart{padding-right:84px}body.latem .qstart::after{width:58px;height:58px;right:12px}}
+@media(max-width:420px){.dr button{overflow-wrap:normal;word-break:keep-all;font-size:11px}}
+@media(max-height:760px){.fles{width:min(560px,78vw,50vh)}}
+.hrs{width:100%;border:1px solid var(--line);border-radius:22px;padding:16px;background:var(--card);margin-top:14px;text-align:left}
+.bars{display:flex;align-items:flex-end;gap:6px;height:150px;margin-top:12px}.bar1{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0}.bar1 i{display:block;width:100%;max-width:46px;background:var(--acc);border-radius:8px 8px 0 0;min-height:2px}.bar1 .small{font-size:11px}
+.recs{display:flex;flex-direction:column;border-top:1px solid var(--line);max-width:760px}.rec{display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line);padding:12px 4px}.rec .e{font-size:26px}.rec .rk{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.rec b{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase}.rec .small{text-align:right}
 </style>
 </head>
 <body>
 <header>
   <div>
-    <div class="mono" style="margin-bottom:10px">Komaan, joegnee</div>
+    <div class="mono" id="motto" style="margin-bottom:10px">Komaan, joegnee</div><img class="hlogo" src="fclatem.png" alt="FC Latem">
     <div class="brand">Zwijn<i>erij</i></div>
     <div class="hstrip" id="hs"></div>
   </div>
-  <div><div class="hbtns"><button class="thm" id="snd" aria-label="Geluid"></button><button class="thm" id="thm" aria-label="Licht of donker"></button></div><div id="clock">--:--</div><div id="date" class="mono"></div></div>
+  <div><div class="hbtns"><button class="thm" id="snd" aria-label="Geluid"></button><button class="thm" id="thm" aria-label="Licht of donker"></button><button class="thm ltm" id="ltm" aria-label="FC Latem-layout"><img src="fclatem-64.png" alt=""></button></div><div id="clock">--:--</div><div id="date" class="mono"></div></div>
 </header>
 
 <main>
@@ -466,6 +488,12 @@ function tick(){const d=new Date();clock.textContent=String(d.getHours()).padSta
 tick();setInterval(tick,10000);
 
 const $=s=>document.querySelector(s),st=$('#st');
+let LATEM=false;try{LATEM=localStorage.getItem('kp_latem')==='1'}catch(e){}
+const isL=()=>document.body.classList.contains('latem');const LT=(a,b)=>isL()?b:a;
+const NAVT={players:['Spelers','Selectie'],music:['Muziek','Sfeer'],games:['Spellen','Wedstrijden'],count:['Teller','Kantine'],big:['Grote spellen','Toernooi'],info:['Info','Clubhuis']};
+const applyTerms=()=>{document.querySelectorAll('#nav button').forEach(b=>{const t=NAVT[b.dataset.t],sp=b.querySelector('span');if(t&&sp)sp.textContent=LT(t[0],t[1])});
+  const mo=$('#motto');if(mo)mo.textContent=LT('Komaan, joegnee','Allez Latem · sinds 1955');
+  document.querySelectorAll('.sec.mono>span:first-child').forEach(e=>{if(!e.dataset.o)e.dataset.o=e.textContent;const m={Spellen:'Wedstrijden',Muziek:'Stadionsfeer',Teller:'Kantine',Spelers:'Selectie'};e.textContent=isL()&&m[e.dataset.o]?m[e.dataset.o]:e.dataset.o})};
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const deck=l=>{let p=shuf(l);return()=>{if(!p.length)p=shuf(l);return p.pop()}};
 
@@ -518,7 +546,7 @@ const boomSnd=()=>{if(MUTE)return;try{ac=ac||new (window.AudioContext||window.we
 
 const DEV=()=>matchMedia('(max-width:600px),(max-height:450px)').matches?'gsm':'iPad';
 const scr=(h)=>{if(DEV()==='gsm')h=h.replace(/\biPad\b/g,'gsm');st.innerHTML=h};
-const joeg=(t='JOEGNEE!',sub='')=>{let j=document.getElementById('jg');if(!j){j=document.createElement('div');j.id='jg';document.body.appendChild(j)}
+const joeg=(t='JOEGNEE!',sub='')=>{if(document.body.classList.contains('latem')&&t==='JOEGNEE!')t='GOAAAL!';let j=document.getElementById('jg');if(!j){j=document.createElement('div');j.id='jg';document.body.appendChild(j)}
   j.innerHTML=`<div class="jt">${t}</div>${sub?`<div class="js">${sub}</div>`:''}`;j.classList.remove('go');void j.offsetWidth;j.classList.add('go')};
 const TEKEN=["Fiets", "Huis", "Kat", "Hond", "Boom", "Zon", "Auto", "Bril", "Kasteel", "Pizza", "Gitaar", "Olifant", "Vliegtuig", "Bierglas", "Taart", "Brug", "Slang", "Kerstman", "Sneeuwman", "Raket", "Paraplu", "Bed", "Spook", "Draak", "Vis", "Kip", "Banaan", "Ananas", "Hamburger", "Fles", "Telefoon", "Laptop", "Klok", "Schoen", "Hoed", "Kroon", "Diamant", "Hart", "Ster", "Maan", "Wolk", "Bliksem", "Regenboog", "Vulkaan", "Eiland", "Palmboom", "Schip", "Anker", "Piraat", "Robot", "Alien", "Ufo", "Spin", "Vlinder", "Bij", "Slak", "Schildpad", "Giraf", "Pinguïn", "Konijn", "Muis", "Uil", "Haai", "Octopus", "Krab", "Tent", "Kampvuur", "Berg", "Toilet", "Douche", "Tandenborstel", "Schaar", "Potlood", "Boek", "Bal", "Voetbalgoal", "Fles wijn", "Wafel", "Frietzak", "Ijsje", "Donut", "Kers", "Appel", "Wortel", "Paddenstoel", "Bloem", "Cactus", "Snor", "Baard", "Oog", "Neus", "Tand", "Voet", "Hand", "Skelet", "Mummie", "Heks", "Bezem", "Toverstaf", "Fee", "Ridder", "Zwaard", "Schild", "Kanon", "Trein", "Bus", "Tractor", "Helikopter", "Duikbril", "Surfplank", "Ski", "Snowboard", "Trampoline", "Glijbaan", "Schommel", "Ballon", "Cadeau", "Kerstboom", "Paasei", "Pompoen", "Atomium", "Manneken Pis", "Eiffeltoren", "Piramide", "Koelkast", "Wasmachine", "Stofzuiger", "Microgolf", "Strijkijzer", "Kapstok", "Trap", "Lift", "Deur", "Raam", "Sleutel", "Slot", "Kaars", "Lamp", "Spiegel", "Kam", "Föhn", "Bad", "Zwembad", "Strand", "Parasol", "Zonnebril", "Bikini", "Duikboot", "Vuurtoren", "Windmolen", "Tank", "Motor", "Vespa", "Step", "Skateboard", "Rolschaatsen", "Hockeystick", "Tennisracket", "Dartbord", "Bowlingkegel", "Microfoon", "Koptelefoon", "Drumstel", "Viool", "Trompet", "Piano", "Camera", "Televisie", "Afstandsbediening", "Gameconsole", "Batterij", "Stopcontact", "Gloeilamp", "Magneet", "Kompas", "Vergrootglas", "Telescoop", "Saturnus", "Komeet", "Astronaut", "Parachute", "Luchtballon", "Zeppelin", "Kangoeroe", "Koala", "Pauw", "Flamingo", "Kameel", "Neushoorn", "Nijlpaard", "Krokodil", "Kikker", "Egel", "Eekhoorn", "Vos", "Wolf", "Sneeuwvlok", "Iglo", "Pinguïn op ijsschots", "Hamburger met frietjes", "Bierkrat", "Kurkentrekker", "Champagnefles"];
 const G={
@@ -596,7 +624,7 @@ const G={
 const DOD=[["Je ex zien zoenen met je beste vriend", "je ouders betrappen in bed"], ["Je zoekgeschiedenis op groot scherm", "je chats met je ex voorgelezen"], ["Een date met je prof", "een date met je ex"], ["Altijd zeggen wat je denkt", "nooit meer liegen tegen je partner"], ["Een week geen seks", "een week geen alcohol"], ["Wakker worden naast een vreemde", "wakker worden zonder geheugen"], ["Je crush leest al je berichten", "je moeder leest al je berichten"], ["Een tattoo van je ex' naam", "een tattoo van je eigen naam op je voorhoofd"], ["Nooit meer kussen", "nooit meer pintjes"], ["Je eerste keer opnieuw", "je eerste kater opnieuw"], ["Op Temptation Island", "op Blind Getrouwd"], ["Ontrouw van je partner weten", "nooit weten en gelukkig blijven"], ["Dronken een speech geven op een trouw", "nuchter een striptease op een vrijgezellen"], ["Een relatie met iemand van deze groep", "altijd single"], ["Je ouders zien je dronkenste foto", "je baas ziet je dronkenste foto"], ["Één nacht met een celebrity", "een jaar gratis bier"], ["Je ex wordt je kotgenoot", "je ouders worden je kotgenoten"], ["Alles horen wat mensen over je zeggen", "alles zien wat ze over je typen"], ["Kussen met iemand die slecht kust", "nooit meer kussen"], ["Je gsm onbewaakt een uur bij deze groep laten", "een uur je ex bellen"]];
 const PARA=["Wie hier zou je het liefst daten?", "Met wie zou je een nacht in een hotelkamer willen delen?", "Wie is volgens jou het best in bed?", "Wie zou je nooit voorstellen aan je ouders?", "Wie heeft vanavond de meeste kans om iemand te kussen?", "Wie zou je zoenen als het moest?", "Wie vertrouw je het minst met je geheimen?", "Wie is het meest fake?", "Wie heeft volgens jou de meeste ex'en?", "Wie zou je bellen om een lijk te helpen verbergen?", "Wie zou je het liefst als ex hebben?", "Wie heeft volgens jou de raarste fantasieën?", "Op wie had je ooit een crush?", "Wie is het knapst in deze kamer?", "Wie zou het slechtst zijn in een relatie?", "Wie hier zou je meenemen als date naar een trouwfeest?", "Wie heeft het meeste geheimen voor zijn partner?", "Wie zou je een sexy foto sturen, als het moest?"];
 const CHAOS=["{a} deelt 3 slokken uit.", "{a} en {b} drinken samen, armen in elkaar gehaakt.", "{a}, kies een maatje. Tot het einde drinken jullie samen.", "Iedereen die {a} ooit een bericht stuurde na middernacht, drinkt.", "{a}, imiteer hoe {b} iemand zou versieren. Lacht niemand? Drinken.", "{a} en {b}: steen-papier-schaar. Verliezer drinkt 2.", "Regel: niemand mag nog ‘ja’ zeggen. Bedacht door {a}.", "{a}, noem 5 voetballers in 10 seconden of drink.", "{a} mag een regel verzinnen.", "Iedereen drinkt behalve {a}.", "{a}, vertel je slechtste date. Weigeren = 3 slokken.", "{a} en {b} wisselen van drankje.", "De laatste die zijn neus aanraakt, drinkt.", "{a} kiest wie 2 slokken drinkt.", "{a}, wie hier zou je kussen? Weigeren = ad fundum.", "{a} en {b} staren elkaar aan. Wie eerst lacht, drinkt.", "{a}, geef {b} een compliment over diens uiterlijk, of drink 2.", "Alle singles drinken.", "Iedereen die ooit een ex heeft teruggestuurd, drinkt.", "{a}, laat je laatste foto zien of drink 3.", "{a} fluistert iets in het oor van {b}. {b} beslist of {a} drinkt.", "{a} en {b} doen samen een ad fundum.", "Iedereen die vanavond al iemand knap vond hier, drinkt. Eerlijk zijn.", "{a}, beoordeel ieders outfit. De slechtste drinkt.", "{a} drinkt zoveel slokken als {b} kiest (max 4).", "{a}, vertel met wie hier je zou trouwen, wie je zou kussen en wie je zou ghosten.", "{a} en {b}: wie heeft de meeste ex'en? Die drinkt.", "Iedereen die een datingapp heeft, drinkt.", "{a}, lees je laatste verstuurde bericht voor of drink 3.", "{a} wordt Vragenmeester. Wie een vraag van {a} beantwoordt, drinkt."];
-const MC=c=>{if(document.body.classList.contains('light'))return c;const i=COLORS.indexOf(c);return ['#d4ff3a','#ededed','#9a9a9a'][(i<0?0:i)%3]};
+const MC=c=>{if(document.body.classList.contains('light'))return c;const i=COLORS.indexOf(c);return (document.body.classList.contains('latem')?['#ffffff','#9cc3ec','#5f8fca']:['#d4ff3a','#ededed','#9a9a9a'])[(i<0?0:i)%3]};
 const COLORS=['#d4ff3a','#ff5c8a','#4cc9f0','#ffb703','#a78bfa','#34d399','#fb7185','#f97316','#60a5fa','#e879f9'];
 let ACC=[];try{ACC=JSON.parse(localStorage.getItem('kp_acc')||'[]')}catch(e){}
 try{const old=JSON.parse(localStorage.getItem('kp_players')||'[]');if(!ACC.length&&old.length)ACC=old.map((n,i)=>({id:'a'+Date.now()+i,n,c:COLORS[i%COLORS.length]}))}catch(e){}
@@ -707,7 +735,7 @@ const KOP={"Dieren":["Giraf","Pinguïn","Kangoeroe","Octopus","Flamingo","Luiaar
  "Gent & studentenleven":["Overpoort","Belfort","Gravensteen","Graslei","Boekentoren","Kot","Examen","Aula","Cursus","Brakke ochtend","Fiets","Studentendoop","Frietkot","Gentse Feesten","Tram","Bibliotheek","Groepswerk","Praesidium","Cantus","Herexamen","Mensa","Proffen","Sint-Pietersstation","Bierbak","Stad"]};
 
 Object.assign(G,{
- quiz:{i(){const n=nightDeck('quiz',QUIZ);let c=0;
+ quiz:{i(){const n=nightDeck('quiz',QUIZ.concat((CUS.quiz||[]).map(x=>[x[0],x.slice(1,5)])));let c=0;
    const ask=()=>{c++;T.next();$('#gc').textContent=String(c).padStart(2,'0');const[q,ans]=n(),ok=ans[0],opts=shuf(ans);
      clr();let left=20;scr(`${T.tag()}<div class="timer" id="qt" style="font-size:clamp(40px,6vw,64px)">20</div><div class="pr" style="font-size:clamp(28px,4.2vw,52px)">${q}</div>
        <div class="qgrid">${opts.map(o=>`<button class="qo" data-o="${esc(o)}">${o}</button>`).join('')}</div>`);
@@ -747,7 +775,7 @@ const drawBet=()=>{let b=document.getElementById('betbar');const c=BETS.cur,show
   b.innerHTML=`<span class="bt">⚽ <b>${esc(c.m)}</b><span class="bs"> · vergeet de einduitslag niet</span></span><button id="betgo">Uitslag invullen</button>`;
   $('#betgo').onclick=()=>{WED_RES=true;document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));try{camStop()}catch(e){}clr();$('#ov').classList.remove('boom','ticking');openGame('wed');$('#sg').click()}};
 Object.assign(G,{
- fles:{i(){const od=deck(FLES_OPD);const U=units();let rot=0,busy=false;const n=U.length;
+ fles:{i(){const od=deck(withC('fles',FLES_OPD));const U=units();let rot=0,busy=false;const n=U.length;
    const pos=U.map((u,i)=>{const a=i/n*2*Math.PI-Math.PI/2;return{u,x:50+42*Math.cos(a),y:50+42*Math.sin(a),deg:i/n*360}});
    const big=n>8,sz=n>12?32:big?38:48;
    scr(`<div class="fles${big?' many':''}">${pos.map(p=>`<div class="fn" style="left:${p.x}%;top:${p.y}%">${av(p.u,sz)}<span>${esc(p.u.n.split(' ')[0])}</span></div>`).join('')}
@@ -901,7 +929,8 @@ function drawTheme(x,c,T,put,mono,ar){const W=1080,p=70,iw=W-2*p,ih=Math.round(i
   if(E.length>1){x.fillText(E[0],p+20,top+20);x.fillText(E[1],W-p-20,top+20);x.fillText(E[2],p+20,top+ih-10)}
   x.save();x.translate(W-60,top+ih+bot/2);x.rotate(-.06);x.fillStyle=T.tag;x.beginPath();x.roundRect(-560,-70,560,130,24);x.fill();logo(x,-280,0,92,T.l1,T.l2,'center');x.restore();
   x.font='110px serif';x.textAlign='center';x.fillText(E[E.length-1],p+50,top+ih+bot/2);mono(stamp(),p+130,top+ih+bot/2,T.date,'left',26)}
-Object.entries(THEMES).forEach(([k,t])=>FRAMES.push([k,t.n]));
+Object.entries(THEMES).forEach(([k,t])=>FRAMES.push([k,t.n]));FRAMES.push(['latem','⚽ FC Latem']);
+const LOGO=new Image();LOGO.src='fclatem.png';
 async function shoot(v){try{await document.fonts.load('80px Anton');await document.fonts.load('28px "JetBrains Mono"')}catch(e){}
   const c=document.createElement('canvas');renderShot(v,FRAME,c);const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.88));await photoAdd(Date.now(),blob)}
 /* vaste 'toeval' voor de live preview, zodat confetti niet flikkert */
@@ -920,6 +949,15 @@ function renderShot(v,F,c){const ar=(v.videoHeight/v.videoWidth)||.75,x=c.getCon
     pix(x,side,top,iw,ih,(r,g,b)=>[Math.min(255,r*.9+g*.25+20),Math.min(255,r*.3+g*.75+8),Math.min(255,b*.6+15)]);
     x.fillStyle='#e9e4d8';for(let yy=24;yy<c.height-20;yy+=56){x.beginPath();x.roundRect(28,yy,34,26,5);x.roundRect(W-62,yy,34,26,5);x.fill()}
     logo(x,side,top+ih+bar/2,78,'#e9e4d8','#ffb000');mono('ZW-'+String(Date.now()%1000).padStart(3,'0')+'  '+stamp(),W-side,top+ih+bar/2,'#ffb000')}
+  else if(F==='latem'){const W=1080,p=60,iw=W-2*p,ih=Math.round(iw*ar),top=170,bot=230;c.width=W;c.height=top+ih+bot;const H=c.height;
+    for(let i=0;i<W;i+=90){x.fillStyle=(i/90)%2?'#0d2747':'#0b2340';x.fillRect(i,0,90,H)}
+    x.strokeStyle='rgba(255,255,255,.35)';x.lineWidth=5;x.strokeRect(22,22,W-44,H-44);x.beginPath();x.arc(W/2,H-22,120,Math.PI,0);x.stroke();
+    x.save();x.font='78px Anton, Impact, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#fff';x.fillText('MATCHDAY · FC LATEM',W/2,top/2+8,W-260);x.restore();
+    if(LOGO.complete&&LOGO.naturalWidth){x.drawImage(LOGO,40,30,120,120);x.drawImage(LOGO,W-160,30,120,120)}
+    x.fillStyle='#fff';x.fillRect(p-8,top-8,iw+16,ih+16);put(p,top,iw,ih);
+    if(LOGO.complete&&LOGO.naturalWidth)x.drawImage(LOGO,p,top+ih+30,170,170);
+    x.save();x.font='92px Anton, Impact, sans-serif';x.textBaseline='middle';x.textAlign='left';x.fillStyle='#fff';x.fillText('ALLEZ LATEM!',p+200,top+ih+bot/2-22);x.restore();
+    mono('SINDS 1955 · '+stamp(),p+204,top+ih+bot/2+52,'#9cc3ec','left',28)}
   else if(THEMES[F])drawTheme(x,c,THEMES[F],put,mono,ar);
   else{const W=1080,Hh=Math.round(W*ar),bar=150;c.width=W;c.height=Hh+bar;x.fillStyle='#070707';x.fillRect(0,0,c.width,c.height);put(0,0,W,Hh);
     x.strokeStyle='#d4ff3a';x.lineWidth=14;x.strokeRect(7,7,W-14,c.height-14);logo(x,40,Hh+bar/2+4,72,'#ededed','#d4ff3a');mono(stamp(),W-40,Hh+bar/2,'#8a8a8a')}}
@@ -1058,7 +1096,7 @@ $('#bk').onclick=()=>{document.querySelectorAll('#wr.open,#qs.open').forEach(e=>
 /* ===== tabs ===== */
 const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
-  if(t==='count')renderCount();if(t==='info')renderInfo();if(t==='games')drawAvond();if(t==='big')renderBig();if(t==='players')renderPlayers();try{localStorage.setItem('kp_tab',t)}catch(e){};window.scrollTo(0,0)};
+  if(t==='count')renderCount();if(t==='info')renderInfo();if(t==='games')drawAvond();if(t==='big')renderBig();if(t==='players')renderPlayers();try{localStorage.setItem('kp_tab',t)}catch(e){};try{applyTerms()}catch(e){};window.scrollTo(0,0)};
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
 
 /* ===== teller ===== */
@@ -1074,7 +1112,7 @@ const hhmm=ms=>{const d=new Date(ms);return String(d.getHours()).padStart(2,'0')
 const level=(b,L=.5)=>L===.2&&b>=.2&&b<.5?[2,'Boven 0,2‰: met een rijbewijs van minder dan 3 jaar mag je niet rijden.']:b<.2?[0,'Bijna nuchter, maar na drinken rijden blijft een slecht idee.']:b<.5?[1,'Onder de wettelijke 0,5‰, maar je reacties zijn al trager. Twijfel je? Laat de auto staan.']
   :b<1?[2,'Boven 0,5‰: autorijden is verboden. Boete en mogelijk rijverbod.']:b<1.5?[2,'Coördinatie en inschatting gaan achteruit. Tijd voor een glas water.']
   :[3,'Stop met drinken. Water, iets eten, en laat iemand een oogje in het zeil houden.'];
-const LC0=['#d4ff3a','#ededed','#ffffff','#ffffff'],LC1=['#3d8a00','#a86f00','#c2410c','#be123c'];const LCc=()=>document.body.classList.contains('light')?LC1:LC0;
+const LC0=['#d4ff3a','#ededed','#ffffff','#ffffff'],LC1=['#3d8a00','#a86f00','#c2410c','#be123c'];const LCc=()=>document.body.classList.contains('light')?LC1:document.body.classList.contains('latem')?['#ffffff','#ffffff','#ffd6d6','#ffd6d6']:LC0;
 const NOV_START=new Date('2027-01-01').getTime();const limOf=a=>a&&a.nov&&Date.now()>=NOV_START?.2:.5;
 const card=a=>{const p=prof(a.id),b=bacOf(p,a),L=limOf(a),[lv,msg]=level(b,L),zero=Date.now()+b/BETA*3.6e6,legal=Date.now()+Math.max(0,b-L)/BETA*3.6e6,cnt=p.d.length,
   std=(p.d.reduce((s,x)=>s+x.g,0)/10).toFixed(1).replace('.',',');
@@ -1134,7 +1172,7 @@ function renderPlayers(){const el=$('#t-players'),P=active();
   el.innerHTML=`<div class="sec mono"><span>Spelers</span><span>${P.length} doen mee</span></div>
    <div class="hint" style="text-align:left;margin-bottom:18px">Tik op een profiel om het aan of uit te zetten voor vanavond. Komt er iemand bij of vertrekt er iemand? Gewoon aan- of uittikken. Spellen en teller passen zich meteen aan.</div>
    <div class="accs">${ACC.map(a=>{const on=ACT.ids.includes(a.id);return `<button class="acc ${on?'on':''}" style="--c:${MC(a.c)}" data-a="${a.id}">${av(a,56)}<div><div class="nmx">${esc(a.n)}</div><div class="st" style="margin-top:6px">${on?'● Doet mee':'○ Niet vanavond'}</div></div><div class="seg"><span class="sg ${a.g==='m'?'on':''}" data-g="m" data-id="${a.id}">Man</span><span class="sg ${a.g==='v'?'on':''}" data-g="v" data-id="${a.id}">Vrouw</span></div><span class="sg nv ${a.nov?'on':''}" data-nov="${a.id}">Rijbewijs &lt; 3 jaar</span><span class="x" data-del="${a.id}">✕</span></button>`}).join('')}
-     <div class="acc new" id="na">${newC!==null?`<input class="nm" id="nn" placeholder="Naam of bijnaam" maxlength="16" style="width:100%"><div class="seg"><span class="sg ${newG==='m'?'on':''}" data-ng="m">Man</span><span class="sg ${newG==='v'?'on':''}" data-ng="v">Vrouw</span></div><div class="sw">${COLORS.map(c=>`<button data-c="${c}" style="--c:${c}" class="${c===newC?'on':''}"></button>`).join('')}</div><div class="row" style="width:100%"><button class="tbtn" id="nc">Annuleer</button><button class="btn" id="ns" style="padding:14px 26px">Maak aan</button></div>`
+     <div class="acc new" id="na">${newC!==null?`<input class="nm" id="nn" placeholder="Naam of bijnaam" maxlength="16" style="width:100%"><div class="seg"><span class="sg ${newG==='m'?'on':''}" data-ng="m">Man</span><span class="sg ${newG==='v'?'on':''}" data-ng="v">Vrouw</span></div><div class="sw">${COLORS.map(c=>`<button data-c="${c}" style="--c:${MC(c)}" class="${c===newC?'on':''}"></button>`).join('')}</div>${document.body.classList.contains('light')?'':'<div class="small" style="opacity:.7">De volle kleuren zie je in de lichte modus.</div>'}<div class="row" style="width:100%"><button class="tbtn" id="nc">Annuleer</button><button class="btn" id="ns" style="padding:14px 26px">Maak aan</button></div>`
        :`<span style="font-size:44px;line-height:1">+</span><span class="mono">Nieuw profiel</span>`}</div></div>
    ${teamUI()}
    <div class="row" style="justify-content:space-between;margin-top:22px"><span class="small">Alleen naam, kleur en man/vrouw (voor de promilleschatting en King's Cup). Niets anders wordt opgeslagen, en alleen op deze iPad.</span>
@@ -1179,53 +1217,98 @@ const since=()=>AV?AV.t0:STATS.t;
 const drinksOf=id=>CNT[id]?prof(id).d.filter(d=>d.t>=since()).length:0;
 const rankOf=(obj,low)=>Object.entries(obj||{}).map(([id,v])=>[byAcc(id),v]).filter(x=>x[0]&&x[1]>0).sort((a,b)=>low?a[1]-b[1]:b[1]-a[1]).slice(0,3);
 const CATS=()=>[
-  {k:'drink',e:'🍺',n:'Meeste drankjes',r:rankOf(Object.fromEntries(ACC.map(a=>[a.id,drinksOf(a.id)]))),u:v=>v+(v===1?' drankje':' drankjes')},
-  {k:'win',e:'🏆',n:'Beste in de spelletjes',r:rankOf(STATS.win),u:v=>v+' pt'},
-  {k:'play',e:'🎮',n:'Meest meegespeeld',r:rankOf(STATS.play),u:v=>v+(v===1?' spel':' spellen')},
+  {k:'drink',e:'🍺',n:LT('Meeste drankjes','Topschutter aan de toog'),r:rankOf(Object.fromEntries(ACC.map(a=>[a.id,drinksOf(a.id)]))),u:v=>v+(v===1?' drankje':' drankjes')},
+  {k:'win',e:'🏆',n:LT('Beste in de spelletjes','Man van de match'),r:rankOf(STATS.win),u:v=>v+' pt'},
+  {k:'play',e:LT('🎮','⏱'),n:LT('Meest meegespeeld','Meeste speelminuten'),r:rankOf(STATS.play),u:v=>v+(v===1?' spel':' spellen')},
   {k:'spill',e:'💦',n:'Morskampioen',r:rankOf(STATS.spill),u:v=>v+'× gemorst'},
-  {k:'lose',e:'💀',n:'Verliest het vaakst',r:rankOf(STATS.lose),u:v=>v+'× verloren'},
+  {k:'lose',e:LT('💀','🥅'),n:LT('Verliest het vaakst','Meeste eigen doelpunten'),r:rankOf(STATS.lose),u:v=>v+'× verloren'},
   {k:'quiz',e:'🧠',n:'Quizkoning',r:rankOf(STATS.quiz),u:v=>v+' juist'},
-  {k:'reflex',e:'⚡',n:'Snelste reflex',r:rankOf(STATS.reflex,true),u:v=>v+' ms'},
+  {k:'reflex',low:1,e:'⚡',n:'Snelste reflex',r:rankOf(STATS.reflex,true),u:v=>v+' ms'},
   {k:'wraak',e:'😈',n:'Wraakkoning',r:rankOf(STATS.wraak),u:v=>v+'× wraak'},
   {k:'kara',e:'🎤',n:'Karaokester',r:rankOf(STATS.kara),u:v=>v+'× ster'},
   {k:'water',e:'💧',n:'Waterheld',r:rankOf(STATS.water),u:v=>v+'× water'}];
 const topGames=()=>Object.entries(STATS.games||{}).map(([k,v])=>[META.find(m=>m.k===k),v]).filter(x=>x[0]).sort((a,b)=>b[1]-a[1]).slice(0,3);
-const podHTML=(c)=>{const r=c.r,slot=(i,h)=>{const x=r[i];return `<div class="ps p${i+1}">${x?`${x[0].n!==undefined&&x[0].id?av(x[0],i===0?52:40):`<div class="pe">${x[0].e||'🎲'}</div>`}<b>${esc(x[0].n)}</b><span class="small">${c.u(x[1])}</span>`:'<span class="small">—</span>'}<div class="blk" style="height:${h}px">${i+1}</div></div>`};
+const podHTML=(c)=>{const r=c.r,rk=i=>r[i]?1+r.filter(y=>c.low?y[1]<r[i][1]:y[1]>r[i][1]).length:i+1,slot=(i,h)=>{const x=r[i];return `<div class="ps p${i+1}">${x?`${x[0].n!==undefined&&x[0].id?av(x[0],i===0?52:40):`<div class="pe">${x[0].e||'🎲'}</div>`}<b>${esc(x[0].n)}</b><span class="small">${c.u(x[1])}</span>`:'<span class="small">—</span>'}<div class="blk" style="height:${h}px">${rk(i)}</div></div>`};
   return `<div class="podc"><div class="mono">${c.e} ${c.n}</div><div class="pod">${slot(1,58)}${slot(0,84)}${slot(2,40)}</div></div>`};
-const gamesCat=()=>({e:'🎲',n:'Meest gespeelde spellen',r:topGames().map(([m,v])=>[{n:m.n,e:'🎲'},v]),u:v=>v+'×'});
+const gamesCat=()=>({e:LT('🎲','⚽'),n:LT('Meest gespeelde spellen','Populairste wedstrijden'),r:topGames().map(([m,v])=>[{n:m.n,e:'🎲'},v]),u:v=>v+'×'});
+let HIST=[];try{HIST=JSON.parse(localStorage.getItem('kp_hist')||'[]')}catch(e){}
+const saveHist=()=>{try{localStorage.setItem('kp_hist',JSON.stringify(HIST.slice(-80)))}catch(e){}};
+const snapAv=()=>{const dr={},nm={};ACC.forEach(a=>{const n=drinksOf(a.id);if(n)dr[a.id]=n;nm[a.id]=a.n});return{t0:since(),end:(AV&&AV.end)||Date.now(),stats:JSON.parse(JSON.stringify(STATS)),drinks:dr,names:nm,hours:perHour()}};
+const archAv=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);HIST.push(snapAv());saveHist()};
+const unArch=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);saveHist()};
+const perHour=()=>{const t0=since(),t1=(AV&&AV.end)||Date.now(),n=Math.max(1,Math.min(14,Math.ceil((t1-t0)/3.6e6))),b=Array(n).fill(0);
+  ACC.forEach(a=>{if(CNT[a.id])prof(a.id).d.forEach(d=>{if(d.t>=t0&&d.t<=t1){const i=Math.min(n-1,Math.floor((d.t-t0)/3.6e6));b[i]++}})});return b};
+const hourHTML=()=>{const b=perHour(),mx=Math.max(1,...b),tot=b.reduce((a,x)=>a+x,0),prev=HIST.filter(h=>h.t0!==since()).slice(-1)[0];
+  const pt=prev?Object.values(prev.drinks||{}).reduce((a,x)=>a+x,0):null,t0=new Date(since());
+  if(!tot&&pt===null)return '';
+  return `<div class="hrs"><div class="mono">🍺 Drankjes per uur${pt!==null?` · ${tot} vanavond, ${pt} vorige keer ${tot>pt?'(drukker!)':tot<pt?'(rustiger)':'(even druk)'}`:` · ${tot} in totaal`}</div>
+    <div class="bars">${b.map((v,i)=>`<div class="bar1"><span class="small">${v||''}</span><i style="height:${Math.round(v/mx*100)}%"></i><span class="small">${String((t0.getHours()+i)%24).padStart(2,'0')}u</span></div>`).join('')}</div></div>`};
+const RECS=()=>{const all=HIST.slice();if(AV&&!AV.end)all.push(snapAv());if(!all.length)return[];const nm=(h,id)=>{const a=ACC.find(x=>x.id===id);return a?a.n:(h.names||{})[id]||'?'};
+  const d=t=>new Date(t).toLocaleDateString('nl-BE',{day:'numeric',month:'short',year:'2-digit'}),out=[];
+  const best=(f,low)=>{let r=null;all.forEach(h=>Object.entries(f(h)||{}).forEach(([id,v])=>{if(v>0&&(!r||(low?v<r.v:v>r.v)))r={v,id,h}}));return r};
+  const sum=f=>{const t={},n={};all.forEach(h=>Object.entries(f(h)||{}).forEach(([id,v])=>{t[id]=(t[id]||0)+v;n[id]=nm(h,id)}));const e=Object.entries(t).sort((a,b)=>b[1]-a[1])[0];return e&&e[1]>0?{v:e[1],n:n[e[0]]}:null};
+  let r;
+  if(r=best(h=>h.drinks))out.push(['🍺','Meeste drankjes op één avond',nm(r.h,r.id),r.v+' · '+d(r.h.t0)]);
+  if(r=best(h=>h.stats.reflex,true))out.push(['⚡','Snelste reflex ooit',nm(r.h,r.id),r.v+' ms · '+d(r.h.t0)]);
+  if(r=best(h=>h.stats.quiz))out.push(['🧠','Beste quizavond',nm(r.h,r.id),r.v+' juist · '+d(r.h.t0)]);
+  if(r=sum(h=>h.stats.win))out.push(['🏆','Meeste punten aller tijden',r.n,r.v+' pt']);
+  if(r=sum(h=>h.stats.spill))out.push(['💦','Grootste morser aller tijden',r.n,r.v+'× gemorst']);
+  if(r=sum(h=>h.stats.lose))out.push(['💀','Verloor het vaakst ooit',r.n,r.v+'×']);
+  if(r=sum(h=>{const o={};Object.keys(h.drinks||{}).concat(Object.keys(h.stats.play||{})).forEach(id=>o[id]=1);return o}))out.push(['📅','Meeste avonden present',r.n,r.v+' '+(r.v===1?'avond':'avonden')]);
+  const tot=h=>Object.values(h.drinks||{}).reduce((a,x)=>a+x,0),dk=all.slice().sort((a,b)=>tot(b)-tot(a))[0];if(dk&&tot(dk))out.push(['🔥','Drukste avond',d(dk.t0),tot(dk)+' drankjes']);
+  const lg=all.slice().sort((a,b)=>(b.end-b.t0)-(a.end-a.t0))[0];if(lg)out.push(['🌙','Langste avond',d(lg.t0),hhmm(lg.t0)+' – '+hhmm(lg.end)]);
+  return out};
+const recHTML=()=>{const r=RECS();return r.length?`<div class="recs">${r.map(([e,k,n,v])=>`<div class="rec"><span class="e">${e}</span><span class="rk"><span class="mono">${k}</span><b>${esc(n)}</b></span><span class="small">${v}</span></div>`).join('')}</div>`:'<p class="small">Stop je eerste avond, dan verschijnen hier de records.</p>'};
+async function shareRank(){try{await document.fonts.load('80px Anton');await document.fonts.load('28px "JetBrains Mono"')}catch(e){}
+  const cs=CATS().filter(c=>c.r.length).slice(0,6),L=isL(),W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const bg=L?'#0b2340':'#070707',ac=L?'#ffffff':'#d4ff3a',mu=L?'#9db4d3':'#8a8a8a',fg=L?'#ffffff':'#ededed';
+  x.fillStyle=bg;x.fillRect(0,0,W,H);if(L)for(let i=0;i<W;i+=90){x.fillStyle=(i/90)%2?'#0d2747':'#0b2340';x.fillRect(i,0,90,H)}
+  x.strokeStyle=ac;x.lineWidth=10;x.strokeRect(10,10,W-20,H-20);
+  if(L&&LOGO.complete&&LOGO.naturalWidth)x.drawImage(LOGO,W-210,50,150,150);
+  x.textBaseline='alphabetic';x.font='96px Anton, Impact, sans-serif';x.fillStyle=fg;x.fillText(L?'EINDSTAND':'KLASSEMENT',70,150);
+  x.font='30px "JetBrains Mono", monospace';x.fillStyle=mu;x.fillText((AV&&AV.end?'':'TUSSENSTAND · ')+new Date(since()).toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long'}).toUpperCase(),74,200);
+  const cw=(W-140-30)/2,ch=Math.min(330,(H-300)/Math.ceil(Math.max(cs.length,1)/2));
+  cs.forEach((cat,i)=>{const cx=70+(i%2)*(cw+30),cy=250+Math.floor(i/2)*ch;x.font='28px "JetBrains Mono", monospace';x.fillStyle=mu;x.fillText((cat.e+' '+cat.n).toUpperCase().slice(0,30),cx,cy+30);
+    cat.r.forEach((p,j)=>{const y=cy+90+j*72;x.font=(j?'44px':'58px')+' Anton, Impact, sans-serif';x.fillStyle=j?fg:ac;x.fillText((j+1)+'. '+p[0].n.toUpperCase().slice(0,16),cx,y);x.font='24px "JetBrains Mono", monospace';x.fillStyle=mu;x.fillText(cat.u(p[1]),cx,y+30)})});
+  x.font='26px "JetBrains Mono", monospace';x.fillStyle=ac;x.textAlign='right';x.fillText(L?'ALLEZ LATEM · ZWIJNERIJ':'KOMAAN, JOEGNEE · ZWIJNERIJ',W-74,H-50);
+  const blob=await new Promise(r=>c.toBlob(r,'image/png'));const file=new File([blob],'klassement-'+new Date().toISOString().slice(0,10)+'.png',{type:'image/png'}),url=URL.createObjectURL(blob);
+  clr();$('#gt').textContent='Klassement delen';$('#ov').classList.add('open');
+  scr(`<img src="${url}" style="max-width:min(460px,90vw);border-radius:18px"><div class="row">${navigator.canShare&&navigator.canShare({files:[file]})?'<button class="btn" id="sh">📤 Delen</button>':''}<a class="btn ghost" href="${url}" download="${file.name}" style="text-decoration:none">Opslaan</a><button class="tbtn" id="rbk">Terug naar klassement</button></div><div class="small">Of houd de afbeelding ingedrukt om ze te bewaren.</div>`);
+  const sh=$('#sh');if(sh)sh.onclick=()=>navigator.share({files:[file],title:'Klassement'}).catch(()=>{});$('#rbk').onclick=openRank}
 const openRank=()=>{clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Klassement';$('#gc').textContent='';$('#ov').classList.add('open');
   const cs=CATS().filter(c=>c.r.length),g=gamesCat(),fin=AV&&AV.end;
-  scr(`<div class="mono">${fin?'De avond is gedaan · '+hhmm(AV.t0)+' – '+hhmm(AV.end):'Tussenstand · sinds '+hhmm(since())}</div><div class="pr" style="font-size:clamp(34px,5vw,64px)">${fin?'Klassement van de avond':'Tussenstand'}</div>
+  scr(`<div class="mono">${fin?'De avond is gedaan · '+hhmm(AV.t0)+' – '+hhmm(AV.end):'Tussenstand · sinds '+hhmm(since())}</div><div class="pr" style="font-size:clamp(34px,5vw,64px)">${fin?LT('Klassement van de avond','Eindstand'):LT('Tussenstand','Tussenstand bij de rust')}</div>${isL()?'<img class="rlogo" src="fclatem.png" alt="">':''}<div style="display:none"></div>
     ${cs.length||g.r.length?`<div class="pods">${cs.map(podHTML).join('')}${g.r.length?podHTML(g):''}</div>`:'<div class="hint">Nog niets gespeeld of gedronken.</div>'}
-    <div class="row">${fin?'<button class="tbtn" id="avun">↶ Toch nog niet gedaan</button>':''}<button class="tbtn" id="avbac">🚗 Wie mag er nog rijden?</button><button class="btn" id="avok">${fin?'Sluiten':'Verder spelen'}</button></div>`);
-  $('#avok').onclick=()=>$('#bk').click();$('#avbac').onclick=overview;const u=$('#avun');if(u)u.onclick=()=>{AV.end=null;AV.paused=false;saveAV();drawAvond();joeg('VERDER!','De avond gaat door');openRank()}};
-const startAvond=()=>{if(AV&&!AV.end){$('#bk').click();return}
+    ${hourHTML()}<div class="row">${fin?'<button class="tbtn" id="avun">↶ Toch nog niet gedaan</button>':''}${cs.length?'<button class="tbtn" id="avsh">📤 Deel het klassement</button>':''}<button class="tbtn" id="avbac">🚗 Wie mag er nog rijden?</button><button class="btn" id="avok">${fin?'Sluiten':'Verder spelen'}</button></div>`);
+  $('#avok').onclick=()=>$('#bk').click();$('#avbac').onclick=overview;const sh=$('#avsh');if(sh)sh.onclick=shareRank;const u=$('#avun');if(u)u.onclick=()=>{AV.end=null;AV.paused=false;saveAV();unArch();drawAvond();joeg('VERDER!','De avond gaat door');openRank()}};
+const startAvond=()=>{if(AV&&!AV.end){$('#bk').click();return}if(AV&&AV.end)archAv();
   AV={t0:Date.now(),paused:false,end:null};saveAV();STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{},kara:{}};saveS();try{COMP.pts={};COMP.log=[];COMP.t=Date.now();saveComp()}catch(e){}
   $('#bk').click();showTab('games');drawAvond();joeg('JOEGNEE!','De avond is begonnen')};
 const drawAvond=()=>{const b=$('#snel');if(!b)return;let c=$('#avc');if(!c){c=document.createElement('div');c.id='avc';c.className='row avc';b.after(c)}
   const run=AV&&!AV.end,np=active().length,ng=Object.values(STATS.games||{}).reduce((a,x)=>a+x,0);
-  if(run&&AV.paused){b.innerHTML=`<span class="mono">Gepauzeerd</span><b>⏸ Avond op pauze</b><span class="small">Spellen tellen niet mee tot je hervat. Tik voor de tussenstand.</span>`;b.onclick=openRank;
-    c.innerHTML=`<button class="btn" id="avres">▶ Hervat</button><button class="btn ghost" id="avst">■ Stop de avond</button>`}
-  else if(run){b.innerHTML=`<span class="mono">De avond loopt · sinds ${hhmm(AV.t0)}</span><b>🍻 Bezig</b><span class="small">${np} ${np===1?'speler':'spelers'} · ${ng} ${ng===1?'spel':'spellen'} gespeeld · tik voor de tussenstand</span>`;b.onclick=openRank;
-    c.innerHTML=`<button class="tbtn" id="avp">⏸ Pauze</button><button class="btn ghost" id="avst">■ Stop de avond</button>`}
-  else{b.innerHTML=`<span class="mono">Snelstart</span><b>▶ Start de avond</b><span class="small">Duid aan wie er meedoet. Daarna speel je gewoon wat je wil.</span>`;b.onclick=()=>quickStart();
+  if(run&&AV.paused){b.innerHTML=`<span class="mono">Gepauzeerd</span><b>⏸ ${LT('Avond op pauze','Rust')}</b><span class="small">${LT('Spellen tellen niet mee tot je hervat.','Wedstrijden tellen niet mee tot de tweede helft.')} Tik voor de tussenstand.</span>`;b.onclick=openRank;
+    c.innerHTML=`<button class="btn" id="avres">▶ ${LT('Hervat','Tweede helft')}</button><button class="btn ghost" id="avst">■ ${LT('Stop de avond','Laatste fluitsignaal')}</button>`}
+  else if(run){b.innerHTML=`<span class="mono">${LT('De avond loopt','De match is bezig')} · sinds ${hhmm(AV.t0)}</span><b>${LT('🍻 Bezig','⚽ In de match')}</b><span class="small">${np} ${np===1?'speler':'spelers'} · ${ng} ${ng===1?'spel':'spellen'} gespeeld · tik voor de tussenstand</span>`;b.onclick=openRank;
+    c.innerHTML=`<button class="tbtn" id="avp">⏸ ${LT('Pauze','Rust')}</button><button class="btn ghost" id="avst">■ ${LT('Stop de avond','Laatste fluitsignaal')}</button>`}
+  else{b.innerHTML=`<span class="mono">${LT('Snelstart','Opstelling kiezen')}</span><b>${LT('▶ Start de avond','⚽ Aftrap!')}</b><span class="small">${LT('Duid aan wie er meedoet. Daarna speel je gewoon wat je wil.','Duid de selectie aan. Daarna speel je gewoon wat je wil.')}</span>`;b.onclick=()=>quickStart();
     c.innerHTML=AV&&AV.end?`<span class="small">Avond gestopt om ${hhmm(AV.end)}.</span><button class="tbtn" id="avrk">🏆 Klassement</button><button class="tbtn" id="avun2">↶ Toch nog niet gedaan</button>`:''}
   const on=(id,f)=>{const e=document.getElementById(id);if(e)e.onclick=f};
   on('avp',()=>{AV.paused=true;saveAV();drawAvond()});on('avres',()=>{AV.paused=false;saveAV();drawAvond();joeg('VERDER!','De avond loopt weer')});
-  on('avst',e=>{const x=e.currentTarget;if(!x.dataset.sure){x.dataset.sure=1;x.textContent='Zeker? Tik nog eens';setTimeout(()=>{if(x.isConnected){delete x.dataset.sure;x.textContent='■ Stop de avond'}},4000);return}AV.end=Date.now();AV.paused=false;saveAV();drawAvond();openRank()});
-  on('avrk',openRank);on('avun2',()=>{AV.end=null;saveAV();drawAvond();joeg('VERDER!','De avond gaat door')})};
+  on('avst',e=>{const x=e.currentTarget;if(!x.dataset.sure){x.dataset.sure=1;x.textContent='Zeker? Tik nog eens';setTimeout(()=>{if(x.isConnected){delete x.dataset.sure;x.textContent='■ '+LT('Stop de avond','Laatste fluitsignaal')}},4000);return}AV.end=Date.now();AV.paused=false;saveAV();archAv();drawAvond();openRank()});
+  on('avrk',openRank);on('avun2',()=>{AV.end=null;saveAV();unArch();drawAvond();joeg('VERDER!','De avond gaat door')})};
 const renderInfo=()=>{const cs=CATS(),g=gamesCat(),pick=k=>cs.find(c=>c.k===k),top1=c=>c&&c.r[0]?`${esc(c.r[0][0].n)}<span class="small"> · ${c.u(c.r[0][1])}</span>`:'—';
   const hi=[['🎲','Meest gespeelde spel',g.r[0]?esc(g.r[0][0].n)+`<span class="small"> · ${g.r[0][1]}×</span>`:'—'],['🎮','Speelde het meest mee',top1(pick('play'))],['💦','Morste het meest',top1(pick('spill'))],['💀','Verliest het vaakst',top1(pick('lose'))]];
   const rest=cs.filter(c=>!['play','spill','lose'].includes(c.k)&&c.r.length);
   $('#t-info').innerHTML=`<div class="sec mono"><span>${AV&&!AV.end?'Deze avond · sinds '+hhmm(AV.t0):AV&&AV.end?'Vorige avond':'Vanavond'}</span><span>${AV&&AV.paused?'⏸ pauze':''}</span></div>
    <div class="hilites">${hi.map(([e,k,v])=>`<div class="hil"><span class="e">${e}</span><span class="mono">${k}</span><b>${v}</b></div>`).join('')}</div>
    ${rest.length?`<div class="pods">${rest.map(podHTML).join('')}</div>`:'<p class="small" style="margin:6px 0 0">Speel wat spelletjes: hier verschijnen dan de podiums.</p>'}
-   <div class="row" style="justify-content:flex-start;margin:18px 0 30px"><button class="tbtn" id="irk">🏆 Volledig klassement</button></div>
+   ${hourHTML()}<div class="row" style="justify-content:flex-start;margin:18px 0 30px"><button class="tbtn" id="irk">🏆 Volledig klassement</button><button class="tbtn" id="icq">✏️ Eigen vragen en opdrachten</button></div>
+   <div class="sec mono"><span>📖 Recordboek · alle avonden</span><span>${HIST.length} ${HIST.length===1?'avond':'avonden'}</span></div>${recHTML()}<div style="height:26px"></div>
    <button class="albcard" id="ialb"><span class="e">📷</span><span><span class="mono">Fotoalbum</span><b>Bekijk de foto's van alle avonden</b><span class="small" id="ialbn">Blijven in de app, niet in je fotorol.</span></span><span class="ar">→</span></button>
    <div class="sec mono"><span>Goed om te weten</span><span>${String(FACTS.length).padStart(2,'0')}</span></div>
    <div class="facc">${FACTS.map(([k,p])=>`<details><summary>${k}</summary><p>${p}</p></details>`).join('')}
    <details><summary>App op het beginscherm</summary><p>Safari › Deel › Zet op beginscherm, dan opent de Zwijnerij schermvullend.</p></details></div>`;
-  $('#irk').onclick=openRank;$('#ialb').onclick=()=>album();
+  $('#irk').onclick=openRank;$('#icq').onclick=()=>openCQ();$('#ialb').onclick=()=>album();
   photoAll().then(l=>{const e=$('#ialbn');if(e&&l.length){const n=new Set(l.map(p=>nightKey(p.t))).size;e.textContent=l.length+" foto's van "+n+(n===1?' avond':' avonden')+' · blijven in de app'}})};
 renderInfo();
 
@@ -1265,10 +1348,10 @@ const drawParty=()=>{const d=new Date(),P=active();if(Date.now()-ruleAt>10*6e4){
 setTimeout(()=>drawAvond());$('#boothb').onclick=booth;$('#party').onclick=()=>{pov.classList.add('open');wake();drawParty();clearInterval(pTimer);pTimer=setInterval(drawParty,15000)};
 
 /* ===== eigen vragen ===== */
-const CQ={bom:'Kaboom',nooit:'Biecht',wie:'Wie Van Ons',chaos:'Chaos',dod:'Dit of Dat'};
+const CQ={quiz:'Kotquiz',fles:'Draai de fles',bom:'Kaboom',nooit:'Biecht',wie:'Wie Van Ons',chaos:'Chaos',dod:'Dit of Dat'};
 let cqSel='bom';
 const openCQ=()=>{clr();$('#gt').textContent='Eigen vragen';$('#gc').textContent='';$('#ov').classList.add('open');
-  const help={bom:'Eén stelling per regel, bv. Wie stuurt het vaakst om 3u een spraakbericht?',nooit:'Eén per regel, zonder ‘Ik heb nog nooit’. Bv. op de Overpoort mijn schoen verloren',wie:'Eén per regel, bv. vergeet als eerste zijn sleutels',
+  const help={quiz:'Eén vraag per regel: vraag / juist antwoord / fout / fout / fout, bv. Hoe heet onze kotbaas? / Johan / Marc / Luc / Dirk',fles:'Eén kleine opdracht per regel, bv. Zing het clublied van FC Latem',bom:'Eén stelling per regel, bv. Wie stuurt het vaakst om 3u een spraakbericht?',nooit:'Eén per regel, zonder ‘Ik heb nog nooit’. Bv. op de Overpoort mijn schoen verloren',wie:'Eén per regel, bv. vergeet als eerste zijn sleutels',
     chaos:'Eén per regel. Gebruik {a} en {b} voor willekeurige spelers. Bv. {a} geeft {b} een compliment of drinkt',dod:'Eén per regel, twee opties gescheiden door / , bv. Nooit meer kebab / nooit meer frietjes',waar:'Eén vraag per regel',durf:'Eén opdracht per regel'};
   const toText=k=>(CUS[k]||[]).map(x=>Array.isArray(x)?x.join(' / '):x).join('\n');
   scr(`<div class="row">${Object.entries(CQ).map(([k,v])=>`<button class="tbtn" data-cq="${k}" style="${k===cqSel?'background:var(--acc);color:#000':''}">${v}</button>`).join('')}</div>
@@ -1277,7 +1360,7 @@ const openCQ=()=>{clr();$('#gt').textContent='Eigen vragen';$('#gc').textContent
    <button class="btn" id="cqs">Opslaan</button>`);
   st.querySelectorAll('[data-cq]').forEach(b=>b.onclick=()=>{save(false);cqSel=b.dataset.cq;openCQ()});
   const save=(msg=true)=>{const lines=$('#cqt').value.split('\n').map(s=>s.trim()).filter(Boolean);
-    CUS[cqSel]=cqSel==='dod'?lines.map(l=>l.split('/').map(s=>s.trim())).filter(x=>x.length===2&&x[0]&&x[1]):lines;saveCus();
+    CUS[cqSel]=cqSel==='dod'?lines.map(l=>l.split('/').map(s=>s.trim())).filter(x=>x.length===2&&x[0]&&x[1]):cqSel==='quiz'?lines.map(l=>l.split('/').map(s=>s.trim()).filter(Boolean)).filter(x=>x.length>=3):lines;saveCus();
     if(msg){$('#cqs').textContent='Opgeslagen ✓';setTimeout(()=>{const b=$('#cqs');if(b)b.textContent='Opslaan'},1500)}};
   $('#cqs').onclick=()=>save()};
 $('#cq').onclick=openCQ;
@@ -1298,9 +1381,11 @@ const statsHTML=()=>{const byId=id=>ACC.find(a=>a.id===id),top=(o,low)=>{const e
 /* ===== licht / donker ===== */
 const SUN='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>',MOON='<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>';
 let theme='dark';try{theme=localStorage.getItem('kp_theme')||'dark'}catch(e){}
-const applyTheme=()=>{document.body.classList.toggle('light',theme==='light');$('#thm').innerHTML=theme==='light'?MOON:SUN;
-  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=theme==='light'?'#f3f2ec':'#070707';applyNight()};
-$('#thm').onclick=()=>{theme=theme==='light'?'dark':'light';try{localStorage.setItem('kp_theme',theme)}catch(e){}applyTheme()};
+
+const applyTheme=()=>{document.body.classList.toggle('latem',LATEM);document.body.classList.toggle('light',theme==='light'&&!LATEM);try{applyTerms();drawAvond()}catch(e){}$('#thm').innerHTML=theme==='light'?MOON:SUN;
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=LATEM?'#0b2340':theme==='light'?'#f3f2ec':'#070707';applyNight()};
+$('#ltm').onclick=()=>{LATEM=!LATEM;try{localStorage.setItem('kp_latem',LATEM?'1':'0')}catch(e){}applyTheme();if(LATEM)joeg('ALLEZ LATEM!','FC Latem-layout aan');try{renderHead();renderGames();renderInfo();const t=document.querySelector('.tab.on');if(t)showTab(t.id.slice(2))}catch(e){}};
+$('#thm').onclick=()=>{if(LATEM){LATEM=false;try{localStorage.setItem('kp_latem','0')}catch(e){}applyTheme();try{renderHead();renderGames();renderInfo();const t=document.querySelector('.tab.on');if(t)showTab(t.id.slice(2))}catch(e){};return}theme=theme==='light'?'dark':'light';try{localStorage.setItem('kp_theme',theme)}catch(e){}applyTheme()};
 applyTheme();
 renderHead();
 try{drawBet()}catch(e){}
@@ -1511,7 +1596,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795008865';
+const APPVER='1795009921';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);

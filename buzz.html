@@ -153,7 +153,7 @@ const renderHost=()=>{
     app.innerHTML=`<div class="lobby"><div><div id="qr"></div></div><div style="text-align:left;display:flex;flex-direction:column;gap:16px"><div class="mono">Scan de QR-code of ga naar Grote spellen › Raad het liedje en vul in</div><div class="code-big">${H.code}</div>
       <div class="plist" style="justify-content:flex-start">${H.order.map(p=>`<span class="pchip">${esc(nm(p))}<span class="x" data-kick="${p}">✕</span></span>`).join('')||'<span class="small">Nog niemand…</span>'}</div>
       <div class="row" style="justify-content:flex-start"><span class="mono">Aantal vragen</span><div class="seg">${[10,15,25].map(x=>`<button class="${H.max===x?'on':''}" data-max="${x}">${x}</button>`).join('')}</div></div>
-      <button class="btn" id="go" ${n<1?'disabled':''}>Start (${n} ${n===1?'speler':'spelers'})</button></div></div>`;
+      ${H.musicOk===false?'<div class="hint" style="color:var(--fg)">⚠️ De muziek is nu niet bereikbaar (internet?). Je krijgt dan quizvragen in de plaats van liedjes.</div>':''}<button class="btn" id="go" ${n<1?'disabled':''}>Start (${n} ${n===1?'speler':'spelers'})</button></div></div>`;
     try{new QRCode($('#qr'),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){}
     app.querySelectorAll('[data-max]').forEach(b=>b.onclick=()=>{H.max=+b.dataset.max;broadcast()});app.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{H.mode=b.dataset.mode;broadcast()});
     app.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{const id=b.dataset.kick;delete H.players[id];H.order=H.order.filter(x=>x!==id);send({t:'reject',to:id});broadcast()});
@@ -179,7 +179,8 @@ const renderHost=()=>{
 const makeCode=()=>Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
 const startHost=async resume=>{wake();const s=ls.get('bq_host',null);
   if(resume&&s&&Date.now()-s.t<6*3.6e6){Object.assign(H,s)}else{H.code=makeCode()}
-  app.innerHTML=`<div class="h2">Lobby maken…</div>`;await join(H.code,'host',{host:1},onHostMsg);broadcast()};
+  app.innerHTML=`<div class="h2">Lobby maken…</div>`;await join(H.code,'host',{host:1},onHostMsg);broadcast();
+  fetchSong(SONGS[Math.random()*SONGS.length|0]).then(r=>{H.musicOk=!!r;if(H.phase==='lobby')renderHost()})};
 
 /* ===== speler: gsm als buzzer ===== */
 const Pl={pid:null,n:'',code:null,state:null};
