@@ -1841,7 +1841,7 @@ META.push(
  {k:'telecab',lvl:'ski',n:'Télécabine',s:'Doorgeven tot de panne',ic:'gondola',p:'3+ spelers',r:["Elke beurt krijg je een nieuwe, simpele vraag, bv. 'Noem een Franse kaas'.","Antwoord, tik op Suivant en geef de iPad door. Te lang twijfelen mag niet.","De cabine stijgt, maar niemand weet wanneer ze in panne valt.","Wie de iPad vasthoudt bij de PANNE, voert de straf uit."]},
  {k:'moniteur',lvl:'ski',n:'Moniteur',s:'Jacques a dit, op de piste',ic:'whistle',p:'3+ spelers',r:["De skileraar geeft een bevel. Begint het met 'Le moniteur dit', dan doet iedereen het, en wel snel.","Zonder 'Le moniteur dit' is het een val: wie het toch doet, drinkt.","Wie als laatste het juiste bevel uitvoert, drinkt ook.","De vertaling staat er klein onder, voor wie geen Frans praat."]},
  {k:'roulette',lvl:'cas',n:'Roulette',s:'Faites vos jeux',ic:'roulette',p:'2+ spelers',r:["Iedereen kiest een inzet: rood, zwart, even, oneven of 0.","Rien ne va plus: het wiel draait.","Juist gegokt? Deel 2 slokken uit (op 0 zelfs 5). Fout? Drink 1.","Valt het balletje op 0 en had jij geen 0, dan drink je 2: de bank wint."]},
- {k:'slots',lvl:'cas',n:'Fruitautomaat',s:'Trek aan de hendel',ic:'slot',p:'1+ spelers',r:["Om de beurt trek je aan de hendel.","3× 7️⃣ = JACKPOT: deel 4 slokken uit (gebeurt vaker dan je denkt). 3× 🐷 = Zwijnerij: iedereen drinkt 2.","3 dezelfde: deel 2 uit. 2 dezelfde: deel 1 uit.","Niets? Het huis wint: drink 1."]},
+ {k:'slots',lvl:'cas',n:'Fruitautomaat',s:'Trek aan de hendel',ic:'slot',p:'1+ spelers',r:["Om de beurt trek je aan de hendel.","3× 7️⃣ = JACKPOT: deel 4 slokken uit (ongeveer 1 op 15). 3× 🐷 = Zwijnerij: iedereen drinkt 2.","3 dezelfde: deel 2 uit. 2 dezelfde: deel 1 uit.","Niets? Het huis wint: drink 1."]},
  {k:'bj',lvl:'cas',n:'Blackjack',s:'Tegen het huis',ic:'cards',p:'1+ spelers',r:["Duid aan wie er meespeelt: één of meer spelers tegelijk tegen de bank. Kom zo dicht mogelijk bij 21 zonder erover te gaan.","Kaart = nog een kaart, Pas = stoppen. De bank trekt tot 17.","Gewonnen: deel 2 uit (blackjack: 4). Verloren: drink 1. Over 21: drink 2.","Gelijk? Niemand drinkt."]});
 Object.assign(G,{
  descente:{i(){const S=[['♠','#2b6cb0'],['♥','#e53e3e'],['♦','#dd6b20'],['♣','#2f855a']],N=7;let pos,dk,chutes,flip,own,done=false;
@@ -1902,7 +1902,7 @@ Object.assign(G,{
  slots:{i(){const SY=['🍒','🍒','🍒','🍋','🍋','🍋','🔔','🔔','🍺','🍺','🐷','7️⃣'],pick=()=>SY[Math.random()*SY.length|0];let busy=false;
    const view=(r,msg)=>{T.p||T.next();scr(`${T.tag('Aan de hendel')}<div class="slot"><div class="reels">${(r||['🍒','🍋','7️⃣']).map((x,i)=>`<div class="reel" id="sr${i}">${x}</div>`).join('')}</div><button class="lever" id="sl" aria-label="Trek aan de hendel"><span></span></button></div>
      <div class="hint" style="color:var(--fg);min-height:2.6em" id="smsg">${msg||'Trek aan de hendel.'}</div><button class="btn" id="sp">🎰 Trek aan de hendel</button>`);$('#sp').onclick=pull;$('#sl').onclick=pull};
-   const pull=()=>{if(busy)return;busy=true;const me=T.p;const res=[pick(),pick(),pick()];if(Math.random()<.12)res[0]=res[1]=res[2]='7️⃣';$('#sp').disabled=true;const lv=$('#sl');lv.classList.add('down');
+   const pull=()=>{if(busy)return;busy=true;const me=T.p;const res=[pick(),pick(),pick()];if(Math.random()<1/15)res[0]=res[1]=res[2]='7️⃣';$('#sp').disabled=true;const lv=$('#sl');lv.classList.add('down');
      res.forEach((x,i)=>{const el=$('#sr'+i);const iv=setInterval(()=>{if(el)el.textContent=pick()},70);timers.push(iv);timers.push(setTimeout(()=>{clearInterval(iv);if(el){el.textContent=x;el.classList.add('stop')}beep(600+i*200,.05,.08)},900+i*500))});
      timers.push(setTimeout(()=>{busy=false;const[a,b,c]=res,three=a===b&&b===c,two=a===b||b===c||a===c;let m;
        if(three&&a==='7️⃣'){m='💰 JACKPOT! Deel 4 slokken uit.';award(me,4,'Fruitautomaat');joeg('JACKPOT !','Deel 4 uit')}
@@ -2049,7 +2049,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795023322';
+const APPVER='1795023542';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
