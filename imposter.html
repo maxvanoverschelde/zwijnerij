@@ -13,17 +13,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root{--bg:#070707;--fg:#ededed;--muted:#7a7a7a;--line:#222;--card:#101010;--acc:#d4ff3a;--wolf:#ff4d6d;--moon:#7aa2ff}
+:root{--bg:#070707;--fg:#ededed;--muted:#7a7a7a;--line:#222;--card:#101010;--acc:#d4ff3a;--wolf:#ffffff;--moon:#bdbdbd}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif}
 body{padding:calc(env(safe-area-inset-top,0px) + 20px) max(20px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom,0px) + 24px) max(20px,env(safe-area-inset-left));min-height:100vh;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
-body.night{background:radial-gradient(circle at 50% -10%,#16203d 0%,#070707 60%)}
+body.night{background:radial-gradient(circle at 50% -10%,#1c1c1c 0%,#070707 60%)}
 button,input{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer}
 .mono{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--muted)}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .brand{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;letter-spacing:.01em}
-.brand i{font-style:normal;color:var(--wolf)}
+.brand i{font-style:normal;color:var(--acc)}
 main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;width:100%;max-width:1100px;margin:0 auto}
 .h1{font-family:'Anton',sans-serif;font-size:clamp(40px,8vw,96px);line-height:.95;text-transform:uppercase}
 .h2{font-family:'Anton',sans-serif;font-size:clamp(28px,5vw,54px);line-height:1;text-transform:uppercase}
@@ -41,7 +41,7 @@ input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;tex
 .plist{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .pchip{border:1px solid #2c2c2c;border-radius:999px;padding:10px 16px;font-size:18px;display:flex;align-items:center;gap:8px}
 .pchip.dead{opacity:.35;text-decoration:line-through}
-.pchip .dot{width:9px;height:9px;border-radius:50%;background:#3cff8a}.pchip .dot.off{background:#555}
+.pchip .dot{width:9px;height:9px;border-radius:50%;background:#d4ff3a}.pchip .dot.off{background:#555}
 .pchip .x{color:var(--muted);margin-left:4px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;width:100%;max-width:720px}
 .choice{border:1px solid #2c2c2c;border-radius:18px;padding:20px 12px;font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;background:var(--card)}
@@ -80,6 +80,8 @@ a,a:visited{color:inherit}
 .opts{width:min(560px,100%)}.optgrid{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:center;margin-top:14px;text-align:left}
 .pchip.on2{border-color:var(--acc);color:var(--acc)}
 a,a:visited{color:inherit}#home{color:var(--fg)}
+.tbtn{min-height:44px}#home{white-space:nowrap;display:inline-flex;align-items:center}
+@media(max-width:360px){#home{padding:11px 10px;letter-spacing:.02em}.brand{font-size:26px!important}}
 </style>
 </head>
 <body>
@@ -194,7 +196,7 @@ const onPlayerMsg=async m=>{
 const act=async o=>{const e=await enc(Pl.key,o);toHost({t:'act',pid:Pl.pid,...e});beep(880)};
 const hb=(btns)=>IS_HOST&&btns.length?`<div class="row">${btns.map(([c,l,g])=>`<button class="${g?'tbtn':'btn'}" data-hc="${c}">${l}</button>`).join('')}</div><div class="small">Jij maakte de lobby, dus jij bedient de knoppen.</div>`:'';
 const bindHb=()=>app.querySelectorAll('[data-hc]').forEach(b=>b.onclick=()=>act({kind:'cmd',c:b.dataset.hc}));
-const card=me=>me.spy?`<div class="role" style="--c:#ff4d6d"><div class="emo">🕵️</div><div class="mono">Jij bent</div><div class="rn">De imposter</div>${me.cat?`<div class="small">Categorie: <b style="color:#ededed">${esc(me.cat)}</b></div>`:''}${me.mates&&me.mates.length?`<div class="small">Andere imposter: <b style="color:#ff4d6d">${me.mates.map(esc).join(', ')}</b></div>`:''}<div class="hint" style="color:#cfcfcf">Je kent het woord niet. Luister goed, doe alsof en raad het woord.</div></div>`
+const card=me=>me.spy?`<div class="role" style="--c:#ffffff"><div class="emo">🕵️</div><div class="mono">Jij bent</div><div class="rn">De imposter</div>${me.cat?`<div class="small">Categorie: <b style="color:#ededed">${esc(me.cat)}</b></div>`:''}${me.mates&&me.mates.length?`<div class="small">Andere imposter: <b style="color:#ffffff">${me.mates.map(esc).join(', ')}</b></div>`:''}<div class="hint" style="color:#cfcfcf">Je kent het woord niet. Luister goed, doe alsof en raad het woord.</div></div>`
   :`<div class="role" style="--c:#d4ff3a"><div class="emo">🔑</div><div class="mono">Het geheime woord</div><div class="rn">${esc(me.word||'')}</div><div class="small">Categorie: ${esc(me.cat||'')}</div><div class="hint" style="color:#cfcfcf">Geef hints zonder het woord te verklappen: de imposter luistert mee.</div></div>`;
 const render=()=>{const s=Pl.state,me=Pl.mine||{};if(!s)return;
   if(s.phase==='lobby'){
@@ -207,7 +209,7 @@ const render=()=>{const s=Pl.state,me=Pl.mine||{};if(!s)return;
           <span class="mono">Hint imposter</span>${seg('hint',[[1,'Categorie'],[0,'Niets']],H.opt.hint?1:0)}
           <span class="mono">Categorie</span><div class="plist" style="justify-content:flex-start">${['mix'].concat(CATS).map(c=>`<button class="pchip ${H.opt.cat===c?'on2':''}" data-cat="${c}">${c==='mix'?'Alles door elkaar':c}</button>`).join('')}</div></div></details>
         <div class="hint">${n>=3?`${nSpies(n)} ${nSpies(n)>1?'imposters':'imposter'} met ${n} spelers.`:'Minstens 3 spelers nodig.'}</div>
-        <div class="small" style="color:#ffd23f">⚠️ Het spel draait op jouw toestel: laat deze pagina open tot het gedaan is.</div>
+        <div class="small" style="color:#d4ff3a">⚠️ Het spel draait op jouw toestel: laat deze pagina open tot het gedaan is.</div>
         <button class="btn" id="go" ${n<3?'disabled':''}>Start (${n} spelers)</button>`;
       try{new QRCode($('#qr'),{text:url,width:200,height:200,correctLevel:QRCode.CorrectLevel.M})}catch(e){}
       const d=app.querySelector('details');d.ontoggle=()=>{Pl.oo=d.open};
@@ -233,7 +235,7 @@ const render=()=>{const s=Pl.state,me=Pl.mine||{};if(!s)return;
   if(s.phase==='end'){const r=s.result||{},sw=r.w==='spies',iSpy=me.spy,won=sw===!!iSpy;
     const why={tie:'Gelijkstand bij de stemming: de imposter ontsnapt.',wrong:`Jullie stemden op ${esc(s.caught||'')}, maar dat was geen imposter.`,guessed:`${esc(s.caught||'')} werd betrapt, maar raadde het woord: ${esc(s.guess||'')}.`,caught:`${esc(s.caught||'')} werd betrapt en raadde fout (${esc(s.guess||'')}).`}[r.why]||'';
     app.innerHTML=`<div style="font-size:80px">${sw?'🕵️':'🏡'}</div><div class="h1">${sw?(s.spies.length>1?'De imposters winnen':'De imposter wint'):'Imposter betrapt'}</div><div class="hint">${why}</div>
-      <div class="task" style="border-color:#d4ff3a"><span class="mono">Het woord was</span><b style="color:#d4ff3a">${esc(s.word||'')}</b></div><div class="small">${s.spies.length>1?'Imposters':'Imposter'}: <b style="color:#ff4d6d">${s.spies.map(esc).join(', ')}</b></div>
+      <div class="task" style="border-color:#d4ff3a"><span class="mono">Het woord was</span><b style="color:#d4ff3a">${esc(s.word||'')}</b></div><div class="small">${s.spies.length>1?'Imposters':'Imposter'}: <b style="color:#ffffff">${s.spies.map(esc).join(', ')}</b></div>
       <div class="h2" style="color:${won?'var(--acc)':'var(--wolf)'}">${won?'Gewonnen!':'Verloren: drink 2 slokken'}</div>
       ${s.tally&&s.tally.length?`<div class="small">Stemmen: ${s.tally.map(t=>esc(t.n)+' '+t.v).join(' · ')}</div>`:''}
       <div class="small">Stand: ${s.score.slice().sort((a,b)=>b.s-a.s).map(x=>esc(x.n)+' '+x.s).join(' · ')}</div>${hb([['again','Nog een ronde'],['lobby','Terug naar lobby',1]])}`;bindHb();return}};

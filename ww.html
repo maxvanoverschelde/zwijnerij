@@ -13,17 +13,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root{--bg:#070707;--fg:#ededed;--muted:#7a7a7a;--line:#222;--card:#101010;--acc:#d4ff3a;--wolf:#ff4d6d;--moon:#7aa2ff}
+:root{--bg:#070707;--fg:#ededed;--muted:#7a7a7a;--line:#222;--card:#101010;--acc:#d4ff3a;--wolf:#ffffff;--moon:#bdbdbd}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif}
 body{padding:calc(env(safe-area-inset-top,0px) + 20px) max(20px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom,0px) + 24px) max(20px,env(safe-area-inset-left));min-height:100vh;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
-body.night{background:radial-gradient(circle at 50% -10%,#16203d 0%,#070707 60%)}
+body.night{background:radial-gradient(circle at 50% -10%,#1c1c1c 0%,#070707 60%)}
 button,input{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer}
 .mono{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--muted)}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .brand{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;letter-spacing:.01em}
-.brand i{font-style:normal;color:var(--wolf)}
+.brand i{font-style:normal;color:var(--acc)}
 main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;width:100%;max-width:1100px;margin:0 auto}
 .h1{font-family:'Anton',sans-serif;font-size:clamp(40px,8vw,96px);line-height:.95;text-transform:uppercase}
 .h2{font-family:'Anton',sans-serif;font-size:clamp(28px,5vw,54px);line-height:1;text-transform:uppercase}
@@ -41,7 +41,7 @@ input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;tex
 .plist{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .pchip{border:1px solid #2c2c2c;border-radius:999px;padding:10px 16px;font-size:18px;display:flex;align-items:center;gap:8px}
 .pchip.dead{opacity:.35;text-decoration:line-through}
-.pchip .dot{width:9px;height:9px;border-radius:50%;background:#3cff8a}.pchip .dot.off{background:#555}
+.pchip .dot{width:9px;height:9px;border-radius:50%;background:#d4ff3a}.pchip .dot.off{background:#555}
 .pchip .x{color:var(--muted);margin-left:4px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;width:100%;max-width:720px}
 .choice{border:1px solid #2c2c2c;border-radius:18px;padding:20px 12px;font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;background:var(--card)}
@@ -77,6 +77,8 @@ details summary::-webkit-details-marker{display:none}
 @keyframes fl{0%{box-shadow:inset 0 0 0 9999px rgba(212,255,58,.35)}100%{box-shadow:inset 0 0 0 9999px transparent}}body.flash{animation:fl 1.2s ease-out 2}
 a,a:visited{color:inherit}
 #home{color:var(--fg,#ededed)}
+.tbtn{min-height:44px}#home{white-space:nowrap;display:inline-flex;align-items:center}
+@media(max-width:360px){#home{padding:11px 10px;letter-spacing:.02em}.brand{font-size:26px!important}}
 </style>
 </head>
 <body>
@@ -107,14 +109,14 @@ const dec=async(key,m)=>JSON.parse(new TextDecoder().decode(await crypto.subtle.
 
 /* ===== rollen & opdrachten ===== */
 const ROLES={
- wolf:{n:'Weerwolf',e:'🐺',c:'#ff4d6d',k:'wolf',d:'Elke nacht kiezen de weerwolven samen een slachtoffer. Overdag doe je alsof je een gewone burger bent en voer je stiekem je geheime opdracht uit.'},
- witch:{n:'Heks',e:'🧪',c:'#c77dff',d:'Je hebt twee toverdrankjes, elk één keer te gebruiken: een levenselixer om het slachtoffer van de wolven te redden, en een gif om ’s nachts iemand te doden.'},
- seer:{n:'Ziener',e:'🔮',c:'#b388ff',d:'Elke nacht mag je bij één speler kijken of het een weerwolf is.'},
- doc:{n:'Beschermer',e:'🛡️',c:'#3cff8a',d:'Elke nacht bescherm je iemand tegen de wolven. Niet twee nachten na elkaar dezelfde persoon.'},
- hunter:{n:'Jager',e:'🎯',c:'#ffb703',d:'Ga je dood, dan mag je meteen nog één speler meenemen in je val.'},
- cupid:{n:'Cupido',e:'💘',c:'#ff7eb6',d:'In de eerste nacht schiet je twee pijlen: je koppelt twee spelers (jezelf mag ook) als geliefden. Sterft de ene, dan sterft de andere van verdriet. Zitten de geliefden in verschillende kampen, dan winnen ze als ze samen als laatsten overblijven.'},
- vil:{n:'Burger',e:'🧑‍🌾',c:'#7aa2ff',d:'Geen speciale kracht, wel een stem. Let goed op: de weerwolven moeten overdag een geheime opdracht uitvoeren. Betrap ze.'}};
-const MAYOR={n:'Burgemeester',e:'🎖️',c:'#ffd23f',d:'Een extra titel bovenop je rol, en iedereen weet wie het is. Bij het stemmen telt de stem van de burgemeester dubbel. Sterft de burgemeester, dan wordt er een nieuwe aangeduid.'};
+ wolf:{n:'Weerwolf',e:'🐺',c:'#ffffff',k:'wolf',d:'Elke nacht kiezen de weerwolven samen een slachtoffer. Overdag doe je alsof je een gewone burger bent en voer je stiekem je geheime opdracht uit.'},
+ witch:{n:'Heks',e:'🧪',c:'#bdbdbd',d:'Je hebt twee toverdrankjes, elk één keer te gebruiken: een levenselixer om het slachtoffer van de wolven te redden, en een gif om ’s nachts iemand te doden.'},
+ seer:{n:'Ziener',e:'🔮',c:'#ededed',d:'Elke nacht mag je bij één speler kijken of het een weerwolf is.'},
+ doc:{n:'Beschermer',e:'🛡️',c:'#d4ff3a',d:'Elke nacht bescherm je iemand tegen de wolven. Niet twee nachten na elkaar dezelfde persoon.'},
+ hunter:{n:'Jager',e:'🎯',c:'#bdbdbd',d:'Ga je dood, dan mag je meteen nog één speler meenemen in je val.'},
+ cupid:{n:'Cupido',e:'💘',c:'#ededed',d:'In de eerste nacht schiet je twee pijlen: je koppelt twee spelers (jezelf mag ook) als geliefden. Sterft de ene, dan sterft de andere van verdriet. Zitten de geliefden in verschillende kampen, dan winnen ze als ze samen als laatsten overblijven.'},
+ vil:{n:'Burger',e:'🧑‍🌾',c:'#9a9a9a',d:'Geen speciale kracht, wel een stem. Let goed op: de weerwolven moeten overdag een geheime opdracht uitvoeren. Betrap ze.'}};
+const MAYOR={n:'Burgemeester',e:'🎖️',c:'#d4ff3a',d:'Een extra titel bovenop je rol, en iedereen weet wie het is. Bij het stemmen telt de stem van de burgemeester dubbel. Sterft de burgemeester, dan wordt er een nieuwe aangeduid.'};
 const NAR={n:'Verteller',e:'🎙️',c:'#d4ff3a',d:'Je speelt niet mee, maar leidt het spel. Op je gsm zie je wat je moet voorlezen, wie welke rol heeft en de knoppen om verder te gaan.'};
 const TASKS=["Zeg minstens twee keer ‘eerlijk gezegd’","Beschuldig iemand zonder enige reden, met volle overtuiging","Raak drie keer je oor aan terwijl iemand anders praat","Gebruik ‘joegnee’ in een zin","Verdedig de persoon die het meest verdacht wordt","Stel minstens twee vragen aan dezelfde persoon","Zeg ‘dat vind ik verdacht’ over iemand die niets zegt","Lach één keer heel hard om iets dat niet grappig is","Zit de hele ronde met gekruiste armen","Noem iemand één keer bij een verkeerde naam","Begin een zin met ‘Als ik weerwolf was…’","Noem een voetbalclub in een zin die er niets mee te maken heeft","Kijk de hele ronde niemand recht aan","Herhaal het laatste woord van iemand anders, als een echo","Gebruik het woord ‘eigenlijk’ minstens drie keer","Wijs naar iemand telkens als je praat","Zeg dat je gisteren slecht geslapen hebt","Stel voor om op de stilste persoon te stemmen","Zucht luid wanneer iemand jou beschuldigt","Zeg ‘ik zeg het maar’ na een beschuldiging"];
 const VTIPS=["De weerwolven hebben elk een geheime opdracht. Let op rare zinnen en tics.","Wie zegt opvallend vaak hetzelfde woord?","Wie verdedigt plots iemand die heel verdacht is?","Let op wie zijn oren, neus of armen aanraakt.","Stilte kan verdacht zijn, maar praatjesmakers ook."];
@@ -306,7 +308,7 @@ const onPlayerMsg=async m=>{
   if(m.t==='reject'&&m.to===Pl.pid){app.innerHTML=`<div class="h2">${esc(m.why)}</div><button class="btn" onclick="location.href=location.pathname">Terug</button>`}};
 const act=async o=>{const e=await enc(Pl.key,o);toHost({t:'act',pid:Pl.pid,...e});beep(880)};
 const R=r=>r==='mayor'?MAYOR:r==='nar'?NAR:ROLES[r];
-const roleCard=(r,small,mayor)=>`<div class="role" style="--c:${R(r).c}"><div class="emo">${R(r).e}</div><div class="mono">Jouw rol</div><div class="rn">${R(r).n}</div>${mayor?`<div class="small" style="color:#ffd23f">🎖️ en je bent ook burgemeester: je stem telt dubbel</div>`:''}${small?'':`<div class="hint" style="color:#cfcfcf">${R(r).d}</div>`}</div>`;
+const roleCard=(r,small,mayor)=>`<div class="role" style="--c:${R(r).c}"><div class="emo">${R(r).e}</div><div class="mono">Jouw rol</div><div class="rn">${R(r).n}</div>${mayor?`<div class="small" style="color:#d4ff3a">🎖️ en je bent ook burgemeester: je stem telt dubbel</div>`:''}${small?'':`<div class="hint" style="color:#cfcfcf">${R(r).d}</div>`}</div>`;
 const rolesBtn=()=>`<button class="peek" id="rb">📖 Rollen in dit spel</button>`;
 const bindCommon=()=>{const b=$('#pk');if(b)b.onclick=()=>{Pl.peek=!Pl.peek;renderPlayer()};const r=$('#rb');if(r)r.onclick=()=>{Pl.showRoles=true;renderPlayer()}};
 const narScript={roles:['Iedereen bekijkt stiekem zijn rol op zijn gsm.','Lees daarna voor: “Het wordt nacht in het dorp. Iedereen sluit de ogen.”'],
@@ -327,7 +329,7 @@ const renderNar=(s,me)=>{const roleLine=x=>`<div class="wrow2 ${x.alive?'':'dead
     <div class="row">${btn.map(([c,l])=>`<button class="btn ${c==='plus'||c==='undo'?'ghost':''}" data-cmd="${c}">${l}</button>`).join('')}</div>
     ${leftHtml(s.left)}
     ${['lobby','end'].includes(s.phase)?'':`<details style="width:100%;max-width:560px"><summary class="peek" style="list-style:none">☠️ Iemand eruit zetten</summary><div class="small" style="margin:10px 0">Tik een naam en bevestig. Iedereen ziet daarna welke rollen er nog inzitten.</div><div class="grid">${(me.all||[]).filter(x=>x.alive).map(x=>`<button class="choice ${Pl.outSel===x.id?'sel wolfsel':''}" data-out="${x.id}">${Pl.outSel===x.id?'Zeker? '+esc(x.n)+' eruit':esc(x.n)}</button>`).join('')}</div></details>`}
-    <details style="width:100%;max-width:560px"><summary class="peek" style="list-style:none">👁️ Toon wie wat is (geheim!)</summary><div style="margin-top:12px">${(me.all||[]).map(roleLine).join('')}${me.lovers?`<div class="small" style="margin-top:10px;color:#ff7eb6">💘 Geliefden: ${me.lovers.map(esc).join(' & ')}</div>`:''}</div></details>`;
+    <details style="width:100%;max-width:560px"><summary class="peek" style="list-style:none">👁️ Toon wie wat is (geheim!)</summary><div style="margin-top:12px">${(me.all||[]).map(roleLine).join('')}${me.lovers?`<div class="small" style="margin-top:10px;color:#ededed">💘 Geliefden: ${me.lovers.map(esc).join(' & ')}</div>`:''}</div></details>`;
   app.querySelectorAll('[data-cmd]').forEach(b=>b.onclick=()=>act({kind:'nar',cmd:b.dataset.cmd}));
   app.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{const id=b.dataset.out;if(Pl.outSel===id){Pl.outSel=null;act({kind:'nar',cmd:'out',target:id})}else{Pl.outSel=id;renderPlayer();const d=app.querySelectorAll('details')[0];if(d)d.open=true}});
   clearInterval(window._nt);if(s.phase==='day')window._nt=setInterval(()=>{const t=$('#nt');if(!t)return clearInterval(window._nt);t.textContent=fmt(Math.round((Pl.state.timerEnd-Date.now())/1000))},500)};
@@ -338,7 +340,7 @@ const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
     app.innerHTML=`<div class="mono">Laat de anderen scannen of de code invullen</div><div class="code-big">${H.code}</div><div id="qr" style="background:#fff;padding:10px;border-radius:12px"></div>
       <div class="plist">${H.order.map(p=>`<span class="pchip"><span class="dot ${H.online[p]||p===Pl.pid?'':'off'}"></span>${esc(nm(p))}${p===Pl.pid?' (jij)':`<span class="x" data-kick="${p}">✕</span>`}</span>`).join('')}</div>
       <div class="hint">${n>=4?`Met ${n} spelers: <b style="color:var(--fg)">${compText(n)}</b>, de rest burgers.`:'Minstens 4 spelers nodig.'} De rollen worden verdeeld zodra je start, ook die van jou.</div>
-      <div class="small" style="color:#ffd23f">⚠️ Het spel draait op jouw toestel: laat deze pagina open en je scherm aan tot het spel gedaan is.</div>
+      <div class="small" style="color:#d4ff3a">⚠️ Het spel draait op jouw toestel: laat deze pagina open en je scherm aan tot het spel gedaan is.</div>
       ${optsUI(n)}<button class="btn" id="go" ${n<4?'disabled':''}>Start (${n} spelers${n<4?', min. 4':''})</button>${rolesBtn()}`;
     bindOpts();
     try{new QRCode($('#qr'),{text:url,width:200,height:200,correctLevel:QRCode.CorrectLevel.M})}catch(e){$('#qr').innerHTML='<div style="color:#000">QR niet geladen</div>'}
@@ -351,7 +353,7 @@ const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
   const hidden=`<div class="${Pl.peek?'':'hide'}" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px">${roleCard(me.role,true,me.mayor)}
     ${me.mates&&me.mates.length?`<div class="small">Mede-weerwolven: <b style="color:var(--wolf)">${me.mates.map(esc).join(', ')}</b></div>`:''}
     ${me.seen&&me.seen.length?`<div class="small">Gezien: ${me.seen.map(x=>`${esc(x.n)} ${x.wolf?'🐺':'✅'}`).join(' · ')}</div>`:''}
-    ${me.lover?`<div class="small" style="color:#ff7eb6">💘 Je bent verliefd op <b>${esc(me.lover)}</b></div>`:''}
+    ${me.lover?`<div class="small" style="color:#ededed">💘 Je bent verliefd op <b>${esc(me.lover)}</b></div>`:''}
     ${me.potions?`<div class="small">Toverdrankjes: ${me.potions.heal?'❤️ leven':'<s>leven</s>'} · ${me.potions.poison?'☠️ gif':'<s>gif</s>'}</div>`:''}</div>`;
   if(!me.alive&&s.phase!=='end'){app.innerHTML=`<div style="font-size:80px">💀</div><div class="h1">Je bent dood</div><div class="hint">Zeg niets meer over het spel en kijk toe. Je rol was:</div>${roleCard(me.role,true)}${rolesBtn()}`;bindCommon();return}
   if(s.phase==='roles'){app.innerHTML=`${roleCard(me.role,false,me.mayor)}${me.mates?`<div class="hint">Jouw roedel: <b style="color:var(--wolf)">${me.mates.length?me.mates.map(esc).join(', '):'je bent de enige weerwolf'}</b></div>`:''}
@@ -362,8 +364,8 @@ const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
       ${me.role==='wolf'&&me.wolfVotes?`<div class="small">Roedel: ${me.wolfVotes.map(v=>esc(v.by)+' → '+esc(v.to||'?')).join(' · ')}</div>`:''}${me.role==='seer'&&me.seen?.length?`<div class="h2">${esc(me.seen.slice(-1)[0].n)} is ${me.seen.slice(-1)[0].wolf?'<span style="color:var(--wolf)">een weerwolf 🐺</span>':'geen weerwolf ✅'}</div>`:''}`;return}
     if(me.cupid){Pl.sel2=Pl.sel2||[];
       app.innerHTML=`${peekBtn}${hidden}<div class="mono">Nacht 1 · Cupido</div><div class="h2">Kies twee geliefden</div><div class="small">Jezelf mag ook.</div>
-        <div class="grid">${me.choices.map(c=>`<button class="choice ${Pl.sel2.includes(c.id)?'sel':''}" data-c="${c.id}" style="${Pl.sel2.includes(c.id)?'border-color:#ff7eb6;color:#ff7eb6':''}">${esc(c.n)}</button>`).join('')}</div>
-        <button class="btn" id="cf" style="background:#ff7eb6" ${Pl.sel2.length===2?'':'disabled'}>💘 Schiet de pijlen</button>`;
+        <div class="grid">${me.choices.map(c=>`<button class="choice ${Pl.sel2.includes(c.id)?'sel':''}" data-c="${c.id}" style="${Pl.sel2.includes(c.id)?'border-color:#ededed;color:#ededed':''}">${esc(c.n)}</button>`).join('')}</div>
+        <button class="btn" id="cf" style="background:#ededed" ${Pl.sel2.length===2?'':'disabled'}>💘 Schiet de pijlen</button>`;
       bindCommon();app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const id=b.dataset.c;Pl.sel2=Pl.sel2.includes(id)?Pl.sel2.filter(x=>x!==id):Pl.sel2.concat([id]).slice(-2);renderPlayer()});
       $('#cf').onclick=()=>{if(Pl.sel2.length===2)act({kind:'cupid',a:Pl.sel2[0],b:Pl.sel2[1]})};return}
     if(me.role==='wolf'&&me.wait){app.innerHTML=`${peekBtn}${hidden}<div style="font-size:60px">💘</div><div class="h2">Wacht even…</div><div class="hint">Cupido kiest eerst de geliefden. Daarna kiezen jullie een slachtoffer.</div><div class="small">Je gsm trilt en je scherm licht op zodra het jullie beurt is.</div>`;bindCommon();return}
@@ -385,7 +387,7 @@ const renderPlayer0=()=>{const s=Pl.state,me=Pl.mine;if(!s)return;
   if(s.phase==='hunter'){if(me.hunt){app.innerHTML=`<div class="h1">🎯 Neem iemand mee</div><div class="grid">${me.choices.map(c=>`<button class="choice" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div>`;app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>act({kind:'hunt',target:b.dataset.c}))}
     else app.innerHTML=`<div class="h2">De jager kiest…</div>`;return}
   if(s.phase==='day'){app.innerHTML=`${peekBtn}${hidden}<div class="mono">Dag ${s.round}</div><div class="hint">${esc(s.lastNews||'')}</div>
-      ${me.role==='wolf'?`<div class="task ${Pl.peek?'':'hide'}"><span class="mono">Geheime opdracht deze ronde</span><b>${esc(me.task)}</b></div>`:`<div class="task" style="border-color:#7aa2ff"><span class="mono">Tip</span><b style="color:#7aa2ff;font-size:22px">${esc(VTIPS[s.round%VTIPS.length])}</b></div>`}
+      ${me.role==='wolf'?`<div class="task ${Pl.peek?'':'hide'}"><span class="mono">Geheime opdracht deze ronde</span><b>${esc(me.task)}</b></div>`:`<div class="task" style="border-color:#bdbdbd"><span class="mono">Tip</span><b style="color:#bdbdbd;font-size:22px">${esc(VTIPS[s.round%VTIPS.length])}</b></div>`}
       <div class="small">Discussieer aan tafel. Stemmen gebeurt straks op je gsm.</div>`;bindCommon();return}
   if(s.phase==='vote'){if(me.done){app.innerHTML=`<div style="font-size:70px">🗳️</div><div class="h1">Stem uitgebracht</div><div class="hint">Wachten op de rest…</div>`;return}
     app.innerHTML=`<div class="mono">Stemming${me.mayor?' · jouw stem telt dubbel 🎖️':''}</div><div class="h2">Wie hangen we op?</div><div class="grid">${(me.choices||[]).map(c=>`<button class="choice ${Pl.sel===c.id?'sel':''}" data-c="${c.id}">${esc(c.n)}</button>`).join('')}</div><button class="btn" id="cf" ${Pl.sel?'':'disabled'}>Stem</button>`;
