@@ -440,6 +440,10 @@ body.latem .qstart{padding-right:110px}@media(max-width:600px){body.latem .qstar
 .mst{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}.mrow.on .mst{color:var(--acct)}.mrow:not(.on) .av{opacity:.45}
 .med{min-width:52px}.medit{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 4px 10px 56px}
 .madd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}.madd .nm{flex:1 1 200px;width:auto;min-width:0;max-width:100%}@media(max-width:420px){.madd .nm{flex-basis:100%}}.grp .nm{min-width:0;max-width:100%}
+.albbar{justify-content:flex-start;gap:8px;width:100%}.albh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.albi{padding:0;border:2px solid transparent;border-radius:12px;position:relative;overflow:hidden;display:block}.albi img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}
+.albi.sel{border-color:var(--acc)}.albi.sel::after{content:'✓';position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:var(--acc);color:#000;display:grid;place-items:center;font-weight:700}
+.albg img{border:1px solid var(--line2)}
 </style>
 </head>
 <body>
@@ -913,7 +917,7 @@ async function booth(){clr();PL=null;$('#gt').textContent='Fotobooth';$('#gc').t
   $('#sn').onclick=()=>{const v=$('#vd');if(!v||!camStream)return;let n=3;const bc=$('#bc');bc.textContent=n;beep(700,.08);
     const t=setInterval(()=>{n--;if(n>0){bc.textContent=n;beep(700,.08)}else{clearInterval(t);bc.textContent='';beep(1400,.15);const f=$('#bf');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');shoot(v).then(thumbs)}},900);timers.push(t)};
   $('#sl').onclick=()=>{camStop();slides()};
-  $('#bal').onclick=()=>{camStop();album()};
+  $('#bal').onclick=()=>{camStop();ALB_SEL=null;album()};
   $('#bw').onclick=async e=>{const b=e.currentTarget;if(b.dataset.s){const l=tonight(await photoAll());await photoDel(l.map(p=>p.t));try{l.forEach(p=>window.ZG&&ZG.delPhoto(p.t))}catch(e){}thumbs();b.textContent='Gewist'}else{b.dataset.s=1;b.textContent='Zeker? Tik nog eens'}}}
 if(window.CanvasRenderingContext2D&&!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
 const FRAMES=[['neon','Neon'],['pola','Polaroid'],['zw','Zwart-wit'],['film','Filmrol']];
@@ -987,18 +991,27 @@ function renderShot(v,F,c){const ar=(v.videoHeight/v.videoWidth)||.75,x=c.getCon
 const nightKey=t=>{const d=new Date(t-8*3.6e6);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const nightLbl=k=>{const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long',year:'numeric'})};
 let ALB_URLS=[];
+const delPhotos=async ts=>{if(!ts.length)return;await photoDel(ts);try{ts.forEach(t=>window.ZG&&ZG.delPhoto(t))}catch(e){}};
+let ALB_SEL=null;
 async function album(){clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Fotoalbum';$('#ov').classList.add('open');st.style.position='';
   ALB_URLS.forEach(u=>URL.revokeObjectURL(u));ALB_URLS=[];const loc=await photoAll(),lt=new Set(loc.map(p=>p.t)),rem=((window.ZG&&ZG.photos())||[]).filter(p=>!lt.has(p.t)),l=loc.concat(rem).sort((a,b)=>b.t-a.t);
-  if(!l.length){scr(`<div class="pr">Nog geen foto's</div><div class="hint">Alles wat je in de Fotobooth neemt, komt hier per avond terecht. Ze blijven in de app, niet in je fotorol.</div><button class="btn" id="fb">Naar Fotobooth</button>`);$('#fb').onclick=booth;return}
-  const G={};l.forEach(p=>{(G[nightKey(p.t)]=G[nightKey(p.t)]||[]).push(p)});const keys=Object.keys(G);$('#gc').textContent=l.length+' foto\'s';
-  scr(`<div class="pr" style="font-size:clamp(32px,5vw,58px)">Fotoalbum</div><div class="hint">${l.length} foto's van ${keys.length} ${keys.length===1?'avond':'avonden'}${window.ZG&&ZG.on()?' · gedeeld met '+esc(ZG.group().name):''}. Tik op een foto om ze groot te bekijken.</div>
-    <div class="alb">${keys.map(k=>`<div class="albn"><div class="mono">${nightLbl(k)} · ${G[k].length}</div><div class="albg">${G[k].map(p=>{const u=p.url||URL.createObjectURL(p.blob);if(!p.url)ALB_URLS.push(u);return `<img loading="lazy" src="${u}" data-pt="${p.t}">`}).join('')}</div></div>`).join('')}</div>`);
-  const flat=l;st.querySelectorAll('[data-pt]').forEach(im=>im.onclick=()=>albView(flat,flat.findIndex(p=>p.t===+im.dataset.pt)))}
+  if(!l.length){ALB_SEL=null;scr(`<div class="pr">Nog geen foto's</div><div class="hint">Alles wat je in de Fotobooth neemt, komt hier per avond terecht. Ze komen nooit in je fotorol.</div><button class="btn" id="fb">Naar Fotobooth</button>`);$('#fb').onclick=booth;return}
+  const G={};l.forEach(p=>{(G[nightKey(p.t)]=G[nightKey(p.t)]||[]).push(p)});const keys=Object.keys(G);$('#gc').textContent=l.length+' foto\'s';const sel=ALB_SEL;
+  scr(`<div class="pr" style="font-size:clamp(32px,5vw,58px)">Fotoalbum</div><div class="hint">${l.length} foto's van ${keys.length} ${keys.length===1?'avond':'avonden'}${window.ZG&&ZG.on()?' · gedeeld met '+esc(ZG.group().name):''}. ${sel?'Tik op de foto\'s die weg mogen.':'Tik op een foto om ze groot te bekijken.'}</div>
+    <div class="row albbar">${sel?`<button class="btn" id="asd" ${sel.size?'':'disabled'}>🗑 Wis ${sel.size} ${sel.size===1?'foto':"foto's"}</button><button class="tbtn" id="asa">Alles selecteren</button><button class="tbtn" id="asc">Annuleer</button>`
+      :`<button class="tbtn" id="ass">☑ Selecteren om te wissen</button><button class="tbtn" id="awa">🗑 Alle foto's wissen</button>`}</div>
+    <div class="alb">${keys.map(k=>`<div class="albn"><div class="albh"><span class="mono">${nightLbl(k)} · ${G[k].length}</span>${sel?'':`<button class="tbtn" data-an="${k}">🗑 Wis deze avond</button>`}</div><div class="albg">${G[k].map(p=>{const u=p.url||URL.createObjectURL(p.blob);if(!p.url)ALB_URLS.push(u);return `<button class="albi ${sel&&sel.has(p.t)?'sel':''}" data-pt="${p.t}"><img loading="lazy" src="${u}" alt=""></button>`}).join('')}</div></div>`).join('')}</div>`);
+  const flat=l,on=(id,f)=>{const e=document.getElementById(id);if(e)e.onclick=f};
+  st.querySelectorAll('[data-pt]').forEach(im=>im.onclick=()=>{const t=+im.dataset.pt;if(ALB_SEL){ALB_SEL.has(t)?ALB_SEL.delete(t):ALB_SEL.add(t);album();return}albView(flat,flat.findIndex(p=>p.t===t))});
+  on('ass',()=>{ALB_SEL=new Set();album()});on('asc',()=>{ALB_SEL=null;album()});on('asa',()=>{ALB_SEL=new Set(flat.map(p=>p.t));album()});
+  on('asd',async e=>{const b=e.currentTarget;if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker? Tik nog eens';return}const ts=[...ALB_SEL];ALB_SEL=null;await delPhotos(ts);joeg('GEWIST',ts.length+(ts.length===1?' foto':" foto's"));album()});
+  on('awa',async e=>{const b=e.currentTarget;if(!b.dataset.s){b.dataset.s=1;b.textContent="Alle "+flat.length+" foto's wissen? Tik nog eens";return}await delPhotos(flat.map(p=>p.t));album()});
+  st.querySelectorAll('[data-an]').forEach(b=>b.onclick=async()=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker? Tik nog eens';return}await delPhotos(G[b.dataset.an].map(p=>p.t));album()})}
 function albView(l,i){const urls=l.map(p=>p.url||URL.createObjectURL(p.blob));ALB_URLS.push(...urls.filter(u=>u.startsWith('blob:')));let del=false;
   const show=()=>{i=(i+l.length)%l.length;scr(`<img class="slide" src="${urls[i]}"><div class="mono">${nightLbl(nightKey(l[i].t))} · ${hhmm(l[i].t)} · ${i+1}/${l.length}</div>
-    <div class="row"><button class="tbtn" id="ap">←</button><button class="tbtn" id="ab">Terug naar album</button><button class="tbtn" id="ad">🗑 Wis</button><button class="tbtn" id="an">→</button></div>`);
+    <div class="row"><button class="tbtn" id="ap">←</button><button class="tbtn" id="ab">Terug naar album</button><button class="tbtn" id="ad">🗑 Wis deze foto</button><button class="tbtn" id="an">→</button></div>`);
     $('#ap').onclick=()=>{i--;show()};$('#an').onclick=()=>{i++;show()};$('#ab').onclick=album;
-    $('#ad').onclick=async e=>{const b=e.currentTarget;if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker?';return}await photoDel([l[i].t]);try{window.ZG&&ZG.delPhoto(l[i].t)}catch(e){}l.splice(i,1);urls.splice(i,1);if(!l.length)return album();show()}};show()}
+    $('#ad').onclick=async e=>{const b=e.currentTarget;if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker? Tik nog eens';return}await delPhotos([l[i].t]);l.splice(i,1);urls.splice(i,1);if(!l.length)return album();show()}};show()}
 async function slides(){clr();$('#gt').textContent='Diavoorstelling';$('#ov').classList.add('open');const l=tonight(await photoAll());
   if(!l.length){scr(`<div class="pr">Nog geen foto's</div><div class="hint">Neem eerst wat foto's in de Fotobooth.</div><button class="btn" id="fb">Naar Fotobooth</button>`);$('#fb').onclick=booth;return}
   let i=0;scr(`<img class="slide" id="si" src=""><div class="row"><button class="tbtn" id="pv">←</button><span class="mono" id="sc"></span><button class="tbtn" id="nv">→</button></div>`);
@@ -1348,7 +1361,7 @@ const renderInfo=()=>{const cs=CATS(),g=gamesCat(),pick=k=>cs.find(c=>c.k===k),t
    <details><summary>App op het beginscherm</summary><p>Safari › Deel › Zet op beginscherm, dan opent de Zwijnerij schermvullend.</p></details></div>`;
   $('#irk').onclick=openRank;document.querySelectorAll('[data-ho]').forEach(b=>b.onclick=()=>openRankH(+b.dataset.ho));
   document.querySelectorAll('[data-hd]').forEach(b=>b.onclick=()=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker?';setTimeout(()=>{if(b.isConnected){delete b.dataset.s;b.textContent='🗑'}},3000);return}delEvening(+b.dataset.hd);renderInfo()});
-  const ha=$('#hdall');if(ha)ha.onclick=()=>{if(!ha.dataset.s){ha.dataset.s=1;ha.textContent='Alles wissen? Tik nog eens';return}allHist().forEach(h=>delEvening(h.t0));renderInfo()};$('#icq').onclick=()=>openCQ();$('#ialb').onclick=()=>album();
+  const ha=$('#hdall');if(ha)ha.onclick=()=>{if(!ha.dataset.s){ha.dataset.s=1;ha.textContent='Alles wissen? Tik nog eens';return}allHist().forEach(h=>delEvening(h.t0));renderInfo()};$('#icq').onclick=()=>openCQ();$('#ialb').onclick=()=>{ALB_SEL=null;album()};
   photoAll().then(l0=>{const lt=new Set(l0.map(p=>p.t)),l=l0.concat(((window.ZG&&ZG.photos())||[]).filter(p=>!lt.has(p.t)));const e=$('#ialbn');if(e&&l.length){const n=new Set(l.map(p=>nightKey(p.t))).size;e.textContent=l.length+" foto's van "+n+(n===1?' avond':' avonden')+(window.ZG&&ZG.on()?' · gedeeld met '+ZG.group().name:' · blijven in de app')}})};
 renderInfo();
 
@@ -1636,7 +1649,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795012498';
+const APPVER='1795013040';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
