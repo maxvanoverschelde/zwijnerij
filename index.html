@@ -425,6 +425,17 @@ body.latem .qstart{padding-right:110px}@media(max-width:600px){body.latem .qstar
 .hrs{width:100%;border:1px solid var(--line);border-radius:22px;padding:16px;background:var(--card);margin-top:14px;text-align:left}
 .bars{display:flex;align-items:flex-end;gap:6px;height:150px;margin-top:12px}.bar1{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0}.bar1 i{display:block;width:100%;max-width:46px;background:var(--acc);border-radius:8px 8px 0 0;min-height:2px}.bar1 .small{font-size:11px}
 .recs{display:flex;flex-direction:column;border-top:1px solid var(--line);max-width:760px}.rec{display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line);padding:12px 4px}.rec .e{font-size:26px}.rec .rk{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.rec b{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase}.rec .small{text-align:right}
+.hrow{padding:6px 0}.hopen{flex:1;text-align:left;display:flex;min-height:48px;align-items:center;min-width:0}.hrow .tbtn{min-width:48px}
+.grp{border:1px solid var(--line2);border-radius:22px;padding:18px 20px;margin-bottom:20px;background:var(--card);display:flex;flex-direction:column;gap:12px}.grp.on{border-color:var(--acc)}
+.grp .gi{display:flex;flex-direction:column;gap:4px}.grp b{font-family:'Anton',sans-serif;font-weight:400;font-size:28px;text-transform:uppercase}.grp .row{justify-content:flex-start;gap:8px}.grp .nm{flex:1 1 200px;width:auto}
+.qrbox{background:#fff;padding:16px;border-radius:18px;display:grid;place-items:center;min-width:272px;min-height:272px}.qrbox img,.qrbox canvas{display:block}
+#spd{display:none}body.latem #spd{display:block;overflow:hidden;background:#fff;color:#0b2340;border-radius:999px;margin:14px 0 4px;white-space:nowrap;position:relative;z-index:1}
+#spd .spdi{display:inline-flex;align-items:center;gap:18px;padding:9px 0;animation:spd 38s linear infinite;font-family:'Anton',sans-serif;font-size:18px;text-transform:uppercase;letter-spacing:.03em}
+#spd img{width:22px;height:22px}@keyframes spd{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+#chp{position:fixed;left:12px;right:12px;margin:0 auto;width:fit-content;top:calc(env(safe-area-inset-top,0px) + 18px);z-index:45;display:flex;align-items:center;gap:12px;background:#fff;color:#0b2340;border:3px solid #0b2340;border-radius:20px;padding:10px 20px 10px 12px;font-family:'Anton',sans-serif;font-size:clamp(20px,3vw,30px);text-transform:uppercase;box-shadow:0 14px 40px rgba(0,0,0,.45);opacity:0;pointer-events:none;transform:translateY(-140%) rotate(-3deg)}
+#chp img{width:44px;height:44px}#chp.go{animation:chp 4.6s ease forwards}
+@keyframes chp{0%{opacity:0;transform:translateY(-140%) rotate(-3deg)}10%{opacity:1;transform:translateY(0) rotate(-3deg) scale(1.06)}16%{transform:translateY(0) rotate(-2deg) scale(1)}85%{opacity:1;transform:translateY(0) rotate(-2deg)}100%{opacity:0;transform:translateY(-140%) rotate(-3deg)}}
+@media (prefers-reduced-motion:reduce){#spd .spdi{animation:none}}
 </style>
 </head>
 <body>
@@ -491,7 +502,16 @@ const $=s=>document.querySelector(s),st=$('#st');
 let LATEM=false;try{LATEM=localStorage.getItem('kp_latem')==='1'}catch(e){}
 const isL=()=>document.body.classList.contains('latem');const LT=(a,b)=>isL()?b:a;
 const NAVT={players:['Spelers','Selectie'],music:['Muziek','Sfeer'],games:['Spellen','Wedstrijden'],count:['Teller','Kantine'],big:['Grote spellen','Toernooi'],info:['Info','Clubhuis']};
-const applyTerms=()=>{document.querySelectorAll('#nav button').forEach(b=>{const t=NAVT[b.dataset.t],sp=b.querySelector('span');if(t&&sp)sp.textContent=LT(t[0],t[1])});
+
+/* ===== FC Latem: spandoek en spreekkoren ===== */
+const CHANTS=['De Pinte pannenkoeken! 🥞','De Pinte OCMW!','Allez Latem, allez!','Zij zingen: « Latem, fils à papa ! » 🇫🇷','Wie niet springt, is van De Pinte!','FC Latem · sinds 1955','De Pinte pannenkoeken, olé olé!','Latem boven, De Pinte onder!'];
+const drawBanner=()=>{let b=document.getElementById('spd');if(!isL()){if(b)b.remove();return}
+  if(!b){b=document.createElement('div');b.id='spd';const h=document.querySelector('header');h.after(b)}
+  const t=CHANTS.map(c=>`<span>${esc(c)}</span><img src="fclatem-64.png" alt="">`).join('');b.innerHTML=`<div class="spdi">${t}${t}</div>`};
+let chT2=null;const chantPop=()=>{clearTimeout(chT2);if(!isL())return;
+  chT2=setTimeout(()=>{if(isL()&&!$('#ov').classList.contains('open')&&document.visibilityState==='visible'){let p=document.getElementById('chp');if(!p){p=document.createElement('div');p.id='chp';document.body.appendChild(p)}
+    p.innerHTML=`<img src="fclatem-64.png" alt=""><span>${esc(CHANTS[Math.random()*CHANTS.length|0])}</span>`;p.classList.remove('go');void p.offsetWidth;p.classList.add('go')}chantPop()},45000+Math.random()*60000)};
+const applyTerms=()=>{try{drawBanner();chantPop()}catch(e){}document.querySelectorAll('#nav button').forEach(b=>{const t=NAVT[b.dataset.t],sp=b.querySelector('span');if(t&&sp)sp.textContent=LT(t[0],t[1])});
   const mo=$('#motto');if(mo)mo.textContent=LT('Komaan, joegnee','Allez Latem · sinds 1955');
   document.querySelectorAll('.sec.mono>span:first-child').forEach(e=>{if(!e.dataset.o)e.dataset.o=e.textContent;const m={Spellen:'Wedstrijden',Muziek:'Stadionsfeer',Teller:'Kantine',Spelers:'Selectie'};e.textContent=isL()&&m[e.dataset.o]?m[e.dataset.o]:e.dataset.o})};
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -546,7 +566,7 @@ const boomSnd=()=>{if(MUTE)return;try{ac=ac||new (window.AudioContext||window.we
 
 const DEV=()=>matchMedia('(max-width:600px),(max-height:450px)').matches?'gsm':'iPad';
 const scr=(h)=>{if(DEV()==='gsm')h=h.replace(/\biPad\b/g,'gsm');st.innerHTML=h};
-const joeg=(t='JOEGNEE!',sub='')=>{if(document.body.classList.contains('latem')&&t==='JOEGNEE!')t='GOAAAL!';let j=document.getElementById('jg');if(!j){j=document.createElement('div');j.id='jg';document.body.appendChild(j)}
+const joeg=(t='JOEGNEE!',sub='')=>{let j=document.getElementById('jg');if(!j){j=document.createElement('div');j.id='jg';document.body.appendChild(j)}
   j.innerHTML=`<div class="jt">${t}</div>${sub?`<div class="js">${sub}</div>`:''}`;j.classList.remove('go');void j.offsetWidth;j.classList.add('go')};
 const TEKEN=["Fiets", "Huis", "Kat", "Hond", "Boom", "Zon", "Auto", "Bril", "Kasteel", "Pizza", "Gitaar", "Olifant", "Vliegtuig", "Bierglas", "Taart", "Brug", "Slang", "Kerstman", "Sneeuwman", "Raket", "Paraplu", "Bed", "Spook", "Draak", "Vis", "Kip", "Banaan", "Ananas", "Hamburger", "Fles", "Telefoon", "Laptop", "Klok", "Schoen", "Hoed", "Kroon", "Diamant", "Hart", "Ster", "Maan", "Wolk", "Bliksem", "Regenboog", "Vulkaan", "Eiland", "Palmboom", "Schip", "Anker", "Piraat", "Robot", "Alien", "Ufo", "Spin", "Vlinder", "Bij", "Slak", "Schildpad", "Giraf", "Pinguïn", "Konijn", "Muis", "Uil", "Haai", "Octopus", "Krab", "Tent", "Kampvuur", "Berg", "Toilet", "Douche", "Tandenborstel", "Schaar", "Potlood", "Boek", "Bal", "Voetbalgoal", "Fles wijn", "Wafel", "Frietzak", "Ijsje", "Donut", "Kers", "Appel", "Wortel", "Paddenstoel", "Bloem", "Cactus", "Snor", "Baard", "Oog", "Neus", "Tand", "Voet", "Hand", "Skelet", "Mummie", "Heks", "Bezem", "Toverstaf", "Fee", "Ridder", "Zwaard", "Schild", "Kanon", "Trein", "Bus", "Tractor", "Helikopter", "Duikbril", "Surfplank", "Ski", "Snowboard", "Trampoline", "Glijbaan", "Schommel", "Ballon", "Cadeau", "Kerstboom", "Paasei", "Pompoen", "Atomium", "Manneken Pis", "Eiffeltoren", "Piramide", "Koelkast", "Wasmachine", "Stofzuiger", "Microgolf", "Strijkijzer", "Kapstok", "Trap", "Lift", "Deur", "Raam", "Sleutel", "Slot", "Kaars", "Lamp", "Spiegel", "Kam", "Föhn", "Bad", "Zwembad", "Strand", "Parasol", "Zonnebril", "Bikini", "Duikboot", "Vuurtoren", "Windmolen", "Tank", "Motor", "Vespa", "Step", "Skateboard", "Rolschaatsen", "Hockeystick", "Tennisracket", "Dartbord", "Bowlingkegel", "Microfoon", "Koptelefoon", "Drumstel", "Viool", "Trompet", "Piano", "Camera", "Televisie", "Afstandsbediening", "Gameconsole", "Batterij", "Stopcontact", "Gloeilamp", "Magneet", "Kompas", "Vergrootglas", "Telescoop", "Saturnus", "Komeet", "Astronaut", "Parachute", "Luchtballon", "Zeppelin", "Kangoeroe", "Koala", "Pauw", "Flamingo", "Kameel", "Neushoorn", "Nijlpaard", "Krokodil", "Kikker", "Egel", "Eekhoorn", "Vos", "Wolf", "Sneeuwvlok", "Iglo", "Pinguïn op ijsschots", "Hamburger met frietjes", "Bierkrat", "Kurkentrekker", "Champagnefles"];
 const G={
@@ -629,7 +649,7 @@ const COLORS=['#d4ff3a','#ff5c8a','#4cc9f0','#ffb703','#a78bfa','#34d399','#fb71
 let ACC=[];try{ACC=JSON.parse(localStorage.getItem('kp_acc')||'[]')}catch(e){}
 try{const old=JSON.parse(localStorage.getItem('kp_players')||'[]');if(!ACC.length&&old.length)ACC=old.map((n,i)=>({id:'a'+Date.now()+i,n,c:COLORS[i%COLORS.length]}))}catch(e){}
 let ACT={t:Date.now(),ids:[]};try{const a=JSON.parse(localStorage.getItem('kp_active')||'null');if(a&&Date.now()-a.t<12*3.6e6)ACT=a}catch(e){}
-const saveA=()=>{ACT.t=Date.now();try{localStorage.setItem('kp_acc',JSON.stringify(ACC));localStorage.setItem('kp_active',JSON.stringify(ACT))}catch(e){}};
+const saveA=()=>{ACT.t=Date.now();try{localStorage.setItem('kp_acc',JSON.stringify(ACC));localStorage.setItem('kp_active',JSON.stringify(ACT))}catch(e){}try{window.ZG&&ZG.pushPlayers()}catch(e){}};
 const active=()=>ACC.filter(a=>ACT.ids.includes(a.id));
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ini=n=>n.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -880,7 +900,7 @@ async function booth(){clr();PL=null;$('#gt').textContent='Fotobooth';$('#gc').t
   scr(`<div class="booth"><video id="vd" playsinline autoplay muted></video><canvas id="bpv"></canvas><div class="bcnt" id="bc"></div><div class="bflash" id="bf"></div></div>
     <div class="seg frs" id="fr">${FRAMES.map(([k,l])=>`<span class="sg ${FRAME===k?'on':''}" data-fr="${k}">${l}</span>`).join('')}</div>
     <div class="row"><button class="btn" id="sn">📸 Foto (3-2-1)</button><button class="btn ghost" id="sl">Diavoorstelling</button></div><div class="bthumbs" id="bt"></div>
-    <div class="small" id="bi">Foto's blijven alleen in de app, niet in je fotorol. Alle avonden staan in het Fotoalbum (Info). <button class="tbtn" id="bal">📷 Fotoalbum</button><button class="tbtn" id="bw">Wis foto's van vanavond</button></div>`);
+    <div class="small" id="bi">${window.ZG&&ZG.on()?"Foto's gaan automatisch naar je vriendengroep '"+esc(ZG.group().name)+"', niet naar je fotorol.":"Foto's blijven alleen in de app, niet in je fotorol."} Alle avonden staan in het Fotoalbum (Info). <button class="tbtn" id="bal">📷 Fotoalbum</button><button class="tbtn" id="bw">Wis foto's van vanavond</button></div>`);
   const thumbs=async()=>{const l=tonight(await photoAll());const el=$('#bt');if(!el)return;el.innerHTML=l.slice(-12).reverse().map(p=>`<img src="${URL.createObjectURL(p.blob)}">`).join('');$('#gc').textContent=l.length?String(l.length).padStart(2,'0'):''};
   try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false});$('#vd').srcObject=camStream}
   catch(e){$('#vd').outerHTML='<div class="hint" style="padding:40px">Geen camera. Geef de app toegang tot de camera in de instellingen van de iPad (Safari › Camera).</div>'}
@@ -892,7 +912,7 @@ async function booth(){clr();PL=null;$('#gt').textContent='Fotobooth';$('#gc').t
     const t=setInterval(()=>{n--;if(n>0){bc.textContent=n;beep(700,.08)}else{clearInterval(t);bc.textContent='';beep(1400,.15);const f=$('#bf');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');shoot(v).then(thumbs)}},900);timers.push(t)};
   $('#sl').onclick=()=>{camStop();slides()};
   $('#bal').onclick=()=>{camStop();album()};
-  $('#bw').onclick=async e=>{const b=e.currentTarget;if(b.dataset.s){const l=tonight(await photoAll());await photoDel(l.map(p=>p.t));thumbs();b.textContent='Gewist'}else{b.dataset.s=1;b.textContent='Zeker? Tik nog eens'}}}
+  $('#bw').onclick=async e=>{const b=e.currentTarget;if(b.dataset.s){const l=tonight(await photoAll());await photoDel(l.map(p=>p.t));try{l.forEach(p=>window.ZG&&ZG.delPhoto(p.t))}catch(e){}thumbs();b.textContent='Gewist'}else{b.dataset.s=1;b.textContent='Zeker? Tik nog eens'}}}
 if(window.CanvasRenderingContext2D&&!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
 const FRAMES=[['neon','Neon'],['pola','Polaroid'],['zw','Zwart-wit'],['film','Filmrol']];
 let FRAME=(()=>{try{return localStorage.getItem('kp_frame')||'neon'}catch(e){return'neon'}})();
@@ -932,7 +952,7 @@ function drawTheme(x,c,T,put,mono,ar){const W=1080,p=70,iw=W-2*p,ih=Math.round(i
 Object.entries(THEMES).forEach(([k,t])=>FRAMES.push([k,t.n]));FRAMES.push(['latem','⚽ FC Latem']);
 const LOGO=new Image();LOGO.src='fclatem.png';
 async function shoot(v){try{await document.fonts.load('80px Anton');await document.fonts.load('28px "JetBrains Mono"')}catch(e){}
-  const c=document.createElement('canvas');renderShot(v,FRAME,c);const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.88));await photoAdd(Date.now(),blob)}
+  const c=document.createElement('canvas');renderShot(v,FRAME,c);const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.88));const pt=Date.now();await photoAdd(pt,blob);try{window.ZG&&ZG.uploadPhoto(pt,blob)}catch(e){}}
 /* vaste 'toeval' voor de live preview, zodat confetti niet flikkert */
 const seeded=seed=>()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646};
 function renderPreview(v,c){if(!v.videoWidth)return;const R=Math.random;Math.random=seeded(42);PREVIEW=true;try{renderShot(v,FRAME,c)}catch(e){}finally{PREVIEW=false;Math.random=R}
@@ -966,17 +986,17 @@ const nightKey=t=>{const d=new Date(t-8*3.6e6);return d.getFullYear()+'-'+String
 const nightLbl=k=>{const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long',year:'numeric'})};
 let ALB_URLS=[];
 async function album(){clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Fotoalbum';$('#ov').classList.add('open');st.style.position='';
-  ALB_URLS.forEach(u=>URL.revokeObjectURL(u));ALB_URLS=[];const l=(await photoAll()).slice().reverse();
+  ALB_URLS.forEach(u=>URL.revokeObjectURL(u));ALB_URLS=[];const loc=await photoAll(),lt=new Set(loc.map(p=>p.t)),rem=((window.ZG&&ZG.photos())||[]).filter(p=>!lt.has(p.t)),l=loc.concat(rem).sort((a,b)=>b.t-a.t);
   if(!l.length){scr(`<div class="pr">Nog geen foto's</div><div class="hint">Alles wat je in de Fotobooth neemt, komt hier per avond terecht. Ze blijven in de app, niet in je fotorol.</div><button class="btn" id="fb">Naar Fotobooth</button>`);$('#fb').onclick=booth;return}
   const G={};l.forEach(p=>{(G[nightKey(p.t)]=G[nightKey(p.t)]||[]).push(p)});const keys=Object.keys(G);$('#gc').textContent=l.length+' foto\'s';
-  scr(`<div class="pr" style="font-size:clamp(32px,5vw,58px)">Fotoalbum</div><div class="hint">${l.length} foto's van ${keys.length} ${keys.length===1?'avond':'avonden'}. Tik op een foto om ze groot te bekijken.</div>
-    <div class="alb">${keys.map(k=>`<div class="albn"><div class="mono">${nightLbl(k)} · ${G[k].length}</div><div class="albg">${G[k].map(p=>{const u=URL.createObjectURL(p.blob);ALB_URLS.push(u);return `<img loading="lazy" src="${u}" data-pt="${p.t}">`}).join('')}</div></div>`).join('')}</div>`);
+  scr(`<div class="pr" style="font-size:clamp(32px,5vw,58px)">Fotoalbum</div><div class="hint">${l.length} foto's van ${keys.length} ${keys.length===1?'avond':'avonden'}${window.ZG&&ZG.on()?' · gedeeld met '+esc(ZG.group().name):''}. Tik op een foto om ze groot te bekijken.</div>
+    <div class="alb">${keys.map(k=>`<div class="albn"><div class="mono">${nightLbl(k)} · ${G[k].length}</div><div class="albg">${G[k].map(p=>{const u=p.url||URL.createObjectURL(p.blob);if(!p.url)ALB_URLS.push(u);return `<img loading="lazy" src="${u}" data-pt="${p.t}">`}).join('')}</div></div>`).join('')}</div>`);
   const flat=l;st.querySelectorAll('[data-pt]').forEach(im=>im.onclick=()=>albView(flat,flat.findIndex(p=>p.t===+im.dataset.pt)))}
-function albView(l,i){const urls=l.map(p=>URL.createObjectURL(p.blob));ALB_URLS.push(...urls);let del=false;
+function albView(l,i){const urls=l.map(p=>p.url||URL.createObjectURL(p.blob));ALB_URLS.push(...urls.filter(u=>u.startsWith('blob:')));let del=false;
   const show=()=>{i=(i+l.length)%l.length;scr(`<img class="slide" src="${urls[i]}"><div class="mono">${nightLbl(nightKey(l[i].t))} · ${hhmm(l[i].t)} · ${i+1}/${l.length}</div>
     <div class="row"><button class="tbtn" id="ap">←</button><button class="tbtn" id="ab">Terug naar album</button><button class="tbtn" id="ad">🗑 Wis</button><button class="tbtn" id="an">→</button></div>`);
     $('#ap').onclick=()=>{i--;show()};$('#an').onclick=()=>{i++;show()};$('#ab').onclick=album;
-    $('#ad').onclick=async e=>{const b=e.currentTarget;if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker?';return}await photoDel([l[i].t]);l.splice(i,1);urls.splice(i,1);if(!l.length)return album();show()}};show()}
+    $('#ad').onclick=async e=>{const b=e.currentTarget;if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker?';return}await photoDel([l[i].t]);try{window.ZG&&ZG.delPhoto(l[i].t)}catch(e){}l.splice(i,1);urls.splice(i,1);if(!l.length)return album();show()}};show()}
 async function slides(){clr();$('#gt').textContent='Diavoorstelling';$('#ov').classList.add('open');const l=tonight(await photoAll());
   if(!l.length){scr(`<div class="pr">Nog geen foto's</div><div class="hint">Neem eerst wat foto's in de Fotobooth.</div><button class="btn" id="fb">Naar Fotobooth</button>`);$('#fb').onclick=booth;return}
   let i=0;scr(`<img class="slide" id="si" src=""><div class="row"><button class="tbtn" id="pv">←</button><span class="mono" id="sc"></span><button class="tbtn" id="nv">→</button></div>`);
@@ -1180,7 +1200,7 @@ function renderPlayers(){const el=$('#t-players'),P=active();
   el.querySelectorAll('[data-a]').forEach(b=>b.onclick=e=>{const nv=e.target.closest('[data-nov]');if(nv){const a=ACC.find(x=>x.id===nv.dataset.nov);a.nov=!a.nov;saveA();renderPlayers();return}
     const gs=e.target.closest('[data-g][data-id]');if(gs){const a=ACC.find(x=>x.id===gs.dataset.id);a.g=gs.dataset.g;saveA();renderPlayers();return}
     const d=e.target.closest('[data-del]');if(d){
-      if(d.dataset.sure){ACC=ACC.filter(a=>a.id!==d.dataset.del);ACT.ids=ACT.ids.filter(i=>i!==d.dataset.del);delete CNT[d.dataset.del];saveC();saveA();renderPlayers();renderHead()}
+      if(d.dataset.sure){try{window.ZG&&ZG.delPlayer(d.dataset.del)}catch(e){}ACC=ACC.filter(a=>a.id!==d.dataset.del);ACT.ids=ACT.ids.filter(i=>i!==d.dataset.del);delete CNT[d.dataset.del];saveC();saveA();renderPlayers();renderHead()}
       else{d.dataset.sure=1;d.textContent='?';d.style.color='var(--bad)';d.style.borderColor='var(--bad)'}return}
     const id=b.dataset.a;ACT.ids=ACT.ids.includes(id)?ACT.ids.filter(i=>i!==id):[...ACT.ids,id];saveA();beep(ACT.ids.includes(id)?880:440,.05,.08,'triangle');renderPlayers();renderHead()});
   const na=$('#na');
@@ -1215,27 +1235,39 @@ const FACTS=[["1 glas / uur","Je lever breekt ongeveer één standaardglas (10 g
 const byAcc=id=>ACC.find(a=>a.id===id);
 const since=()=>AV?AV.t0:STATS.t;
 const drinksOf=id=>CNT[id]?prof(id).d.filter(d=>d.t>=since()).length:0;
-const rankOf=(obj,low)=>Object.entries(obj||{}).map(([id,v])=>[byAcc(id),v]).filter(x=>x[0]&&x[1]>0).sort((a,b)=>low?a[1]-b[1]:b[1]-a[1]).slice(0,3);
-const CATS=()=>[
-  {k:'drink',e:'🍺',n:LT('Meeste drankjes','Topschutter aan de toog'),r:rankOf(Object.fromEntries(ACC.map(a=>[a.id,drinksOf(a.id)]))),u:v=>v+(v===1?' drankje':' drankjes')},
-  {k:'win',e:'🏆',n:LT('Beste in de spelletjes','Man van de match'),r:rankOf(STATS.win),u:v=>v+' pt'},
-  {k:'play',e:LT('🎮','⏱'),n:LT('Meest meegespeeld','Meeste speelminuten'),r:rankOf(STATS.play),u:v=>v+(v===1?' spel':' spellen')},
-  {k:'spill',e:'💦',n:'Morskampioen',r:rankOf(STATS.spill),u:v=>v+'× gemorst'},
-  {k:'lose',e:LT('💀','🥅'),n:LT('Verliest het vaakst','Meeste eigen doelpunten'),r:rankOf(STATS.lose),u:v=>v+'× verloren'},
-  {k:'quiz',e:'🧠',n:'Quizkoning',r:rankOf(STATS.quiz),u:v=>v+' juist'},
-  {k:'reflex',low:1,e:'⚡',n:'Snelste reflex',r:rankOf(STATS.reflex,true),u:v=>v+' ms'},
-  {k:'wraak',e:'😈',n:'Wraakkoning',r:rankOf(STATS.wraak),u:v=>v+'× wraak'},
-  {k:'kara',e:'🎤',n:'Karaokester',r:rankOf(STATS.kara),u:v=>v+'× ster'},
-  {k:'water',e:'💧',n:'Waterheld',r:rankOf(STATS.water),u:v=>v+'× water'}];
-const topGames=()=>Object.entries(STATS.games||{}).map(([k,v])=>[META.find(m=>m.k===k),v]).filter(x=>x[0]).sort((a,b)=>b[1]-a[1]).slice(0,3);
+const rankOf=(obj,low,names)=>Object.entries(obj||{}).map(([id,v])=>[byAcc(id)||(names&&names[id]?{id,n:names[id],c:COLORS[0]}:null),v]).filter(x=>x[0]&&x[1]>0).sort((a,b)=>low?a[1]-b[1]:b[1]-a[1]).slice(0,3);
+const CATS=(h)=>{const S=h?h.stats||{}:STATS,NM=h?h.names||{}:null,DR=h?h.drinks||{}:Object.fromEntries(ACC.map(a=>[a.id,drinksOf(a.id)]));return [
+  {k:'drink',e:'🍺',n:LT('Meeste drankjes','Topschutter aan de toog'),r:rankOf(DR,false,NM),u:v=>v+(v===1?' drankje':' drankjes')},
+  {k:'win',e:'🏆',n:LT('Beste in de spelletjes','Man van de match'),r:rankOf(S.win,false,NM),u:v=>v+' pt'},
+  {k:'play',e:LT('🎮','⏱'),n:LT('Meest meegespeeld','Meeste speelminuten'),r:rankOf(S.play,false,NM),u:v=>v+(v===1?' spel':' spellen')},
+  {k:'spill',e:'💦',n:'Morskampioen',r:rankOf(S.spill,false,NM),u:v=>v+'× gemorst'},
+  {k:'lose',e:LT('💀','🥅'),n:LT('Verliest het vaakst','Meeste eigen doelpunten'),r:rankOf(S.lose,false,NM),u:v=>v+'× verloren'},
+  {k:'quiz',e:'🧠',n:'Quizkoning',r:rankOf(S.quiz,false,NM),u:v=>v+' juist'},
+  {k:'reflex',low:1,e:'⚡',n:'Snelste reflex',r:rankOf(S.reflex,true,NM),u:v=>v+' ms'},
+  {k:'wraak',e:'😈',n:'Wraakkoning',r:rankOf(S.wraak,false,NM),u:v=>v+'× wraak'},
+  {k:'kara',e:'🎤',n:'Karaokester',r:rankOf(S.kara,false,NM),u:v=>v+'× ster'},
+  {k:'water',e:'💧',n:'Waterheld',r:rankOf(S.water,false,NM),u:v=>v+'× water'}]};
+const topGames=(S=STATS)=>Object.entries(S.games||{}).map(([k,v])=>[META.find(m=>m.k===k),v]).filter(x=>x[0]).sort((a,b)=>b[1]-a[1]).slice(0,3);
 const podHTML=(c)=>{const r=c.r,rk=i=>r[i]?1+r.filter(y=>c.low?y[1]<r[i][1]:y[1]>r[i][1]).length:i+1,slot=(i,h)=>{const x=r[i];return `<div class="ps p${i+1}">${x?`${x[0].n!==undefined&&x[0].id?av(x[0],i===0?52:40):`<div class="pe">${x[0].e||'🎲'}</div>`}<b>${esc(x[0].n)}</b><span class="small">${c.u(x[1])}</span>`:'<span class="small">—</span>'}<div class="blk" style="height:${h}px">${rk(i)}</div></div>`};
   return `<div class="podc"><div class="mono">${c.e} ${c.n}</div><div class="pod">${slot(1,58)}${slot(0,84)}${slot(2,40)}</div></div>`};
 const gamesCat=()=>({e:LT('🎲','⚽'),n:LT('Meest gespeelde spellen','Populairste wedstrijden'),r:topGames().map(([m,v])=>[{n:m.n,e:'🎲'},v]),u:v=>v+'×'});
+const gamesCatH=h=>({e:LT('🎲','⚽'),n:LT('Meest gespeelde spellen','Populairste wedstrijden'),r:topGames(h.stats||{}).map(([m,v])=>[{n:m.n,e:'🎲'},v]),u:v=>v+'×'});
+const dLong=t=>new Date(t).toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const totDr=h=>Object.values(h.drinks||{}).reduce((a,x)=>a+x,0);
+const delEvening=t0=>{HIST=HIST.filter(h=>h.t0!==t0);saveHist();try{window.ZG&&ZG.delEvening(t0)}catch(e){}};
+const openRankH=t0=>{const h=allHist().find(x=>x.t0===t0);if(!h)return renderInfo();clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent=LT('Klassement','Eindstand');$('#gc').textContent='';$('#ov').classList.add('open');
+  const cs=CATS(h).filter(c=>c.r.length),g=gamesCatH(h);
+  scr(`<div class="mono">${dLong(h.t0)} · ${hhmm(h.t0)} – ${hhmm(h.end)}${h.by?' · '+esc(h.by):''}</div><div class="pr" style="font-size:clamp(32px,5vw,58px)">${LT('Klassement van die avond','Eindstand van die match')}</div>${cs.length||g.r.length?`<div class="pods">${cs.map(podHTML).join('')}${g.r.length?podHTML(g):''}</div>`:'<div class="hint">Op deze avond werd niets geteld.</div>'}
+    <div class="row"><button class="tbtn" id="hdel">🗑 Wis deze avond</button><button class="btn" id="hok">Sluiten</button></div>`);
+  $('#hok').onclick=()=>{$('#bk').click();showTab('info')};$('#hdel').onclick=e=>{const b=e.currentTarget;if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker? Tik nog eens';return}delEvening(h.t0);$('#bk').click();showTab('info')}};
+const histHTML=()=>{const l=allHist().slice().reverse();if(!l.length)return '<p class="small">Nog geen gestopte avonden.</p>';
+  return `<div class="recs">${l.slice(0,30).map(h=>`<div class="rec hrow"><button class="hopen" data-ho="${h.t0}"><span class="rk"><span class="mono">${dLong(h.t0)}</span><b>${hhmm(h.t0)} – ${hhmm(h.end)} · ${totDr(h)} ${totDr(h)===1?'drankje':'drankjes'}</b></span></button><button class="tbtn" data-hd="${h.t0}" aria-label="Wis deze avond">🗑</button></div>`).join('')}</div>${l.length>1?'<div class="row" style="justify-content:flex-start;margin-top:10px"><button class="tbtn" id="hdall">Wis alle avonden</button></div>':''}`};
 let HIST=[];try{HIST=JSON.parse(localStorage.getItem('kp_hist')||'[]')}catch(e){}
 const saveHist=()=>{try{localStorage.setItem('kp_hist',JSON.stringify(HIST.slice(-80)))}catch(e){}};
 const snapAv=()=>{const dr={},nm={};ACC.forEach(a=>{const n=drinksOf(a.id);if(n)dr[a.id]=n;nm[a.id]=a.n});return{t0:since(),end:(AV&&AV.end)||Date.now(),stats:JSON.parse(JSON.stringify(STATS)),drinks:dr,names:nm,hours:perHour()}};
-const archAv=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);HIST.push(snapAv());saveHist()};
-const unArch=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);saveHist()};
+const allHist=()=>{const m={};HIST.forEach(h=>m[h.t0]=h);((window.ZG&&ZG.evenings())||[]).forEach(h=>{if(h&&h.t0&&!m[h.t0]&&!(AV&&!AV.end&&h.t0===AV.t0))m[h.t0]=h});return Object.values(m).sort((a,b)=>a.t0-b.t0)};
+const archAv=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);const sn=snapAv();HIST.push(sn);saveHist();try{window.ZG&&ZG.putEvening(sn)}catch(e){}};
+const unArch=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);saveHist();try{window.ZG&&ZG.putEvening(Object.assign(snapAv(),{live:true}))}catch(e){}};
 const perHour=()=>{const t0=since(),t1=(AV&&AV.end)||Date.now(),n=Math.max(1,Math.min(14,Math.ceil((t1-t0)/3.6e6))),b=Array(n).fill(0);
   ACC.forEach(a=>{if(CNT[a.id])prof(a.id).d.forEach(d=>{if(d.t>=t0&&d.t<=t1){const i=Math.min(n-1,Math.floor((d.t-t0)/3.6e6));b[i]++}})});return b};
 const hourHTML=()=>{const b=perHour(),mx=Math.max(1,...b),tot=b.reduce((a,x)=>a+x,0),prev=HIST.filter(h=>h.t0!==since()).slice(-1)[0];
@@ -1243,7 +1275,7 @@ const hourHTML=()=>{const b=perHour(),mx=Math.max(1,...b),tot=b.reduce((a,x)=>a+
   if(!tot&&pt===null)return '';
   return `<div class="hrs"><div class="mono">🍺 Drankjes per uur${pt!==null?` · ${tot} vanavond, ${pt} vorige keer ${tot>pt?'(drukker!)':tot<pt?'(rustiger)':'(even druk)'}`:` · ${tot} in totaal`}</div>
     <div class="bars">${b.map((v,i)=>`<div class="bar1"><span class="small">${v||''}</span><i style="height:${Math.round(v/mx*100)}%"></i><span class="small">${String((t0.getHours()+i)%24).padStart(2,'0')}u</span></div>`).join('')}</div></div>`};
-const RECS=()=>{const all=HIST.slice();if(AV&&!AV.end)all.push(snapAv());if(!all.length)return[];const nm=(h,id)=>{const a=ACC.find(x=>x.id===id);return a?a.n:(h.names||{})[id]||'?'};
+const RECS=()=>{const all=allHist();if(AV&&!AV.end)all.push(snapAv());if(!all.length)return[];const nm=(h,id)=>{const a=ACC.find(x=>x.id===id);return a?a.n:(h.names||{})[id]||'?'};
   const d=t=>new Date(t).toLocaleDateString('nl-BE',{day:'numeric',month:'short',year:'2-digit'}),out=[];
   const best=(f,low)=>{let r=null;all.forEach(h=>Object.entries(f(h)||{}).forEach(([id,v])=>{if(v>0&&(!r||(low?v<r.v:v>r.v)))r={v,id,h}}));return r};
   const sum=f=>{const t={},n={};all.forEach(h=>Object.entries(f(h)||{}).forEach(([id,v])=>{t[id]=(t[id]||0)+v;n[id]=nm(h,id)}));const e=Object.entries(t).sort((a,b)=>b[1]-a[1])[0];return e&&e[1]>0?{v:e[1],n:n[e[0]]}:null};
@@ -1270,14 +1302,14 @@ async function shareRank(){try{await document.fonts.load('80px Anton');await doc
   const cw=(W-140-30)/2,ch=Math.min(330,(H-300)/Math.ceil(Math.max(cs.length,1)/2));
   cs.forEach((cat,i)=>{const cx=70+(i%2)*(cw+30),cy=250+Math.floor(i/2)*ch;x.font='28px "JetBrains Mono", monospace';x.fillStyle=mu;x.fillText((cat.e+' '+cat.n).toUpperCase().slice(0,30),cx,cy+30);
     cat.r.forEach((p,j)=>{const y=cy+90+j*72;x.font=(j?'44px':'58px')+' Anton, Impact, sans-serif';x.fillStyle=j?fg:ac;x.fillText((j+1)+'. '+p[0].n.toUpperCase().slice(0,16),cx,y);x.font='24px "JetBrains Mono", monospace';x.fillStyle=mu;x.fillText(cat.u(p[1]),cx,y+30)})});
-  x.font='26px "JetBrains Mono", monospace';x.fillStyle=ac;x.textAlign='right';x.fillText(L?'ALLEZ LATEM · ZWIJNERIJ':'KOMAAN, JOEGNEE · ZWIJNERIJ',W-74,H-50);
+  x.font='26px "JetBrains Mono", monospace';x.fillStyle=ac;x.textAlign='right';x.fillText(L?'DE PINTE PANNENKOEKEN · ALLEZ LATEM':'KOMAAN, JOEGNEE · ZWIJNERIJ',W-74,H-50);
   const blob=await new Promise(r=>c.toBlob(r,'image/png'));const file=new File([blob],'klassement-'+new Date().toISOString().slice(0,10)+'.png',{type:'image/png'}),url=URL.createObjectURL(blob);
   clr();$('#gt').textContent='Klassement delen';$('#ov').classList.add('open');
   scr(`<img src="${url}" style="max-width:min(460px,90vw);border-radius:18px"><div class="row">${navigator.canShare&&navigator.canShare({files:[file]})?'<button class="btn" id="sh">📤 Delen</button>':''}<a class="btn ghost" href="${url}" download="${file.name}" style="text-decoration:none">Opslaan</a><button class="tbtn" id="rbk">Terug naar klassement</button></div><div class="small">Of houd de afbeelding ingedrukt om ze te bewaren.</div>`);
   const sh=$('#sh');if(sh)sh.onclick=()=>navigator.share({files:[file],title:'Klassement'}).catch(()=>{});$('#rbk').onclick=openRank}
 const openRank=()=>{clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Klassement';$('#gc').textContent='';$('#ov').classList.add('open');
   const cs=CATS().filter(c=>c.r.length),g=gamesCat(),fin=AV&&AV.end;
-  scr(`<div class="mono">${fin?'De avond is gedaan · '+hhmm(AV.t0)+' – '+hhmm(AV.end):'Tussenstand · sinds '+hhmm(since())}</div><div class="pr" style="font-size:clamp(34px,5vw,64px)">${fin?LT('Klassement van de avond','Eindstand'):LT('Tussenstand','Tussenstand bij de rust')}</div>${isL()?'<img class="rlogo" src="fclatem.png" alt="">':''}<div style="display:none"></div>
+  scr(`<div class="mono">${fin?'De avond is gedaan · '+hhmm(AV.t0)+' – '+hhmm(AV.end):'Tussenstand · sinds '+hhmm(since())}</div><div class="pr" style="font-size:clamp(34px,5vw,64px)">${fin?LT('Klassement van de avond','Eindstand'):LT('Tussenstand','Tussenstand bij de rust')}</div>${isL()?'<img class="rlogo" src="fclatem.png" alt=""><div class="mono">« Latem, fils à papa ! » zingen ze in De Pinte. Wij: De Pinte pannenkoeken!</div>':''}<div style="display:none"></div>
     ${cs.length||g.r.length?`<div class="pods">${cs.map(podHTML).join('')}${g.r.length?podHTML(g):''}</div>`:'<div class="hint">Nog niets gespeeld of gedronken.</div>'}
     ${hourHTML()}<div class="row">${fin?'<button class="tbtn" id="avun">↶ Toch nog niet gedaan</button>':''}${cs.length?'<button class="tbtn" id="avsh">📤 Deel het klassement</button>':''}<button class="tbtn" id="avbac">🚗 Wie mag er nog rijden?</button><button class="btn" id="avok">${fin?'Sluiten':'Verder spelen'}</button></div>`);
   $('#avok').onclick=()=>$('#bk').click();$('#avbac').onclick=overview;const sh=$('#avsh');if(sh)sh.onclick=shareRank;const u=$('#avun');if(u)u.onclick=()=>{AV.end=null;AV.paused=false;saveAV();unArch();drawAvond();joeg('VERDER!','De avond gaat door');openRank()}};
@@ -1303,13 +1335,16 @@ const renderInfo=()=>{const cs=CATS(),g=gamesCat(),pick=k=>cs.find(c=>c.k===k),t
    <div class="hilites">${hi.map(([e,k,v])=>`<div class="hil"><span class="e">${e}</span><span class="mono">${k}</span><b>${v}</b></div>`).join('')}</div>
    ${rest.length?`<div class="pods">${rest.map(podHTML).join('')}</div>`:'<p class="small" style="margin:6px 0 0">Speel wat spelletjes: hier verschijnen dan de podiums.</p>'}
    ${hourHTML()}<div class="row" style="justify-content:flex-start;margin:18px 0 30px"><button class="tbtn" id="irk">🏆 Volledig klassement</button><button class="tbtn" id="icq">✏️ Eigen vragen en opdrachten</button></div>
-   <div class="sec mono"><span>📖 Recordboek · alle avonden</span><span>${HIST.length} ${HIST.length===1?'avond':'avonden'}</span></div>${recHTML()}<div style="height:26px"></div>
+   <div class="sec mono"><span>🗓 Vorige avonden</span><span>tik voor het klassement</span></div>${histHTML()}<div style="height:26px"></div>
+   <div class="sec mono"><span>📖 Recordboek · alle avonden</span><span>${allHist().length} ${allHist().length===1?'avond':'avonden'}</span></div>${recHTML()}<div style="height:26px"></div>
    <button class="albcard" id="ialb"><span class="e">📷</span><span><span class="mono">Fotoalbum</span><b>Bekijk de foto's van alle avonden</b><span class="small" id="ialbn">Blijven in de app, niet in je fotorol.</span></span><span class="ar">→</span></button>
    <div class="sec mono"><span>Goed om te weten</span><span>${String(FACTS.length).padStart(2,'0')}</span></div>
    <div class="facc">${FACTS.map(([k,p])=>`<details><summary>${k}</summary><p>${p}</p></details>`).join('')}
    <details><summary>App op het beginscherm</summary><p>Safari › Deel › Zet op beginscherm, dan opent de Zwijnerij schermvullend.</p></details></div>`;
-  $('#irk').onclick=openRank;$('#icq').onclick=()=>openCQ();$('#ialb').onclick=()=>album();
-  photoAll().then(l=>{const e=$('#ialbn');if(e&&l.length){const n=new Set(l.map(p=>nightKey(p.t))).size;e.textContent=l.length+" foto's van "+n+(n===1?' avond':' avonden')+' · blijven in de app'}})};
+  $('#irk').onclick=openRank;document.querySelectorAll('[data-ho]').forEach(b=>b.onclick=()=>openRankH(+b.dataset.ho));
+  document.querySelectorAll('[data-hd]').forEach(b=>b.onclick=()=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker?';setTimeout(()=>{if(b.isConnected){delete b.dataset.s;b.textContent='🗑'}},3000);return}delEvening(+b.dataset.hd);renderInfo()});
+  const ha=$('#hdall');if(ha)ha.onclick=()=>{if(!ha.dataset.s){ha.dataset.s=1;ha.textContent='Alles wissen? Tik nog eens';return}allHist().forEach(h=>delEvening(h.t0));renderInfo()};$('#icq').onclick=()=>openCQ();$('#ialb').onclick=()=>album();
+  photoAll().then(l0=>{const lt=new Set(l0.map(p=>p.t)),l=l0.concat(((window.ZG&&ZG.photos())||[]).filter(p=>!lt.has(p.t)));const e=$('#ialbn');if(e&&l.length){const n=new Set(l.map(p=>nightKey(p.t))).size;e.textContent=l.length+" foto's van "+n+(n===1?' avond':' avonden')+(window.ZG&&ZG.on()?' · gedeeld met '+ZG.group().name:' · blijven in de app')}})};
 renderInfo();
 
 
@@ -1596,10 +1631,96 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795009921';
+const APPVER='1795011421';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
+</script>
+<script>
+/* ===== vriendengroepen: gedeeld via Supabase, toegang met de groepscode ===== */
+(()=>{
+const URL0='https://koenqjuwnngluqxseodq.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvZW5xanV3bm5nbHVxeHNlb2RxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5MzA0MDMsImV4cCI6MjExMDUwNjQwM30.xU0O1K_KTPRiiMeMT486Witxi0EZKN3ViKd5VCvLag0';
+const H={apikey:KEY,Authorization:'Bearer '+KEY};
+let G=null;try{G=JSON.parse(localStorage.getItem('kp_group')||'null')}catch(e){}
+let D={evenings:[],photos:[],gone:[],gone_evenings:[],gone_photos:[]};try{D=Object.assign(D,JSON.parse(localStorage.getItem('kp_group_data')||'{}'))}catch(e){}
+let last=0,busy=false,err='';
+const saveG=()=>{try{localStorage.setItem('kp_group',JSON.stringify(G));localStorage.setItem('kp_group_data',JSON.stringify(D))}catch(e){}};
+const rpc=async(fn,args)=>{const r=await fetch(URL0+'/rest/v1/rpc/'+fn,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},H),body:JSON.stringify(args)});if(!r.ok)throw new Error(fn+' '+r.status);return r.json()};
+const pubUrl=p=>URL0+'/storage/v1/object/public/zwphotos/'+p;
+const fmt=c=>c?c.slice(0,4)+'-'+c.slice(4):'';
+const link=()=>location.origin+location.pathname+'?g='+G.code;
+const clean=a=>({id:a.id,n:a.n,c:a.c,g:a.g||null,nov:!!a.nov});
+let pT=null;
+const ZG=window.ZG={
+  on:()=>!!G,group:()=>G,evenings:()=>G?D.evenings:[],photos:()=>G?D.photos.map(p=>({t:p.t,url:pubUrl(p.path),remote:1})):[],
+  pushPlayers(){if(!G)return;clearTimeout(pT);pT=setTimeout(()=>rpc('zw_put_players',{p_code:G.code,p_players:ACC.map(clean)}).catch(e=>{err='offline'}),800)},
+  delPlayer(id){if(G)rpc('zw_del_player',{p_code:G.code,p_id:id}).catch(()=>{})},
+  putEvening(sn){if(!G||!sn)return;sn.by=G.name;rpc('zw_put_evening',{p_code:G.code,p_t0:sn.t0,p_data:sn}).then(()=>{D.evenings=D.evenings.filter(e=>e.t0!==sn.t0);if(!sn.live)D.evenings.push(sn);saveG()}).catch(()=>{})},
+  delEvening(t0){if(!G)return;D.evenings=D.evenings.filter(e=>e.t0!==t0);saveG();rpc('zw_del_evening',{p_code:G.code,p_t0:t0}).catch(()=>{})},
+  async uploadPhoto(t,blob){if(!G)return false;try{const path=G.code+'/'+t+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
+      const r=await fetch(URL0+'/storage/v1/object/zwphotos/'+path,{method:'POST',headers:Object.assign({'Content-Type':'image/jpeg','x-upsert':'false'},H),body:blob});if(!r.ok)throw new Error('upload '+r.status);
+      await rpc('zw_add_photo',{p_code:G.code,p_t:t,p_path:path});D.photos=D.photos.filter(p=>p.t!==t);D.photos.push({t,path});saveG();return true}catch(e){err='Foto nog niet gedeeld (geen internet?). Wordt later opnieuw geprobeerd.';return false}},
+  delPhoto(t){if(!G)return;D.photos=D.photos.filter(p=>p.t!==t);saveG();rpc('zw_del_photo',{p_code:G.code,p_t:t}).catch(()=>{})},
+  async sync(){if(!G||busy)return;busy=true;try{const g=await rpc('zw_group',{p_code:G.code});
+      if(!g){err='Deze groep bestaat niet meer.';busy=false;return}
+      G.name=g.name;D={evenings:g.evenings||[],photos:g.photos||[],gone:g.gone||[],gone_evenings:g.gone_evenings||[],gone_photos:g.gone_photos||[]};
+      // spelers samenvoegen
+      let ch=false;(g.players||[]).forEach(p=>{const a=ACC.find(x=>x.id===p.id);if(a){['n','c','g','nov'].forEach(k=>{if(p[k]!==undefined&&a[k]!==p[k]){a[k]=p[k];ch=true}})}else{ACC.push(clean(p));ch=true}});
+      const gone=new Set(D.gone);if(ACC.some(a=>gone.has(a.id))){ACC=ACC.filter(a=>!gone.has(a.id));ACT.ids=ACT.ids.filter(id=>!gone.has(id));ch=true}
+      if(ch){try{localStorage.setItem('kp_acc',JSON.stringify(ACC));localStorage.setItem('kp_active',JSON.stringify(ACT))}catch(e){}}
+      // lokale avonden die in de groep gewist zijn, ook lokaal weg
+      const ge=new Set(D.gone_evenings);if(HIST.some(h=>ge.has(h.t0))){HIST=HIST.filter(h=>!ge.has(h.t0));saveHist()}
+      // eigen spelers + avonden die de groep nog niet heeft, doorsturen
+      const have=new Set((g.players||[]).map(p=>p.id));if(ACC.some(a=>!have.has(a.id)&&!gone.has(a.id)))await rpc('zw_put_players',{p_code:G.code,p_players:ACC.map(clean)});
+      const he=new Set(D.evenings.map(e=>e.t0));for(const h of HIST)if(!he.has(h.t0)&&!ge.has(h.t0)){h.by=G.name;await rpc('zw_put_evening',{p_code:G.code,p_t0:h.t0,p_data:h});D.evenings.push(h)}
+      // lopende avond ook delen, zodat iedereen de tussenstand ziet
+      if(AV&&!AV.end){const sn=Object.assign(snapAv(),{live:true,by:G.name});rpc('zw_put_evening',{p_code:G.code,p_t0:sn.t0,p_data:sn}).catch(()=>{})}
+      // foto's die lokaal in deze groep genomen werden maar nog niet online staan
+      const hp=new Set(D.photos.map(p=>p.t)),gp=new Set(D.gone_photos);const loc=await photoAll();
+      for(const p of loc)if(p.t>=(G.since||0)&&!hp.has(p.t)&&!gp.has(p.t))await ZG.uploadPhoto(p.t,p.blob);
+      last=Date.now();err='';saveG();if(ch){renderHead();if(document.querySelector('#t-players.on'))renderPlayers()}
+      if(document.querySelector('#t-info.on'))renderInfo();drawGroup()}catch(e){err='Geen verbinding met de groep. Alles blijft lokaal bewaard en wordt later gedeeld.';drawGroup()}busy=false},
+  async create(name){const r=await rpc('zw_create_group',{p_name:name});G={code:r.code,name:r.name,since:Date.now()-14*3.6e6};D={evenings:[],photos:[],gone:[],gone_evenings:[],gone_photos:[]};saveG();await ZG.sync();return r},
+  async join(code){code=String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');const g=await rpc('zw_group',{p_code:code});if(!g)return null;
+    G={code:g.code,name:g.name,since:Date.now()};saveG();await ZG.sync();return g},
+  leave(){G=null;D={evenings:[],photos:[],gone:[],gone_evenings:[],gone_photos:[]};try{localStorage.removeItem('kp_group');localStorage.removeItem('kp_group_data')}catch(e){}drawGroup();try{renderInfo()}catch(e){}},
+  err:()=>err,last:()=>last,fmt,link};
+
+/* ---- UI bij Spelers ---- */
+const loadQR=()=>new Promise((res,rej)=>{if(window.QRCode)return res();const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';sc.onload=res;sc.onerror=rej;document.head.appendChild(sc)});
+const share=async()=>{const u=link(),t=`Doe mee met onze vriendengroep "${G.name}" in de Zwijnerij: `;
+  if(navigator.share){try{await navigator.share({title:'Zwijnerij · '+G.name,text:t,url:u});return}catch(e){if(e&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(u);joeg('GEKOPIEERD!','Plak de link in de groepschat')}catch(e){prompt('Kopieer deze link:',u)}};
+const showQR=async()=>{clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Uitnodigen';$('#gc').textContent='';$('#ov').classList.add('open');
+  scr(`<div class="mono">Vriendengroep</div><div class="pr" style="font-size:clamp(32px,5vw,58px)">${esc(G.name)}</div><div class="qrbox" id="zggqr"></div>
+    <div class="hint">Scan met de camera van je gsm: je zit meteen in de groep.<br>Of typ de code <b style="color:var(--fg);letter-spacing:.1em">${fmt(G.code)}</b></div>
+    <div class="row"><button class="btn" id="zggsh">🔗 Deel de link</button><button class="tbtn" id="zggok">Klaar</button></div>`);
+  $('#zggsh').onclick=share;$('#zggok').onclick=()=>{$('#bk').click();showTab('players')};
+  try{await loadQR();new QRCode($('#zggqr'),{text:link(),width:240,height:240,colorDark:'#000000',colorLight:'#ffffff'})}catch(e){$('#zggqr').innerHTML='<div class="small" style="color:#000;padding:20px">QR-code kon niet laden (internet?). Deel de link of de code.</div>'}};
+let mode=null;
+const drawGroup=window.drawGroup=()=>{const el=$('#t-players');if(!el)return;let b=$('#grp');if(!b){b=document.createElement('div');b.id='grp';el.prepend(b)}
+  if(G){const e=err;b.innerHTML=`<div class="grp on"><div class="gi"><span class="mono">👥 Vriendengroep</span><b>${esc(G.name)}</b><span class="small">Code ${fmt(G.code)} · ${e?'⚠️ '+esc(e):last?'gedeeld om '+hhmm(last):'verbinden…'}</span></div>
+      <div class="row"><button class="btn" id="zggl">🔗 Deel link</button><button class="tbtn" id="zggq">QR-code</button><button class="tbtn" id="zggs">⟳</button><button class="tbtn" id="zggx">Verlaat</button></div></div>`;
+    $('#zggl').onclick=share;$('#zggq').onclick=showQR;$('#zggs').onclick=()=>{last=0;b.querySelector('.small').textContent='Bezig…';ZG.sync()};
+    $('#zggx').onclick=e=>{const x=e.currentTarget;if(!x.dataset.s){x.dataset.s=1;x.textContent='Zeker? Je spelers blijven op dit toestel';return}ZG.leave()};return}
+  if(mode==='new'){b.innerHTML=`<div class="grp"><div class="gi"><span class="mono">👥 Nieuwe vriendengroep</span><b>Hoe heet jullie groep?</b></div><div class="row"><input class="nm" id="zggn" maxlength="40" placeholder="Bv. Kot Kortrijksepoort" autocomplete="off"><button class="btn" id="zggc2">Maak groep</button><button class="tbtn" id="zggb">Annuleer</button></div><div class="small" id="zggm"></div></div>`;
+    $('#zggn').focus();$('#zggb').onclick=()=>{mode=null;drawGroup()};
+    $('#zggc2').onclick=async()=>{const n=$('#zggn').value.trim();if(!n)return $('#zggn').focus();$('#zggm').textContent='Bezig…';try{await ZG.create(n);mode=null;drawGroup();joeg('GROEP!','Deel nu de link met je vrienden');showQR()}catch(e){$('#zggm').textContent='Lukt niet: geen internet?'}};return}
+  if(mode==='join'){b.innerHTML=`<div class="grp"><div class="gi"><span class="mono">👥 Meedoen met een groep</span><b>Typ de code</b><span class="small">Of open gewoon de link die je kreeg.</span></div><div class="row"><input class="nm" id="zggj" maxlength="9" placeholder="ABCD-EFGH" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn" id="zggj2">Doe mee</button><button class="tbtn" id="zggb">Annuleer</button></div><div class="small" id="zggm"></div></div>`;
+    $('#zggj').focus();$('#zggb').onclick=()=>{mode=null;drawGroup()};
+    $('#zggj2').onclick=async()=>{$('#zggm').textContent='Bezig…';try{const g=await ZG.join($('#zggj').value);if(!g){$('#zggm').textContent='Die code bestaat niet. Kijk ze nog eens na.';return}mode=null;renderPlayers();joeg('WELKOM!',esc(g.name))}catch(e){$('#zggm').textContent='Lukt niet: geen internet?'}};return}
+  b.innerHTML=`<div class="grp"><div class="gi"><span class="mono">👥 Vriendengroep</span><b>Niet altijd alle namen intikken</b><span class="small">Bewaar je spelers, klassementen en foto's in een groep. Op een ander toestel open je gewoon de link.</span></div>
+    <div class="row"><button class="btn" id="zggnw">+ Maak een groep</button><button class="tbtn" id="zggjn">Ik heb een code</button></div></div>`;
+  $('#zggnw').onclick=()=>{mode='new';drawGroup()};$('#zggjn').onclick=()=>{mode='join';drawGroup()}};
+const rp=window.renderPlayers;window.renderPlayers=renderPlayers=function(){rp.apply(this,arguments);drawGroup()};
+/* ---- link ?g=CODE ---- */
+(async()=>{const q=new URLSearchParams(location.search).get('g');
+  if(q){history.replaceState(null,'',location.pathname);try{const g=await ZG.join(q);if(g){showTab('players');joeg('WELKOM!','Je zit in '+esc(g.name))}else joeg('OEPS','Die groepslink werkt niet (meer)')}catch(e){joeg('GEEN INTERNET','Open de link opnieuw als je verbinding hebt')}}
+  else if(G)ZG.sync()})();
+setInterval(()=>{if(G&&document.visibilityState==='visible')ZG.sync()},120000);
+document.addEventListener('visibilitychange',()=>{if(G&&document.visibilityState==='visible'&&Date.now()-last>30000)ZG.sync()});
+if(document.querySelector('#t-players.on'))drawGroup();
+})();
 </script>
 </body>
 </html>
