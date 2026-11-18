@@ -444,6 +444,15 @@ body.latem .qstart{padding-right:110px}@media(max-width:600px){body.latem .qstar
 .albi{padding:0;border:2px solid transparent;border-radius:12px;position:relative;overflow:hidden;display:block}.albi img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}
 .albi.sel{border-color:var(--acc)}.albi.sel::after{content:'✓';position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:var(--acc);color:#000;display:grid;place-items:center;font-weight:700}
 .albg img{border:1px solid var(--line2)}
+.lyb svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lys{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:12px;width:min(900px,100%)}
+.ly{display:flex;flex-direction:column;gap:12px;text-align:left;border:1px solid var(--line2);border-radius:22px;padding:16px;background:var(--card);position:relative}
+.ly.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc) inset}.lysw{display:flex;align-items:center;gap:6px;height:56px}.lysw i{flex:1;height:100%;border-radius:12px;border:1px solid rgba(128,128,128,.35)}.lysw img{width:46px;height:46px;margin-left:4px}
+.lyt{display:flex;flex-direction:column;gap:4px}.lyt b{font-family:'Anton',sans-serif;font-weight:400;font-size:26px;text-transform:uppercase}
+.lyb2{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.ly.prem:not(.lock){border:2px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#f7d774,#ffffff 40%,#c9a227 60%,#f7d774) border-box}
+.ly.prem:not(.lock) .lyb2{color:#e6c35a;font-weight:700}
+.ly.lock .lysw,.ly.lock .lyt{filter:grayscale(1);opacity:.45}.ly.lock::after{content:'🔒';position:absolute;top:12px;right:14px;font-size:26px}
 </style>
 </head>
 <body>
@@ -453,7 +462,7 @@ body.latem .qstart{padding-right:110px}@media(max-width:600px){body.latem .qstar
     <div class="brand">Zwijn<i>erij</i></div>
     <div class="hstrip" id="hs"></div>
   </div>
-  <div><div class="hbtns"><button class="thm" id="snd" aria-label="Geluid"></button><button class="thm" id="thm" aria-label="Licht of donker"></button><button class="thm ltm" id="ltm" aria-label="FC Latem-layout"><img src="fclatem-64.png" alt=""></button></div><div id="clock">--:--</div><div id="date" class="mono"></div></div>
+  <div><div class="hbtns"><button class="thm" id="snd" aria-label="Geluid"></button><button class="thm" id="thm" aria-label="Licht of donker"></button><button class="thm lyb" id="ltm" aria-label="Layout kiezen"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.8-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5C21 6.4 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10" cy="7.3" r="1.2"/><circle cx="14.5" cy="7.3" r="1.2"/></svg></button></div><div id="clock">--:--</div><div id="date" class="mono"></div></div>
 </header>
 
 <main>
@@ -1437,7 +1446,35 @@ let theme='dark';try{theme=localStorage.getItem('kp_theme')||'dark'}catch(e){}
 
 const applyTheme=()=>{document.body.classList.toggle('latem',LATEM);document.body.classList.toggle('light',theme==='light'&&!LATEM);try{applyTerms();drawAvond()}catch(e){}$('#thm').innerHTML=theme==='light'?MOON:SUN;
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=LATEM?'#0b2340':theme==='light'?'#f3f2ec':'#070707';applyNight()};
-$('#ltm').onclick=()=>{LATEM=!LATEM;try{localStorage.setItem('kp_latem',LATEM?'1':'0')}catch(e){}applyTheme();if(LATEM)joeg('ALLEZ LATEM!','FC Latem-layout aan');try{renderHead();renderGames();renderInfo();const t=document.querySelector('.tab.on');if(t)showTab(t.id.slice(2))}catch(e){}};
+/* ===== layouts: gratis + premium (met wachtwoord) ===== */
+const LAYOUTS=[
+  {k:'dark',n:'Donker',d:'Zwart-wit met fluogroen.',sw:['#070707','#ededed','#d4ff3a']},
+  {k:'light',n:'Licht',d:'Wit en fel, voor overdag.',sw:['#ffffff','#000000','#c6ff00']},
+  {k:'latem',n:'FC Latem',d:'Blauw-wit, clublogo, voetbaltermen en een spandoek.',sw:['#0b2340','#ffffff','#9cc3ec'],premium:1,img:'fclatem-64.png',h:'1d4915a3b2e64d92494965249e0348d27feb3bc268e632809e7d777532629cf4'}];
+let UNL=[];try{UNL=JSON.parse(localStorage.getItem('kp_unlocked')||'[]')}catch(e){}
+const curLayout=()=>LATEM?'latem':theme==='light'?'light':'dark';
+const sha=async t=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')};
+const setLayout=k=>{LATEM=k==='latem';if(k==='dark'||k==='light')theme=k;try{localStorage.setItem('kp_latem',LATEM?'1':'0');localStorage.setItem('kp_theme',theme)}catch(e){}
+  applyTheme();try{renderHead();renderGames();renderInfo()}catch(e){}};
+const openLayouts=()=>{clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Layout';$('#gc').textContent='';$('#ov').classList.add('open');
+  const cur=curLayout();
+  scr(`<div class="pr" style="font-size:clamp(32px,5vw,58px)">Kies een layout</div><div class="hint">Premium-layouts open je met een wachtwoord. Eén keer ingeven per toestel volstaat.</div>
+    <div class="lys">${LAYOUTS.map(l=>{const lock=l.premium&&!UNL.includes(l.k);return `<button class="ly ${l.premium?'prem':''} ${lock?'lock':''} ${cur===l.k?'on':''}" data-ly="${l.k}">
+      <span class="lysw">${l.sw.map(c=>`<i style="background:${c}"></i>`).join('')}${l.img?`<img src="${l.img}" alt="">`:''}</span>
+      <span class="lyt"><b>${l.n}</b><span class="small">${l.d}</span></span>
+      <span class="lyb2">${lock?'🔒 Premium':l.premium?(cur===l.k?'★ Premium · actief':'★ Premium'):cur===l.k?'✓ Actief':'Gratis'}</span></button>`}).join('')}</div>
+    <div id="lypw"></div><button class="btn" id="lyok">Klaar</button>`);
+  $('#lyok').onclick=()=>$('#bk').click();
+  st.querySelectorAll('[data-ly]').forEach(b=>b.onclick=()=>{const l=LAYOUTS.find(x=>x.k===b.dataset.ly);
+    if(l.premium&&!UNL.includes(l.k)){const w=$('#lypw');w.innerHTML=`<div class="grp"><div class="gi"><span class="mono">🔒 Premium · ${esc(l.n)}</span><b>Wachtwoord</b></div><div class="row"><input class="nm" id="lyin" type="password" autocomplete="off" placeholder="Wachtwoord"><button class="btn" id="lygo">Ontgrendel</button></div><div class="small" id="lym"></div></div>`;
+      const go=async()=>{const v=$('#lyin').value.trim().toLowerCase();if(!v)return $('#lyin').focus();let ok=false;try{ok=(await sha(v))===l.h}catch(e){$('#lym').textContent='Ontgrendelen lukt hier niet (open de app via https).';return}
+        if(!ok){$('#lym').textContent='Fout wachtwoord.';$('#lyin').select();beep(160,.2,.1,'sawtooth');return}
+        UNL.push(l.k);try{localStorage.setItem('kp_unlocked',JSON.stringify(UNL))}catch(e){}setLayout(l.k);joeg('PREMIUM!',l.n+' ontgrendeld');openLayouts()};
+      $('#lygo').onclick=go;$('#lyin').onkeydown=e=>{if(e.key==='Enter')go()};$('#lyin').focus();return}
+    setLayout(l.k);openLayouts()})};
+$('#ltm').onclick=openLayouts;
+// een premium-layout die (nog) niet ontgrendeld is, nooit tonen
+if(LATEM&&!UNL.includes('latem')){LATEM=false;try{localStorage.setItem('kp_latem','0')}catch(e){}}
 $('#thm').onclick=()=>{if(LATEM){LATEM=false;try{localStorage.setItem('kp_latem','0')}catch(e){}applyTheme();try{renderHead();renderGames();renderInfo();const t=document.querySelector('.tab.on');if(t)showTab(t.id.slice(2))}catch(e){};return}theme=theme==='light'?'dark':'light';try{localStorage.setItem('kp_theme',theme)}catch(e){}applyTheme()};
 applyTheme();
 renderHead();
@@ -1649,7 +1686,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795013040';
+const APPVER='1795013515';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
