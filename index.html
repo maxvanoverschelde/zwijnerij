@@ -366,7 +366,7 @@ a:visited{color:inherit}
 .back.ib{padding:10px 14px;min-height:44px}
 @media(max-width:760px){.back.ib span{display:none}.back.ib{padding:8px 12px}}
 .back{white-space:nowrap}#gt{flex:1;min-width:0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
-#wrk,#rgm{display:none}#ov.game #wrk,#ov.game #rgm{display:inline-flex;align-items:center}
+#wrk,#rgm{display:none}#ov.ingame #wrk,#ov.ingame #rgm{display:inline-flex;align-items:center}
 @media(max-width:600px){.lb,.lb tbody{display:block;width:100%}.lb tr{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n b" "c s";gap:2px 10px;padding:12px 0;border-bottom:1px solid var(--line)}.lb td{padding:0!important;border:0!important}.lb td:first-child{display:none}.lb td.n{grid-area:n;font-size:24px!important}.lb td:nth-child(3){grid-area:c;font-size:14px;color:var(--muted)}.lb td:nth-child(4){grid-area:b;text-align:right}.lb td:nth-child(5){grid-area:s;text-align:right;font-size:14px}}
 #ov.open~#chrule{bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
 @media(max-width:600px){#chrule{font-size:13px;padding:8px 14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:calc(100vw - 24px)}#chrule span{margin-right:6px}#chrule i{margin-left:6px}
@@ -374,6 +374,7 @@ a:visited{color:inherit}
 .qo{min-height:48px}#nav button{min-width:44px}
 @media(max-width:600px){.bar{gap:6px}#gt{font-size:18px;padding:0 4px}#gc{font-size:10px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mcard .nmx{font-size:24px!important;overflow-wrap:anywhere}}
 @media(max-width:420px){#bk{font-size:0;padding:8px 14px;min-width:44px}#bk::before{content:'←';font-size:18px}.back.ib{padding:6px 9px}}
+#st>*{flex-shrink:0}
 </style>
 </head>
 <body>
@@ -472,6 +473,7 @@ const CAT=["Biermerken","Voetbalclubs in Europa","Dingen in een koelkast","Rappe
 "Hoofdsteden","Pizza-toppings","Disney-films","Kledingmerken","Dingen die rood zijn","Sporten met een bal","Studierichtingen","Spelers van Real Madrid"];
 
 let RESUME=null;
+const FLES_OPD=['Doe 10 seconden je beste dansmove','Imiteer iemand aan tafel, de rest raadt wie','Zeg iets liefs tegen de persoon links van je','Praat tot je volgende beurt met een Frans accent','Doe 10 squats','Zing het refrein van het nummer dat nu speelt','Vertel je slechtste openingszin ooit','Laat de groep een emoji kiezen die je 1 minuut nadoet','Geef iedereen een high five','Doe een dierengeluid naar keuze, de groep raadt welk dier','Spreek tot je volgende beurt over jezelf in de derde persoon','Wissel van plaats met iemand naar keuze','Vertel een mop. Lacht niemand? Toch drinken','Doe 15 seconden de plank','Noem 5 Gentse cafés in 10 seconden','Maak een selfie met de lelijkste gezichtsuitdrukking','Laat de persoon rechts van je een nieuwe bijnaam voor je kiezen','Doe een toast op de persoon tegenover je', "Praat 30 seconden zonder 'eh' te zeggen", 'Doe je beste robotdans','Zeg het alfabet achterstevoren tot de K', "Laat iemand je haar 'stylen' met de hand", 'Geef een compliment aan iedereen aan tafel','Doe een wereldrecord-poging: zo lang mogelijk op één been', "Kies iemand: jullie doen 'blad steen schaar', verliezer drinkt", 'Vertel wat je laatst gegoogeld hebt','Doe de typische dans van je kot of studentenvereniging','Speel 20 seconden luchtgitaar','Bel niemand maar doe alsof je je mama belt om te zeggen dat je studeert','Doe iemand na die een examen aflegt'];
 let timers=[];const clr=()=>{timers.forEach(t=>{clearTimeout(t);clearInterval(t)});timers=[]};
 let MUTE=false;try{MUTE=localStorage.getItem('kp_mute')==='1'}catch(e){}
 try{if(navigator.audioSession)navigator.audioSession.type='ambient'}catch(e){}
@@ -723,16 +725,16 @@ const LOT=['BOB van de avond','Doet de afwas','Haalt de volgende ronde','DJ van 
 let BETS={cur:null,hist:[]};try{BETS=JSON.parse(localStorage.getItem('kp_bets')||'{"cur":null,"hist":[]}')}catch(e){}
 const saveB=()=>{try{localStorage.setItem('kp_bets',JSON.stringify(BETS))}catch(e){}};
 Object.assign(G,{
- fles:{i(){const U=units();let rot=0,busy=false;const n=U.length;
+ fles:{i(){const od=deck(FLES_OPD);const U=units();let rot=0,busy=false;const n=U.length;
    const pos=U.map((u,i)=>{const a=i/n*2*Math.PI-Math.PI/2;return{u,x:50+42*Math.cos(a),y:50+42*Math.sin(a),deg:i/n*360}});
    const big=n>8,sz=n>12?32:big?38:48;
    scr(`<div class="fles${big?' many':''}">${pos.map(p=>`<div class="fn" style="left:${p.x}%;top:${p.y}%">${av(p.u,sz)}<span>${esc(p.u.n.split(' ')[0])}</span></div>`).join('')}
      <svg id="fb" viewBox="0 0 100 300"><rect x="38" y="6" width="24" height="40" rx="5" style="fill:var(--acc)"/><path d="M38 46 Q38 80 22 104 Q14 116 14 136 L14 280 Q14 294 28 294 L72 294 Q86 294 86 280 L86 136 Q86 116 78 104 Q62 80 62 46 Z" style="fill:var(--card3);stroke:var(--acc);stroke-width:3"/><rect x="14" y="170" width="72" height="56" style="fill:var(--acc);opacity:.85"/><text x="50" y="205" text-anchor="middle" font-family="Anton,sans-serif" font-size="22" style="fill:#000">ZWIJN</text></svg></div>
-     <div class="pr" id="fr" style="font-size:clamp(30px,4.4vw,52px);min-height:1.1em">&nbsp;</div><button class="btn" id="fs">Draai</button>`);
-   $('#fs').onclick=()=>{if(busy)return;busy=true;$('#fr').innerHTML='&nbsp;';const extra=Math.random()*360;rot+=1440+extra;$('#fb').style.transform=`rotate(${rot}deg)`;beep(400,.05,.08,'triangle');
-     timers.push(setTimeout(()=>{busy=false;if(!$('#fr'))return;if(!n){$('#fr').textContent='Wie aangewezen wordt, kiest: drinken of durven';return}
+     <div class="pr" id="fr" style="font-size:clamp(30px,4.4vw,52px);min-height:1.1em">&nbsp;</div><div class="hint" id="fo" style="font-size:clamp(17px,2.2vw,22px);color:var(--fg);max-width:620px;min-height:1.4em"></div><button class="btn" id="fs">Draai</button>`);
+   $('#fs').onclick=()=>{if(busy)return;busy=true;$('#fr').innerHTML='&nbsp;';$('#fo').innerHTML='';const extra=Math.random()*360;rot+=1440+extra;$('#fb').style.transform=`rotate(${rot}deg)`;beep(400,.05,.08,'triangle');
+     timers.push(setTimeout(()=>{busy=false;if(!$('#fr'))return;if(!n){$('#fr').textContent='Wie aangewezen wordt';$('#fo').innerHTML=`2 slokken of deze opdracht:<br><b>${od()}</b>`;return}
        const a=((rot%360)+360)%360;let best=0,bd=999;pos.forEach((p,i)=>{const d=Math.min(Math.abs(p.deg-a),360-Math.abs(p.deg-a));if(d<bd){bd=d;best=i}});
-       const u=pos[best].u;$('#fr').innerHTML=`<span style="color:var(--acct)">${esc(u.n)}</span>: drinken of durven?`;beep(880,.08,.12,'triangle')},3300))}}},
+       const u=pos[best].u;$('#fr').innerHTML=`<span style="color:var(--acct)">${esc(u.n)}</span>`;$('#fo').innerHTML=`2 slokken of deze opdracht:<br><b>${od()}</b>`;beep(880,.08,.12,'triangle')},3300))}}},
  lot:{i(){let what=LOT[0];
    const menu=()=>{scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Wat loten we?</div><div class="qgrid">${LOT.map(l=>`<button class="qo ${l===what?'ok':''}" data-l="${esc(l)}">${l}</button>`).join('')}</div><button class="btn" id="go">Loot</button>`);
      st.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{what=b.dataset.l;menu()});$('#go').onclick=run};
@@ -956,7 +958,7 @@ const META=[
  {k:'rad',lvl:'hard',n:'Wheel of Doom',s:'Eén draai, geen discussie',ic:'wheel',p:'Om beurten',r:["Om beurten draai je aan het rad.","Waar het pijltje stopt, gebeurt het. Geen onderhandelingen."]},
  {k:'quiz',lvl:'chill',n:'Kotquiz',s:'Algemene kennis · Gent · voetbal',ic:'quiz',tag:'Nieuw',p:'2+ spelers',r:["Om de beurt krijgt iemand een meerkeuzevraag.","Juist? Deel 1 slok uit. Fout? Neem zelf 1 slok.","Geen vraag komt twee keer op één avond."]},
  {k:'kop',lvl:'chill',n:'Op Je Kop',s:'iPad op je voorhoofd · raden',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie. De speler die aan de beurt is, houdt de iPad tegen zijn voorhoofd, met het scherm naar de groep.","De groep legt het woord uit zonder het te zeggen. Uitbeelden mag.","Geraden? Tik rechts op het scherm. Te moeilijk? Tik links om te passen.","60 seconden. Minder dan 5 geraden is 1 slok, meer dan 10 betekent 2 slokken uitdelen."]},
- {k:'fles',lvl:'chill',n:'Draai de Fles',s:'iPad plat in het midden',ic:'bottle',tag:'Nieuw',p:'3+ spelers',r:["Leg de iPad plat in het midden van de tafel. De namen staan rond de fles, zet je ongeveer op je plek.","Tik op Draai. Naar wie de fles wijst, kiest: drinken of een durf-opdracht van de groep.","Met teams aan wijst de fles naar een team."]},
+ {k:'fles',lvl:'chill',n:'Draai de Fles',s:'iPad plat in het midden',ic:'bottle',tag:'Nieuw',p:'3+ spelers',r:["Leg de iPad plat in het midden van de tafel. De namen staan rond de fles, zet je ongeveer op je plek.","Tik op Draai. Naar wie de fles wijst, kiest: 2 slokken drinken of de kleine opdracht die verschijnt.","Met teams aan wijst de fles naar een team."]},
  {k:'lot',lvl:'chill',n:'De Loting',s:'BOB · afwas · volgende ronde',ic:'lot',tag:'Nieuw',p:'Iedereen',r:["Kies wat er geloot wordt: BOB, afwas, wie de volgende ronde haalt…","Tik op Loot. De namen draaien en vertragen tot er één overblijft.","Geen discussie: het lot heeft gesproken."]},
  {k:'wed',lvl:'chill',n:'Wedkantoor',s:'Voorspel de match',ic:'ball',tag:'Nieuw',p:'2+ spelers',r:["Vul de match in, bv. Real Madrid - Bayern.","Iedereen stelt zijn voorspelde score in.","Na de match vul je de uitslag in. Exacte score: deel 3 slokken uit. Juiste winnaar: deel 1 uit. Fout: 1 slok.","De weddenschap blijft bewaard tot je de uitslag invult, ook als je de app sluit."]},
  {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
@@ -980,7 +982,7 @@ function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill
 const rulesHtml=r=>{const small=innerHeight<720||innerWidth<560,n=small&&r.length>2?2:r.length;
   return `<ol class="rules">${r.map((x,i)=>`<li class="${i>=n?'hid':''}"><span>${x}</span></li>`).join('')}</ol>${n<r.length?`<button class="tbtn" id="rmore">Alle regels (${r.length}) ▾</button>`:''}`};
 let CURG=null;
-const openGame=k=>{const m=META.find(x=>x.k===k);if(!m){PL=null;return}CURG=m;document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));$('#ov').classList.add('game');clr();plBar();$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
+const openGame=k=>{const m=META.find(x=>x.k===k);if(!m){PL=null;return}CURG=m;document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));$('#ov').classList.add('ingame');clr();plBar();$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="ic" style="width:84px;height:84px;margin:0;border-radius:22px"><svg viewBox="0 0 24 24" style="width:42px;height:42px">${IC[m.ic]}</svg></div>
     ${PL?`<div class="mono" style="color:var(--acct)">Spellenavond · spel ${PL.i+1} van ${PL.list.length}</div>`:''}<div class="pr">${m.n}</div><div class="meta"><span>${(LV[m.lvl]||{n:'Groot spel'}).n}</span><span>${m.p}</span><span>${m.s}</span></div>
     ${rulesHtml(m.r)}<button class="btn" id="sg">Start</button>`);
@@ -1003,7 +1005,7 @@ const wraak=()=>{const P=active();if(P.length<2){joeg('WRAAK?','Eerst minstens 2
 const otherGame=()=>{const lv=CURG&&CURG.lvl,same=['chill','hard'].includes(lv),pool=META.filter(m=>m.k!==(CURG&&CURG.k)&&['chill','hard'].includes(m.lvl)&&(!same||m.lvl===lv));
   const m=pool[Math.random()*pool.length|0];if(!m)return;try{localStorage.removeItem('kp_last')}catch(e){}camStop();clr();$('#ov').classList.remove('boom','ticking');PL=null;openGame(m.k)};
 $('#wrk').onclick=wraak;$('#rgm').onclick=otherGame;
-$('#bk').onclick=()=>{document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));CURG=null;$('#ov').classList.remove('game');try{localStorage.removeItem('kp_last')}catch(e){}const jg=document.getElementById('jg');if(jg)jg.classList.remove('go');camStop();clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
+$('#bk').onclick=()=>{document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));CURG=null;$('#ov').classList.remove('ingame');try{localStorage.removeItem('kp_last')}catch(e){}const jg=document.getElementById('jg');if(jg)jg.classList.remove('go');camStop();clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
 
 /* ===== tabs ===== */
 const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
@@ -1048,7 +1050,7 @@ function renderCount(){const el=$('#t-count'),P=active();
   el.querySelectorAll('[data-wt]').forEach(b=>b.onclick=()=>{prof(b.dataset.wt).w=Date.now();saveC();bump('water',b.dataset.wt);beep(1200,.05,.08,'sine');renderCount()});}
 function overview(){/* iedereen die vanavond iets dronk, ook wie al vertrokken is */
   const rows=ACC.filter(a=>ACT.ids.includes(a.id)||(CNT[a.id]&&prof(a.id).d.length)).map(a=>{const p=prof(a.id),b=bacOf(p,a);const L=limOf(a);return{a,b,L,c:p.d.length,z:Date.now()+b/BETA*3.6e6,l:Date.now()+Math.max(0,b-L)/BETA*3.6e6}}).sort((x,y)=>y.b-x.b);
-  clr();CURG=null;$('#ov').classList.remove('game');$('#gt').textContent='Einde avond';$('#gc').textContent='';$('#ov').classList.add('open');
+  clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Einde avond';$('#gc').textContent='';$('#ov').classList.add('open');
   scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Wie blaast er<br>nog positief?</div>
    <table class="lb" style="max-width:860px">${rows.map(r=>{const[lv]=level(r.b,r.L);return `<tr><td>${av(r.a,40)}</td><td class="n">${esc(r.a.n)}${ACT.ids.includes(r.a.id)?'':' <span class="small">(vertrokken)</span>'}</td><td>${r.c} ${r.c===1?'drankje':'drankjes'}</td>
      <td style="font-family:'Anton',sans-serif;font-size:28px;color:${LCc()[lv]}">${r.b.toFixed(2).replace('.',',')}‰</td>
@@ -1407,7 +1409,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795005549';
+const APPVER='1795007216';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
