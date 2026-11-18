@@ -429,10 +429,17 @@ body.latem .qstart{padding-right:110px}@media(max-width:600px){body.latem .qstar
 .grp{border:1px solid var(--line2);border-radius:22px;padding:18px 20px;margin-bottom:20px;background:var(--card);display:flex;flex-direction:column;gap:12px}.grp.on{border-color:var(--acc)}
 .grp .gi{display:flex;flex-direction:column;gap:4px}.grp b{font-family:'Anton',sans-serif;font-weight:400;font-size:28px;text-transform:uppercase}.grp .row{justify-content:flex-start;gap:8px}.grp .nm{flex:1 1 200px;width:auto}
 .qrbox{background:#fff;padding:16px;border-radius:18px;display:grid;place-items:center;min-width:272px;min-height:272px}.qrbox img,.qrbox canvas{display:block}
-#spd{display:none}body.latem #spd{display:block;overflow:hidden;white-space:nowrap;position:relative;z-index:1;margin:12px 0 2px;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
-#spd .spdi{display:inline-flex;align-items:center;gap:16px;padding:8px 0;animation:spd 70s linear infinite;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-#spd i{font-style:normal;opacity:.5}@keyframes spd{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+#spd{display:none}body.latem #spd{display:block;overflow:hidden;white-space:nowrap;position:relative;z-index:1;margin:14px 0 4px;background:#fff;color:#0b2340;border-radius:14px}
+#spd .spdi{display:inline-flex;align-items:center;gap:18px;padding:9px 0;animation:spd 45s linear infinite;font-family:'Anton',sans-serif;font-size:18px;letter-spacing:.04em;text-transform:uppercase}
+#spd img{width:22px;height:22px}@keyframes spd{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){#spd .spdi{animation:none}}
+.gchs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:10px}
+.gch{display:flex;flex-direction:column;gap:4px;text-align:left;border:1px solid var(--line2);border-radius:18px;padding:14px 16px;background:var(--card);min-height:84px}.gch b{font-family:'Anton',sans-serif;font-weight:400;font-size:24px;text-transform:uppercase}.gch.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,var(--card))}
+.mlist{display:flex;flex-direction:column;gap:8px}.mrow{display:flex;gap:8px;align-items:stretch}.mtg{flex:1;display:flex;align-items:center;gap:12px;border:1px solid var(--line2);border-radius:16px;padding:8px 14px 8px 8px;min-height:60px;text-align:left;background:var(--card);min-width:0}
+.mrow.on .mtg{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,var(--card))}.mn{flex:1;font-family:'Anton',sans-serif;font-size:22px;text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mst{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}.mrow.on .mst{color:var(--acct)}.mrow:not(.on) .av{opacity:.45}
+.med{min-width:52px}.medit{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 4px 10px 56px}
+.madd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}.madd .nm{flex:1 1 200px;width:auto;min-width:0;max-width:100%}@media(max-width:420px){.madd .nm{flex-basis:100%}}.grp .nm{min-width:0;max-width:100%}
 </style>
 </head>
 <body>
@@ -501,10 +508,10 @@ const isL=()=>document.body.classList.contains('latem');const LT=(a,b)=>isL()?b:
 const NAVT={players:['Spelers','Selectie'],music:['Muziek','Sfeer'],games:['Spellen','Wedstrijden'],count:['Teller','Kantine'],big:['Grote spellen','Toernooi'],info:['Info','Clubhuis']};
 
 /* ===== FC Latem: spandoek en spreekkoren ===== */
-const CHANTS=['Allez Latem','De Pinte pannenkoeken','FC Latem · sinds 1955','De Pinte OCMW','Latem fils à papa'];
+const CHANTS=['Allez Latem','De Pinte pannenkoeken','De Pinte OCMW','Latem fils à papa','FC Latem · sinds 1955'];
 const drawBanner=()=>{let b=document.getElementById('spd');if(!isL()){if(b)b.remove();return}
   if(!b){b=document.createElement('div');b.id='spd';const h=document.querySelector('header');h.after(b)}
-  const t=CHANTS.map(c=>`<span>${esc(c)}</span><i>·</i>`).join('');b.innerHTML=`<div class="spdi">${t}${t}</div>`};
+  const t=CHANTS.map(c=>`<span>${esc(c)}</span><img src="fclatem-64.png" alt="">`).join('');b.innerHTML=`<div class="spdi">${t}${t}</div>`};
 
 const applyTerms=()=>{try{drawBanner()}catch(e){}document.querySelectorAll('#nav button').forEach(b=>{const t=NAVT[b.dataset.t],sp=b.querySelector('span');if(t&&sp)sp.textContent=LT(t[0],t[1])});
   const mo=$('#motto');if(mo)mo.textContent=LT('Komaan, joegnee','Allez Latem · sinds 1955');
@@ -885,7 +892,7 @@ function spill(){clr();PL=null;$('#gt').textContent='Gemorst!';$('#gc').textCont
   pick()}
 /* ===== fotobooth ===== */
 const PDB=()=>new Promise((res,rej)=>{const r=indexedDB.open('zwijnerij',1);r.onupgradeneeded=()=>r.result.createObjectStore('photos',{keyPath:'t'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
-const photoAdd=async(t,blob)=>{const db=await PDB();return new Promise(r=>{const tx=db.transaction('photos','readwrite');tx.objectStore('photos').put({t,blob});tx.oncomplete=r})};
+const photoAdd=async(t,blob)=>{const db=await PDB();const g=window.ZG&&ZG.on()?ZG.group().code:null;return new Promise(r=>{const tx=db.transaction('photos','readwrite');tx.objectStore('photos').put(g?{t,blob,g}:{t,blob});tx.oncomplete=r})};
 const photoAll=async()=>{try{const db=await PDB();return await new Promise(r=>{const q=db.transaction('photos').objectStore('photos').getAll();q.onsuccess=()=>r(q.result.sort((a,b)=>a.t-b.t))})}catch(e){return[]}};
 const photoDel=async ks=>{const db=await PDB();return new Promise(r=>{const tx=db.transaction('photos','readwrite');const o=tx.objectStore('photos');ks.forEach(k=>o.delete(k));tx.oncomplete=r})};
 const photoClear=async()=>{const db=await PDB();return new Promise(r=>{const tx=db.transaction('photos','readwrite');tx.objectStore('photos').clear();tx.oncomplete=r})};
@@ -1249,19 +1256,22 @@ const gamesCat=()=>({e:LT('🎲','⚽'),n:LT('Meest gespeelde spellen','Populair
 const gamesCatH=h=>({e:LT('🎲','⚽'),n:LT('Meest gespeelde spellen','Populairste wedstrijden'),r:topGames(h.stats||{}).map(([m,v])=>[{n:m.n,e:'🎲'},v]),u:v=>v+'×'});
 const dLong=t=>new Date(t).toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 const totDr=h=>Object.values(h.drinks||{}).reduce((a,x)=>a+x,0);
-const delEvening=t0=>{HIST=HIST.filter(h=>h.t0!==t0);saveHist();try{window.ZG&&ZG.delEvening(t0)}catch(e){}};
+const delEvening=t0=>{const h=allHist().find(x=>x.t0===t0),t1=h?(h.end||t0+16*3.6e6)+30*60e3:t0+16*3.6e6;HIST=HIST.filter(x=>x.t0!==t0);saveHist();try{window.ZG&&ZG.delEvening(t0)}catch(e){}
+  /* foto's van die avond mee wissen (lokaal en in de groep) */
+  photoAll().then(l=>{const ks=l.filter(p=>p.t>=t0&&p.t<=t1).map(p=>p.t);if(ks.length)photoDel(ks)}).catch(()=>{});
+  try{if(window.ZG&&ZG.on())ZG.photos().filter(p=>p.t>=t0&&p.t<=t1).forEach(p=>ZG.delPhoto(p.t))}catch(e){}};
 const openRankH=t0=>{const h=allHist().find(x=>x.t0===t0);if(!h)return renderInfo();clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent=LT('Klassement','Eindstand');$('#gc').textContent='';$('#ov').classList.add('open');
   const cs=CATS(h).filter(c=>c.r.length),g=gamesCatH(h);
   scr(`<div class="mono">${dLong(h.t0)} · ${hhmm(h.t0)} – ${hhmm(h.end)}${h.by?' · '+esc(h.by):''}</div><div class="pr" style="font-size:clamp(32px,5vw,58px)">${LT('Klassement van die avond','Eindstand van die match')}</div>${cs.length||g.r.length?`<div class="pods">${cs.map(podHTML).join('')}${g.r.length?podHTML(g):''}</div>`:'<div class="hint">Op deze avond werd niets geteld.</div>'}
-    <div class="row"><button class="tbtn" id="hdel">🗑 Wis deze avond</button><button class="btn" id="hok">Sluiten</button></div>`);
+    <div class="row"><button class="tbtn" id="hdel">🗑 Wis deze avond en de foto's</button><button class="btn" id="hok">Sluiten</button></div>`);
   $('#hok').onclick=()=>{$('#bk').click();showTab('info')};$('#hdel').onclick=e=>{const b=e.currentTarget;if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker? Tik nog eens';return}delEvening(h.t0);$('#bk').click();showTab('info')}};
 const histHTML=()=>{const l=allHist().slice().reverse();if(!l.length)return '<p class="small">Nog geen gestopte avonden.</p>';
   return `<div class="recs">${l.slice(0,30).map(h=>`<div class="rec hrow"><button class="hopen" data-ho="${h.t0}"><span class="rk"><span class="mono">${dLong(h.t0)}</span><b>${hhmm(h.t0)} – ${hhmm(h.end)} · ${totDr(h)} ${totDr(h)===1?'drankje':'drankjes'}</b></span></button><button class="tbtn" data-hd="${h.t0}" aria-label="Wis deze avond">🗑</button></div>`).join('')}</div>${l.length>1?'<div class="row" style="justify-content:flex-start;margin-top:10px"><button class="tbtn" id="hdall">Wis alle avonden</button></div>':''}`};
 let HIST=[];try{HIST=JSON.parse(localStorage.getItem('kp_hist')||'[]')}catch(e){}
 const saveHist=()=>{try{localStorage.setItem('kp_hist',JSON.stringify(HIST.slice(-80)))}catch(e){}};
 const snapAv=()=>{const dr={},nm={};ACC.forEach(a=>{const n=drinksOf(a.id);if(n)dr[a.id]=n;nm[a.id]=a.n});return{t0:since(),end:(AV&&AV.end)||Date.now(),stats:JSON.parse(JSON.stringify(STATS)),drinks:dr,names:nm,hours:perHour()}};
-const allHist=()=>{const m={};HIST.forEach(h=>m[h.t0]=h);((window.ZG&&ZG.evenings())||[]).forEach(h=>{if(h&&h.t0&&!m[h.t0]&&!(AV&&!AV.end&&h.t0===AV.t0))m[h.t0]=h});return Object.values(m).sort((a,b)=>a.t0-b.t0)};
-const archAv=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);const sn=snapAv();HIST.push(sn);saveHist();try{window.ZG&&ZG.putEvening(sn)}catch(e){}};
+const allHist=()=>{const m={},cg=window.ZG&&ZG.on()?ZG.group().code:null;HIST.forEach(h=>{if((h.g||null)===cg||(!h.g&&!cg))m[h.t0]=h});((window.ZG&&ZG.evenings())||[]).forEach(h=>{if(h&&h.t0&&!m[h.t0]&&!(AV&&!AV.end&&h.t0===AV.t0))m[h.t0]=h});return Object.values(m).sort((a,b)=>a.t0-b.t0)};
+const archAv=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);const sn=snapAv();if(window.ZG&&ZG.on())sn.g=ZG.group().code;HIST.push(sn);saveHist();try{window.ZG&&ZG.putEvening(sn)}catch(e){}};
 const unArch=()=>{if(!AV)return;HIST=HIST.filter(h=>h.t0!==AV.t0);saveHist();try{window.ZG&&ZG.putEvening(Object.assign(snapAv(),{live:true}))}catch(e){}};
 const perHour=()=>{const t0=since(),t1=(AV&&AV.end)||Date.now(),n=Math.max(1,Math.min(14,Math.ceil((t1-t0)/3.6e6))),b=Array(n).fill(0);
   ACC.forEach(a=>{if(CNT[a.id])prof(a.id).d.forEach(d=>{if(d.t>=t0&&d.t<=t1){const i=Math.min(n-1,Math.floor((d.t-t0)/3.6e6));b[i]++}})});return b};
@@ -1626,95 +1636,127 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795011875';
+const APPVER='1795012498';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
 </script>
 <script>
-/* ===== vriendengroepen: gedeeld via Supabase, toegang met de groepscode ===== */
+/* ===== vriendengroepen: meerdere groepen per toestel, gedeeld via Supabase (toegang met de groepscode) ===== */
 (()=>{
 const URL0='https://koenqjuwnngluqxseodq.supabase.co',KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvZW5xanV3bm5nbHVxeHNlb2RxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5MzA0MDMsImV4cCI6MjExMDUwNjQwM30.xU0O1K_KTPRiiMeMT486Witxi0EZKN3ViKd5VCvLag0';
 const H={apikey:KEY,Authorization:'Bearer '+KEY};
-let G=null;try{G=JSON.parse(localStorage.getItem('kp_group')||'null')}catch(e){}
-let D={evenings:[],photos:[],gone:[],gone_evenings:[],gone_photos:[]};try{D=Object.assign(D,JSON.parse(localStorage.getItem('kp_group_data')||'{}'))}catch(e){}
+const LS={get:(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+const EMPTY=()=>({evenings:[],photos:[],gone:[],gone_evenings:[],gone_photos:[]});
+let GROUPS=LS.get('kp_groups',[]),CUR=LS.get('kp_group_cur',null);
+// overzetten van de vorige versie (één groep)
+{const old=LS.get('kp_group',null);if(old&&old.code&&!GROUPS.some(g=>g.code===old.code)){GROUPS.push(old);CUR=old.code;LS.set('kp_gd_'+old.code,LS.get('kp_group_data',EMPTY()));LS.set('kp_acc_'+old.code,ACC)}LS.del('kp_group');LS.del('kp_group_data')}
+if(CUR&&!GROUPS.some(g=>g.code===CUR))CUR=null;
+let D=CUR?Object.assign(EMPTY(),LS.get('kp_gd_'+CUR,{})):EMPTY();
 let last=0,busy=false,err='';
-const saveG=()=>{try{localStorage.setItem('kp_group',JSON.stringify(G));localStorage.setItem('kp_group_data',JSON.stringify(D))}catch(e){}};
+const G=()=>GROUPS.find(g=>g.code===CUR)||null;
+const saveG=()=>{LS.set('kp_groups',GROUPS);LS.set('kp_group_cur',CUR);if(CUR)LS.set('kp_gd_'+CUR,D)};
+const accKey=c=>c?'kp_acc_'+c:'kp_acc_local';
 const rpc=async(fn,args)=>{const r=await fetch(URL0+'/rest/v1/rpc/'+fn,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},H),body:JSON.stringify(args)});if(!r.ok)throw new Error(fn+' '+r.status);return r.json()};
 const pubUrl=p=>URL0+'/storage/v1/object/public/zwphotos/'+p;
 const fmt=c=>c?c.slice(0,4)+'-'+c.slice(4):'';
-const link=()=>location.origin+location.pathname+'?g='+G.code;
+const link=c=>location.origin+location.pathname+'?g='+(c||CUR);
 const clean=a=>({id:a.id,n:a.n,c:a.c,g:a.g||null,nov:!!a.nov});
+const persistAcc=()=>{try{localStorage.setItem('kp_acc',JSON.stringify(ACC));localStorage.setItem('kp_active',JSON.stringify(ACT))}catch(e){}LS.set(accKey(CUR),ACC)};
+const switchTo=code=>{LS.set(accKey(CUR),ACC);LS.set('kp_act_'+(CUR||'local'),ACT.ids);CUR=code;D=code?Object.assign(EMPTY(),LS.get('kp_gd_'+code,{})):EMPTY();ACC=LS.get(accKey(code),[]);
+  const ids=new Set(ACC.map(a=>a.id));ACT.ids=LS.get('kp_act_'+(code||'local'),ACT.ids).filter(id=>ids.has(id));persistAcc();saveG();last=0;err='';renderHead();try{renderGames()}catch(e){}if(code)ZG.sync()};
 let pT=null;
 const ZG=window.ZG={
-  on:()=>!!G,group:()=>G,evenings:()=>G?D.evenings:[],photos:()=>G?D.photos.map(p=>({t:p.t,url:pubUrl(p.path),remote:1})):[],
-  pushPlayers(){if(!G)return;clearTimeout(pT);pT=setTimeout(()=>rpc('zw_put_players',{p_code:G.code,p_players:ACC.map(clean)}).catch(e=>{err='offline'}),800)},
-  delPlayer(id){if(G)rpc('zw_del_player',{p_code:G.code,p_id:id}).catch(()=>{})},
-  putEvening(sn){if(!G||!sn)return;sn.by=G.name;rpc('zw_put_evening',{p_code:G.code,p_t0:sn.t0,p_data:sn}).then(()=>{D.evenings=D.evenings.filter(e=>e.t0!==sn.t0);if(!sn.live)D.evenings.push(sn);saveG()}).catch(()=>{})},
-  delEvening(t0){if(!G)return;D.evenings=D.evenings.filter(e=>e.t0!==t0);saveG();rpc('zw_del_evening',{p_code:G.code,p_t0:t0}).catch(()=>{})},
-  async uploadPhoto(t,blob){if(!G)return false;try{const path=G.code+'/'+t+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
+  on:()=>!!G(),group:()=>G(),groups:()=>GROUPS,evenings:()=>G()?D.evenings:[],photos:()=>G()?D.photos.map(p=>({t:p.t,url:pubUrl(p.path),remote:1})):[],
+  pushPlayers(){LS.set(accKey(CUR),ACC);const g=G();if(!g)return;clearTimeout(pT);pT=setTimeout(()=>rpc('zw_put_players',{p_code:g.code,p_players:ACC.map(clean)}).catch(()=>{err='offline'}),800)},
+  delPlayer(id){const g=G();if(g)rpc('zw_del_player',{p_code:g.code,p_id:id}).catch(()=>{})},
+  putEvening(sn){const g=G();if(!g||!sn)return;sn.by=g.name;sn.g=g.code;rpc('zw_put_evening',{p_code:g.code,p_t0:sn.t0,p_data:sn}).then(()=>{D.evenings=D.evenings.filter(e=>e.t0!==sn.t0);if(!sn.live)D.evenings.push(sn);saveG()}).catch(()=>{})},
+  delEvening(t0){const g=G();if(!g)return;D.evenings=D.evenings.filter(e=>e.t0!==t0);saveG();rpc('zw_del_evening',{p_code:g.code,p_t0:t0}).catch(()=>{})},
+  async uploadPhoto(t,blob){const g=G();if(!g)return false;try{const path=g.code+'/'+t+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
       const r=await fetch(URL0+'/storage/v1/object/zwphotos/'+path,{method:'POST',headers:Object.assign({'Content-Type':'image/jpeg','x-upsert':'false'},H),body:blob});if(!r.ok)throw new Error('upload '+r.status);
-      await rpc('zw_add_photo',{p_code:G.code,p_t:t,p_path:path});D.photos=D.photos.filter(p=>p.t!==t);D.photos.push({t,path});saveG();return true}catch(e){err='Foto nog niet gedeeld (geen internet?). Wordt later opnieuw geprobeerd.';return false}},
-  delPhoto(t){if(!G)return;D.photos=D.photos.filter(p=>p.t!==t);saveG();rpc('zw_del_photo',{p_code:G.code,p_t:t}).catch(()=>{})},
-  async sync(){if(!G||busy)return;busy=true;try{const g=await rpc('zw_group',{p_code:G.code});
-      if(!g){err='Deze groep bestaat niet meer.';busy=false;return}
-      G.name=g.name;D={evenings:g.evenings||[],photos:g.photos||[],gone:g.gone||[],gone_evenings:g.gone_evenings||[],gone_photos:g.gone_photos||[]};
-      // spelers samenvoegen
+      await rpc('zw_add_photo',{p_code:g.code,p_t:t,p_path:path});D.photos=D.photos.filter(p=>p.t!==t);D.photos.push({t,path});saveG();return true}catch(e){err="Foto nog niet gedeeld (geen internet?). Wordt later opnieuw geprobeerd.";return false}},
+  delPhoto(t){const g=G();if(!g)return;D.photos=D.photos.filter(p=>p.t!==t);saveG();rpc('zw_del_photo',{p_code:g.code,p_t:t}).catch(()=>{})},
+  async sync(){const g0=G();if(!g0||busy)return;busy=true;const code=g0.code;try{const g=await rpc('zw_group',{p_code:code});
+      if(CUR!==code){busy=false;return}
+      if(!g){err='Deze groep bestaat niet meer.';busy=false;drawP();return}
+      g0.name=g.name;D={evenings:g.evenings||[],photos:g.photos||[],gone:g.gone||[],gone_evenings:g.gone_evenings||[],gone_photos:g.gone_photos||[]};
       let ch=false;(g.players||[]).forEach(p=>{const a=ACC.find(x=>x.id===p.id);if(a){['n','c','g','nov'].forEach(k=>{if(p[k]!==undefined&&a[k]!==p[k]){a[k]=p[k];ch=true}})}else{ACC.push(clean(p));ch=true}});
       const gone=new Set(D.gone);if(ACC.some(a=>gone.has(a.id))){ACC=ACC.filter(a=>!gone.has(a.id));ACT.ids=ACT.ids.filter(id=>!gone.has(id));ch=true}
-      if(ch){try{localStorage.setItem('kp_acc',JSON.stringify(ACC));localStorage.setItem('kp_active',JSON.stringify(ACT))}catch(e){}}
-      // lokale avonden die in de groep gewist zijn, ook lokaal weg
+      persistAcc();
       const ge=new Set(D.gone_evenings);if(HIST.some(h=>ge.has(h.t0))){HIST=HIST.filter(h=>!ge.has(h.t0));saveHist()}
-      // eigen spelers + avonden die de groep nog niet heeft, doorsturen
-      const have=new Set((g.players||[]).map(p=>p.id));if(ACC.some(a=>!have.has(a.id)&&!gone.has(a.id)))await rpc('zw_put_players',{p_code:G.code,p_players:ACC.map(clean)});
-      const he=new Set(D.evenings.map(e=>e.t0));for(const h of HIST)if(!he.has(h.t0)&&!ge.has(h.t0)){h.by=G.name;await rpc('zw_put_evening',{p_code:G.code,p_t0:h.t0,p_data:h});D.evenings.push(h)}
-      // lopende avond ook delen, zodat iedereen de tussenstand ziet
-      if(AV&&!AV.end){const sn=Object.assign(snapAv(),{live:true,by:G.name});rpc('zw_put_evening',{p_code:G.code,p_t0:sn.t0,p_data:sn}).catch(()=>{})}
-      // foto's die lokaal in deze groep genomen werden maar nog niet online staan
-      const hp=new Set(D.photos.map(p=>p.t)),gp=new Set(D.gone_photos);const loc=await photoAll();
-      for(const p of loc)if(p.t>=(G.since||0)&&!hp.has(p.t)&&!gp.has(p.t))await ZG.uploadPhoto(p.t,p.blob);
-      last=Date.now();err='';saveG();if(ch){renderHead();if(document.querySelector('#t-players.on'))renderPlayers()}
-      if(document.querySelector('#t-info.on'))renderInfo();drawGroup()}catch(e){err='Geen verbinding met de groep. Alles blijft lokaal bewaard en wordt later gedeeld.';drawGroup()}busy=false},
-  async create(name){const r=await rpc('zw_create_group',{p_name:name});G={code:r.code,name:r.name,since:Date.now()-14*3.6e6};D={evenings:[],photos:[],gone:[],gone_evenings:[],gone_photos:[]};saveG();await ZG.sync();return r},
+      const have=new Set((g.players||[]).map(p=>p.id));if(ACC.some(a=>!have.has(a.id)&&!gone.has(a.id)))await rpc('zw_put_players',{p_code:code,p_players:ACC.map(clean)});
+      const he=new Set(D.evenings.map(e=>e.t0));for(const h of HIST)if(h.g===code&&!he.has(h.t0)&&!ge.has(h.t0)){h.by=g0.name;await rpc('zw_put_evening',{p_code:code,p_t0:h.t0,p_data:h});D.evenings.push(h)}
+      if(AV&&!AV.end){const sn=Object.assign(snapAv(),{live:true,by:g0.name,g:code});rpc('zw_put_evening',{p_code:code,p_t0:sn.t0,p_data:sn}).catch(()=>{})}
+      const hp=new Set(D.photos.map(p=>p.t)),gp=new Set(D.gone_photos);const loc=await photoAll();{const rm=loc.filter(p=>p.g===code&&gp.has(p.t)).map(p=>p.t);if(rm.length)await photoDel(rm)}
+      for(const p of loc)if(p.t>=(g0.since||0)&&(p.g===undefined||p.g===code)&&!hp.has(p.t)&&!gp.has(p.t))await ZG.uploadPhoto(p.t,p.blob);
+      last=Date.now();err='';saveG();if(ch)renderHead();
+      if(document.querySelector('#t-info.on'))renderInfo();drawP()}catch(e){err='Geen verbinding met de groep. Alles blijft lokaal bewaard en wordt later gedeeld.';drawP()}busy=false},
+  async create(name){const r=await rpc('zw_create_group',{p_name:name});const first=!GROUPS.length;GROUPS.push({code:r.code,name:r.name,since:first?Date.now()-14*3.6e6:Date.now()});
+    if(first){LS.set(accKey(r.code),ACC);LS.set(accKey(CUR),ACC)}else LS.set(accKey(r.code),[]);
+    switchTo(r.code);return r},
   async join(code){code=String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');const g=await rpc('zw_group',{p_code:code});if(!g)return null;
-    G={code:g.code,name:g.name,since:Date.now()};saveG();await ZG.sync();return g},
-  leave(){G=null;D={evenings:[],photos:[],gone:[],gone_evenings:[],gone_photos:[]};try{localStorage.removeItem('kp_group');localStorage.removeItem('kp_group_data')}catch(e){}drawGroup();try{renderInfo()}catch(e){}},
+    if(!GROUPS.some(x=>x.code===g.code)){GROUPS.push({code:g.code,name:g.name,since:Date.now()});LS.set(accKey(g.code),[])}switchTo(g.code);return g},
+  select:code=>{if(code!==CUR)switchTo(code);drawP()},
+  leave(code){GROUPS=GROUPS.filter(g=>g.code!==code);LS.del('kp_gd_'+code);LS.del(accKey(code));if(CUR===code)switchTo(GROUPS[0]?GROUPS[0].code:null);saveG();drawP();try{renderInfo()}catch(e){}},
   err:()=>err,last:()=>last,fmt,link};
 
-/* ---- UI bij Spelers ---- */
+/* ---- Spelers-scherm: groepen → wie doet mee ---- */
 const loadQR=()=>new Promise((res,rej)=>{if(window.QRCode)return res();const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';sc.onload=res;sc.onerror=rej;document.head.appendChild(sc)});
-const share=async()=>{const u=link(),t=`Doe mee met onze vriendengroep "${G.name}" in de Zwijnerij: `;
-  if(navigator.share){try{await navigator.share({title:'Zwijnerij · '+G.name,text:t,url:u});return}catch(e){if(e&&e.name==='AbortError')return}}
+const share=async()=>{const g=G(),u=link(),t=`Doe mee met onze vriendengroep "${g.name}" in de Zwijnerij: `;
+  if(navigator.share){try{await navigator.share({title:'Zwijnerij · '+g.name,text:t,url:u});return}catch(e){if(e&&e.name==='AbortError')return}}
   try{await navigator.clipboard.writeText(u);joeg('GEKOPIEERD!','Plak de link in de groepschat')}catch(e){prompt('Kopieer deze link:',u)}};
-const showQR=async()=>{clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Uitnodigen';$('#gc').textContent='';$('#ov').classList.add('open');
-  scr(`<div class="mono">Vriendengroep</div><div class="pr" style="font-size:clamp(32px,5vw,58px)">${esc(G.name)}</div><div class="qrbox" id="zggqr"></div>
-    <div class="hint">Scan met de camera van je gsm: je zit meteen in de groep.<br>Of typ de code <b style="color:var(--fg);letter-spacing:.1em">${fmt(G.code)}</b></div>
-    <div class="row"><button class="btn" id="zggsh">🔗 Deel de link</button><button class="tbtn" id="zggok">Klaar</button></div>`);
-  $('#zggsh').onclick=share;$('#zggok').onclick=()=>{$('#bk').click();showTab('players')};
-  try{await loadQR();new QRCode($('#zggqr'),{text:link(),width:240,height:240,colorDark:'#000000',colorLight:'#ffffff'})}catch(e){$('#zggqr').innerHTML='<div class="small" style="color:#000;padding:20px">QR-code kon niet laden (internet?). Deel de link of de code.</div>'}};
-let mode=null;
-const drawGroup=window.drawGroup=()=>{const el=$('#t-players');if(!el)return;let b=$('#grp');if(!b){b=document.createElement('div');b.id='grp';el.prepend(b)}
-  if(G){const e=err;b.innerHTML=`<div class="grp on"><div class="gi"><span class="mono">👥 Vriendengroep</span><b>${esc(G.name)}</b><span class="small">Code ${fmt(G.code)} · ${e?'⚠️ '+esc(e):last?'gedeeld om '+hhmm(last):'verbinden…'}</span></div>
-      <div class="row"><button class="btn" id="zggl">🔗 Deel link</button><button class="tbtn" id="zggq">QR-code</button><button class="tbtn" id="zggs">⟳</button><button class="tbtn" id="zggx">Verlaat</button></div></div>`;
-    $('#zggl').onclick=share;$('#zggq').onclick=showQR;$('#zggs').onclick=()=>{last=0;b.querySelector('.small').textContent='Bezig…';ZG.sync()};
-    $('#zggx').onclick=e=>{const x=e.currentTarget;if(!x.dataset.s){x.dataset.s=1;x.textContent='Zeker? Je spelers blijven op dit toestel';return}ZG.leave()};return}
-  if(mode==='new'){b.innerHTML=`<div class="grp"><div class="gi"><span class="mono">👥 Nieuwe vriendengroep</span><b>Hoe heet jullie groep?</b></div><div class="row"><input class="nm" id="zggn" maxlength="40" placeholder="Bv. Kot Kortrijksepoort" autocomplete="off"><button class="btn" id="zggc2">Maak groep</button><button class="tbtn" id="zggb">Annuleer</button></div><div class="small" id="zggm"></div></div>`;
-    $('#zggn').focus();$('#zggb').onclick=()=>{mode=null;drawGroup()};
-    $('#zggc2').onclick=async()=>{const n=$('#zggn').value.trim();if(!n)return $('#zggn').focus();$('#zggm').textContent='Bezig…';try{await ZG.create(n);mode=null;drawGroup();joeg('GROEP!','Deel nu de link met je vrienden');showQR()}catch(e){$('#zggm').textContent='Lukt niet: geen internet?'}};return}
-  if(mode==='join'){b.innerHTML=`<div class="grp"><div class="gi"><span class="mono">👥 Meedoen met een groep</span><b>Typ de code</b><span class="small">Of open gewoon de link die je kreeg.</span></div><div class="row"><input class="nm" id="zggj" maxlength="9" placeholder="ABCD-EFGH" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn" id="zggj2">Doe mee</button><button class="tbtn" id="zggb">Annuleer</button></div><div class="small" id="zggm"></div></div>`;
-    $('#zggj').focus();$('#zggb').onclick=()=>{mode=null;drawGroup()};
-    $('#zggj2').onclick=async()=>{$('#zggm').textContent='Bezig…';try{const g=await ZG.join($('#zggj').value);if(!g){$('#zggm').textContent='Die code bestaat niet. Kijk ze nog eens na.';return}mode=null;renderPlayers();joeg('WELKOM!',esc(g.name))}catch(e){$('#zggm').textContent='Lukt niet: geen internet?'}};return}
-  b.innerHTML=`<div class="grp"><div class="gi"><span class="mono">👥 Vriendengroep</span><b>Niet altijd alle namen intikken</b><span class="small">Bewaar je spelers, klassementen en foto's in een groep. Op een ander toestel open je gewoon de link.</span></div>
-    <div class="row"><button class="btn" id="zggnw">+ Maak een groep</button><button class="tbtn" id="zggjn">Ik heb een code</button></div></div>`;
-  $('#zggnw').onclick=()=>{mode='new';drawGroup()};$('#zggjn').onclick=()=>{mode='join';drawGroup()}};
-const rp=window.renderPlayers;window.renderPlayers=renderPlayers=function(){rp.apply(this,arguments);drawGroup()};
+const showQR=async()=>{const g=G();clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Uitnodigen';$('#gc').textContent='';$('#ov').classList.add('open');
+  scr(`<div class="mono">Vriendengroep</div><div class="pr" style="font-size:clamp(32px,5vw,58px)">${esc(g.name)}</div><div class="qrbox" id="zgqr"></div>
+    <div class="hint">Scan met de camera van je gsm: je zit meteen in de groep.<br>Of typ de code <b style="color:var(--fg);letter-spacing:.1em">${fmt(g.code)}</b></div>
+    <div class="row"><button class="btn" id="zgsh">🔗 Deel de link</button><button class="tbtn" id="zgok">Klaar</button></div>`);
+  $('#zgsh').onclick=share;$('#zgok').onclick=()=>{$('#bk').click();showTab('players')};
+  try{await loadQR();new QRCode($('#zgqr'),{text:link(),width:240,height:240,colorDark:'#000000',colorLight:'#ffffff'})}catch(e){$('#zgqr').innerHTML='<div class="small" style="color:#000;padding:20px">QR-code kon niet laden (internet?). Deel de link of de code.</div>'}};
+let mode=null,edit=null,addG='m';
+const drawP=window.drawGroup=()=>{if(document.querySelector('#t-players.on'))renderPlayers()};
+window.renderPlayers=renderPlayers=function(){const el=$('#t-players');if(!el)return;const g=G(),P=active();
+  const gl=GROUPS.map(x=>`<button class="gch ${x.code===CUR?'on':''}" data-gs="${x.code}"><span class="mono">👥 Groep</span><b>${esc(x.name)}</b><span class="small">${x.code===CUR?ACC.length+' '+(ACC.length===1?'persoon':'personen'):'tik om te kiezen'}</span></button>`).join('');
+  const form=mode==='new'?`<div class="grp"><div class="gi"><span class="mono">👥 Nieuwe groep</span><b>Hoe heet jullie groep?</b></div><div class="row"><input class="nm" id="zgn" maxlength="40" placeholder="Bv. Kot Kortrijksepoort" autocomplete="off"><button class="btn" id="zgc2">Maak groep</button><button class="tbtn" id="zgb">Annuleer</button></div><div class="small" id="zgm"></div></div>`
+    :mode==='join'?`<div class="grp"><div class="gi"><span class="mono">👥 Meedoen met een groep</span><b>Typ de code</b><span class="small">Of open gewoon de link die je kreeg.</span></div><div class="row"><input class="nm" id="zgj" maxlength="9" placeholder="ABCD-EFGH" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn" id="zgj2">Doe mee</button><button class="tbtn" id="zgb">Annuleer</button></div><div class="small" id="zgm"></div></div>`:'';
+  const rows=ACC.map(a=>{const on=ACT.ids.includes(a.id),ed=edit===a.id;return `<div class="mrow ${on?'on':''}"><button class="mtg" data-tg="${a.id}">${av(a,44)}<span class="mn">${esc(a.n)}</span><span class="mst">${on?'✓ Doet mee':'Niet vanavond'}</span></button><button class="tbtn med" data-ed="${a.id}" aria-label="Bewerk ${esc(a.n)}">${ed?'✕':'✎'}</button></div>
+    ${ed?`<div class="medit"><div class="seg"><span class="sg ${a.g==='m'?'on':''}" data-gg="m" data-id="${a.id}">Man</span><span class="sg ${a.g==='v'?'on':''}" data-gg="v" data-id="${a.id}">Vrouw</span></div><span class="sg ${a.nov?'on':''}" data-nv="${a.id}">Rijbewijs &lt; 3 jaar</span><button class="tbtn" data-rm="${a.id}">${g?'Uit de groep halen':'Verwijderen'}</button></div>`:''}`}).join('');
+  el.innerHTML=`<div class="sec mono"><span>${g?'Mijn groepen':'Vriendengroep'}</span><span>${GROUPS.length?GROUPS.length+(GROUPS.length===1?' groep':' groepen'):''}</span></div>
+   ${GROUPS.length?`<div class="gchs">${gl}</div>`:`<div class="grp"><div class="gi"><b>Niet altijd alle namen intikken</b><span class="small">Maak een groep met je vrienden. Op een ander toestel open je gewoon de link en zijn alle spelers, klassementen en foto's er meteen.</span></div></div>`}
+   <div class="row" style="justify-content:flex-start;margin:10px 0 18px"><button class="tbtn" id="zgnw">+ Nieuwe groep</button><button class="tbtn" id="zgjn">Ik heb een code</button></div>${form}
+   ${g?`<div class="grp on"><div class="gi"><span class="mono">Geselecteerd</span><b>${esc(g.name)}</b><span class="small">Code ${fmt(g.code)} · ${err?'⚠️ '+esc(err):last?'gedeeld om '+hhmm(last):'verbinden…'}</span></div>
+     <div class="row"><button class="btn" id="zgl">🔗 Deel link</button><button class="tbtn" id="zgq">QR-code</button><button class="tbtn" id="zgs" aria-label="Opnieuw delen">⟳</button><button class="tbtn" id="zgx">Verlaat groep</button></div></div>`:''}
+   <div class="sec mono" style="margin-top:8px"><span>Wie doet er vanavond mee?</span><span>${P.length}/${ACC.length}</span></div>
+   ${ACC.length?`<div class="mlist">${rows}</div>`:`<p class="small">${g?'Nog niemand in deze groep. Voeg hieronder personen toe.':'Nog geen spelers. Voeg hieronder iemand toe.'}</p>`}
+   <div class="madd"><input class="nm" id="zan" maxlength="16" placeholder="${g?'Persoon toevoegen aan '+esc(g.name):'Naam of bijnaam'}" autocomplete="off"><div class="seg"><span class="sg ${addG==='m'?'on':''}" data-ag="m">Man</span><span class="sg ${addG==='v'?'on':''}" data-ag="v">Vrouw</span></div><button class="btn" id="zaa">+ Voeg toe</button></div>
+   <div class="row" style="justify-content:flex-start;margin:12px 0 0"><button class="tbtn" id="pall">Iedereen doet mee</button><button class="tbtn" id="pnoo">Niemand</button></div>
+   ${teamUI()}
+   <div class="row" style="justify-content:space-between;margin-top:22px"><span class="small">Alleen naam, kleur en man/vrouw (voor de promilleschatting en King's Cup). ${g?'Gedeeld met de groep.':'Alleen op dit toestel.'}</span><button class="tbtn" id="pnone">Nieuwe avond (teller en statistieken leeg)</button></div>`;
+  const on=(id,f)=>{const e=document.getElementById(id);if(e)e.onclick=f};
+  el.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>ZG.select(b.dataset.gs));
+  on('zgnw',()=>{mode='new';renderPlayers();$('#zgn').focus()});on('zgjn',()=>{mode='join';renderPlayers();$('#zgj').focus()});on('zgb',()=>{mode=null;renderPlayers()});
+  on('zgc2',async()=>{const n=$('#zgn').value.trim();if(!n)return $('#zgn').focus();$('#zgm').textContent='Bezig…';try{await ZG.create(n);mode=null;renderPlayers();joeg('GROEP!','Deel nu de link met je vrienden');showQR()}catch(e){$('#zgm').textContent='Lukt niet: geen internet?'}});
+  on('zgj2',async()=>{$('#zgm').textContent='Bezig…';try{const r=await ZG.join($('#zgj').value);if(!r){$('#zgm').textContent='Die code bestaat niet. Kijk ze nog eens na.';return}mode=null;renderPlayers();joeg('WELKOM!',esc(r.name))}catch(e){$('#zgm').textContent='Lukt niet: geen internet?'}});
+  on('zgl',share);on('zgq',showQR);on('zgs',()=>{last=0;ZG.sync()});
+  on('zgx',e=>{const x=e.currentTarget;if(!x.dataset.s){x.dataset.s=1;x.textContent='Zeker? Tik nog eens';return}ZG.leave(CUR)});
+  el.querySelectorAll('[data-tg]').forEach(b=>b.onclick=()=>{const id=b.dataset.tg;ACT.ids=ACT.ids.includes(id)?ACT.ids.filter(i=>i!==id):[...ACT.ids,id];saveA();beep(ACT.ids.includes(id)?880:440,.05,.08,'triangle');renderPlayers();renderHead()});
+  el.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{edit=edit===b.dataset.ed?null:b.dataset.ed;renderPlayers()});
+  el.querySelectorAll('[data-gg]').forEach(b=>b.onclick=()=>{const a=ACC.find(x=>x.id===b.dataset.id);a.g=b.dataset.gg;saveA();renderPlayers()});
+  el.querySelectorAll('[data-nv]').forEach(b=>b.onclick=()=>{const a=ACC.find(x=>x.id===b.dataset.nv);a.nov=!a.nov;saveA();renderPlayers()});
+  el.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker? Tik nog eens';return}const id=b.dataset.rm;ZG.delPlayer(id);ACC=ACC.filter(a=>a.id!==id);ACT.ids=ACT.ids.filter(i=>i!==id);delete CNT[id];saveC();saveA();edit=null;renderPlayers();renderHead()});
+  el.querySelectorAll('[data-ag]').forEach(b=>b.onclick=()=>{const v=$('#zan').value;addG=b.dataset.ag;renderPlayers();$('#zan').value=v;$('#zan').focus()});
+  const add=()=>{const v=$('#zan').value.trim();if(!v)return $('#zan').focus();const a={id:'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),n:v,c:COLORS[ACC.length%COLORS.length],g:addG};ACC.push(a);ACT.ids.push(a.id);saveA();renderPlayers();renderHead();$('#zan').focus()};
+  on('zaa',add);$('#zan').onkeydown=e=>{if(e.key==='Enter')add()};
+  bindTeamUI();
+  on('pall',()=>{ACT.ids=ACC.map(a=>a.id);saveA();renderPlayers();renderHead()});on('pnoo',()=>{ACT.ids=[];saveA();renderPlayers();renderHead()});
+  on('pnone',e=>{const b=e.currentTarget;if(b.dataset.sure){CNT={};STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{},kara:{}};saveS();saveC();try{Object.keys(localStorage).filter(k=>k.startsWith('kp_used_')).forEach(k=>localStorage.removeItem(k))}catch(x){}renderPlayers();renderHead();joeg('PROPER!','Teller en statistieken leeg')}
+    else{b.dataset.sure=1;b.textContent='Wist teller, statistieken en gebruikte vragen. Zeker?'}});
+  try{applyTerms()}catch(e){}};
 /* ---- link ?g=CODE ---- */
 (async()=>{const q=new URLSearchParams(location.search).get('g');
   if(q){history.replaceState(null,'',location.pathname);try{const g=await ZG.join(q);if(g){showTab('players');joeg('WELKOM!','Je zit in '+esc(g.name))}else joeg('OEPS','Die groepslink werkt niet (meer)')}catch(e){joeg('GEEN INTERNET','Open de link opnieuw als je verbinding hebt')}}
-  else if(G)ZG.sync()})();
-setInterval(()=>{if(G&&document.visibilityState==='visible')ZG.sync()},120000);
-document.addEventListener('visibilitychange',()=>{if(G&&document.visibilityState==='visible'&&Date.now()-last>30000)ZG.sync()});
-if(document.querySelector('#t-players.on'))drawGroup();
+  else if(G())ZG.sync()})();
+setInterval(()=>{if(G()&&document.visibilityState==='visible')ZG.sync()},120000);
+document.addEventListener('visibilitychange',()=>{if(G()&&document.visibilityState==='visible'&&Date.now()-last>30000)ZG.sync()});
+if(document.querySelector('#t-players.on'))renderPlayers();
 })();
 </script>
 </body>
