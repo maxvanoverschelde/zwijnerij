@@ -144,7 +144,7 @@
   .pc .h{display:flex;justify-content:space-between;align-items:flex-start}
   .pc .nmx{font-family:'Anton',sans-serif;font-size:34px;text-transform:uppercase;line-height:1}
   .bac{font-family:'Anton',sans-serif;font-size:56px;line-height:.9;text-align:right;font-variant-numeric:tabular-nums}
-  .dr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+  .dr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .dr button{min-width:0;overflow-wrap:anywhere}
   .dr button{border:1px solid var(--line2);border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px}
   .dr button b{font-family:'Anton',sans-serif;font-size:22px;font-weight:400}
@@ -297,7 +297,7 @@
   .qa{padding:0;border-radius:50%;transition:transform .1s}.qa:active{transform:scale(.9)}
   .qhint{margin-left:8px;align-self:center}
   .hstrip{align-items:center}
-  #qs{position:fixed;inset:0;z-index:9;background:rgba(0,0,0,.45);display:none;align-items:flex-start;justify-content:center;padding-top:110px}
+  #qs{position:fixed;inset:0;z-index:9;background:rgba(0,0,0,.65);display:none;align-items:flex-start;justify-content:center;padding-top:110px}
   #qs.open{display:flex}
   .qsb{width:min(560px,92vw);background:var(--bg);border:1px solid var(--line2);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:14px;align-items:center;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);animation:fi .2s ease}
   #jg{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0}
@@ -539,7 +539,7 @@ body.casino .p1 .blk{background:linear-gradient(180deg,#f5d77a,#b8902a);color:#0
 </section>
 <section class="tab" id="t-games">
 <div class="sec mono"><span>Spellen</span><span id="gn"></span></div>
-<button class="qstart" id="snel"><span class="mono">Snelstart</span><b>▶ Start de avond</b><span class="small">Spelers kiezen en eventueel teams loten</span></button>
+<button class="qstart" id="snel"><b>▶ Start de avond</b><span class="small">Spelers kiezen en eventueel teams loten</span></button>
 <div id="gl"></div>
 <div class="row" style="justify-content:flex-start;margin-top:20px"><button class="tbtn" id="cq">+ Eigen vragen toevoegen</button></div>
 <div class="sec mono" style="margin-top:34px"><span>Extra's</span><span></span></div>
@@ -1244,7 +1244,7 @@ const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
 
 /* ===== teller ===== */
-const DRINKS=[{k:'Pint',s:'25cl · 5,2%',g:10.3},{k:'Speciaal',s:'33cl · 8%',g:20.8},{k:'Wijn',s:'15cl · 12%',g:14.2},{k:'Shot',s:'3cl · 40%',g:9.5},{k:'Long',s:'4cl sterk',g:12.6}];
+const DSHOW=[0,1,3];const DRINKS=[{k:'Pint',s:'25cl · 5,2%',g:10.3},{k:'Speciaal',s:'33cl · 8%',g:20.8},{k:'Wijn',s:'15cl · 12%',g:14.2},{k:'Shot',s:'3cl · 40%',g:9.5},{k:'Long',s:'4cl sterk',g:12.6}];
 const BETA=0.15;
 let CNT={};try{CNT=JSON.parse(localStorage.getItem('kp_count')||'{}')}catch(e){}
 const saveC=()=>{try{localStorage.setItem('kp_count',JSON.stringify(CNT))}catch(e){}};
@@ -1262,7 +1262,7 @@ const card=a=>{const p=prof(a.id),b=bacOf(p,a),L=limOf(a),[lv,msg]=level(b,L),ze
   std=(p.d.reduce((s,x)=>s+x.g,0)/10).toFixed(1).replace('.',',');
   return `<div class="pc" style="border-color:color-mix(in srgb,${MC(a.c)} 30%,var(--line))"><div class="h"><div style="display:flex;gap:14px;align-items:center">${av(a,48)}<div><div class="nmx">${esc(a.n)}</div><div class="small" style="margin-top:6px">${glTxt(cnt)} ${cnt===1?'drankje':'drankjes'} · ${std} std.glazen${a.g?'':' · <span style="opacity:.7">man/vrouw niet ingesteld</span>'}</div></div></div>
     <div><div class="bac" style="color:${LCc()[lv]}">${b.toFixed(2).replace('.',',')}</div><div class="small" style="text-align:right">‰ geschat</div></div></div>
-    <div class="dr">${DRINKS.map((d,i)=>`<button data-n="${a.id}" data-d="${i}"><b>+</b>${d.k}<span class="small">${d.s}</span></button>`).join('')}</div>
+    <div class="dr">${DSHOW.map(i=>{const d=DRINKS[i];return `<button data-n="${a.id}" data-d="${i}"><b>+</b>${d.k}<span class="small">${d.s}</span></button>`}).join('')}</div>
     <div class="warn lvl${lv}">${msg}${b>=L?`<br><b>Je blaast positief tot ±${hhmm(legal)}</b>${(b-L)/BETA>=8?' (morgen)':''}, nog ±${durTxt((b-L)/BETA)}.`:b>0?`<br><b>Onder de ${L===.2?'0,2':'0,5'}‰: je blaast niet positief.</b>`:''}${b>0?`<br><span style="opacity:.75">Alcohol volledig weg: ±${hhmm(zero)}.</span>`:''}</div>
     ${needWater(a.id,b)?`<div class="water"><span>💧 Tijd voor een glas water${b>=1?'. Je zit hoog':''}.</span><button class="tbtn" data-wt="${a.id}">Gedronken</button></div>`:''}
     <div class="row slk"><span class="mono">Slokken</span>${[1,2,4,8].map(n=>`<button class="tbtn" data-sl="${a.id}|${n}">+${n}${n===4?' · ½ glas':n===8?' · 1 glas':''}</button>`).join('')}</div>
@@ -1339,7 +1339,7 @@ function renderPlayers(){const el=$('#t-players'),P=active();
   $('#pall').onclick=()=>{ACT.ids=ACC.map(a=>a.id);saveA();renderPlayers();renderHead()};
   if($('#pnone'))$('#pnone').onclick=e=>{const b=e.currentTarget;if(b.dataset.sure){ACT.ids=[];CNT={};STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{},kara:{}};saveS();saveC();saveA();try{Object.keys(localStorage).filter(k=>k.startsWith('kp_used_')).forEach(k=>localStorage.removeItem(k))}catch(x){}renderPlayers();renderHead()}
     else{b.dataset.sure=1;b.textContent='Wist selectie, teller, statistieken en vragen. Zeker?'}};}
-function renderHead(){const P=active();$('#hs').innerHTML=P.length?P.map(a=>`<button class="qa" data-q="${a.id}">${av(a,34)}</button>`).join('')+'<span class="mono qhint">Tik op iemand voor +1</span>':'<span class="mono">Geen spelers geselecteerd</span>'}
+function renderHead(){const P=active();$('#hs').innerHTML=P.length?P.map(a=>`<button class="qa" data-q="${a.id}">${av(a,34)}</button>`).join('')+'<span class="mono qhint">Tik op iemand voor een drankje</span>':'<span class="mono">Geen spelers geselecteerd</span>'}
 
 setInterval(()=>{if($('#t-count').classList.contains('on')&&!$('#ov').classList.contains('open')&&document.activeElement.id!=='cn')renderCount()},60000);
 
@@ -1463,7 +1463,7 @@ const drawAvond=()=>{const b=$('#snel');if(!b)return;let c=$('#avc');if(!c){c=do
     c.innerHTML=`<button class="btn" id="avres">▶ ${LT('Hervat','Tweede helft')}</button><button class="btn ghost" id="avst">■ ${LT('Stop de avond','Laatste fluitsignaal')}</button>`}
   else if(run){b.innerHTML=`<span class="mono">${LT('De avond loopt','De match is bezig')} · sinds ${hhmm(AV.t0)}</span><b>${LT('🍻 Deze avond','⚽ Deze match')}</b><span class="small">${np} ${np===1?'speler':'spelers'} · ${ng} ${ng===1?'spel':'spellen'} gespeeld · tik voor de klassementen</span>`;b.onclick=openHub;
     c.innerHTML=`<button class="tbtn" id="avp">⏸ ${LT('Pauze','Rust')}</button><button class="btn ghost" id="avst">■ ${LT('Stop de avond','Laatste fluitsignaal')}</button>`}
-  else{b.innerHTML=`<span class="mono">${LT('Snelstart','Opstelling kiezen')}</span><b>${LT('▶ Start de avond','⚽ Aftrap!')}</b><span class="small">${LT('Duid aan wie er meedoet. Daarna speel je gewoon wat je wil.','Duid de selectie aan. Daarna speel je gewoon wat je wil.')}</span>`;b.onclick=()=>quickStart();
+  else{b.innerHTML=`<b>${LT('▶ Start de avond','⚽ Aftrap!')}</b><span class="small">${LT('Duid aan wie er meedoet. Daarna speel je gewoon wat je wil.','Duid de selectie aan. Daarna speel je gewoon wat je wil.')}</span>`;b.onclick=()=>quickStart();
     c.innerHTML=AV&&AV.end?`<span class="small">Avond gestopt om ${hhmm(AV.end)}.</span><button class="tbtn" id="avrk">🏆 Klassement</button><button class="tbtn" id="avun2">↶ Toch nog niet gedaan</button>`:''}
   const on=(id,f)=>{const e=document.getElementById(id);if(e)e.onclick=f};
   on('avp',()=>{AV.paused=true;saveAV();drawAvond()});on('avres',()=>{AV.paused=false;saveAV();drawAvond();joeg('VERDER!','De avond loopt weer')});
@@ -1595,9 +1595,10 @@ renderHead();
 try{drawBet()}catch(e){}
 $('#hs').onclick=e=>{const q=e.target.closest('[data-q]');if(!q){showTab('players');return}openQuick(q.dataset.q)};
 const openQuick=id=>{const a=ACC.find(x=>x.id===id);if(!a)return;let s=document.getElementById('qs');if(!s){s=document.createElement('div');s.id='qs';document.body.appendChild(s)}
-  const draw=msg=>{const p=prof(id),b=bacOf(p,a);s.innerHTML=`<div class="qsb"><div class="row" style="justify-content:space-between;align-items:center;width:100%">${av(a,44)}<div style="flex:1;text-align:left;margin-left:12px"><div class="nmx" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;line-height:1">${esc(a.n)}</div><div class="small">${p.d.length} ${p.d.length===1?'drankje':'drankjes'} · ${b.toFixed(2).replace('.',',')}‰ geschat</div></div><button class="tbtn" id="qx">Sluit</button></div>
-    <div class="dr" style="width:100%">${DRINKS.map((d,i)=>`<button data-qd="${i}"><b>+</b>${d.k}<span class="small">${d.s}</span></button>`).join('')}</div>
+  const draw=msg=>{const p=prof(id),b=bacOf(p,a);s.innerHTML=`<div class="qsb"><div class="row" style="justify-content:space-between;align-items:center;width:100%">${av(a,44)}<div style="flex:1;text-align:left;margin-left:12px"><div class="nmx" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;line-height:1">${esc(a.n)}</div><div class="small">${glTxt(glOf(p.d))} ${glOf(p.d)===1?'drankje':'drankjes'} · ${b.toFixed(2).replace('.',',')}‰ geschat</div></div><button class="tbtn" id="qx">Sluit</button></div>
+    <div class="dr" style="width:100%">${DSHOW.map(i=>{const d=DRINKS[i];return `<button data-qd="${i}"><b>+</b>${d.k}<span class="small">${d.s}</span></button>`}).join('')}</div><div class="row slk"><span class="mono">Slokken</span>${[1,2,4].map(n=>`<button class="tbtn" data-qs="${n}">+${n}${n===4?' · ½ glas':''}</button>`).join('')}</div>
     ${msg?`<div class="small" style="color:var(--acct)">${msg}</div>`:''}<div class="row"><button class="tbtn" id="qu">Laatste ongedaan</button><button class="tbtn" id="qt">Naar teller</button></div></div>`;
+    s.querySelectorAll('[data-qs]').forEach(b=>b.onclick=()=>{const n=+b.dataset.qs;prof(id).d.push({t:Date.now(),g:DRINKS[0].g*n/SLOK,s:n});saveC();beep(700,.04,.08,'triangle');draw('+'+n+(n===1?' slok':' slokken')+' genoteerd')});
     s.querySelectorAll('[data-qd]').forEach(b=>b.onclick=()=>{const d=DRINKS[+b.dataset.qd];prof(id).d.push({t:Date.now(),g:d.g});saveC();beep(700,.04,.08,'triangle');draw('+1 '+d.k.toLowerCase()+' genoteerd')});
     $('#qx').onclick=()=>s.classList.remove('open');$('#qu').onclick=()=>{prof(id).d.pop();saveC();draw('Laatste drankje verwijderd')};$('#qt').onclick=()=>{s.classList.remove('open');showTab('count')}};
   draw();s.classList.add('open');s.onclick=e=>{if(e.target===s)s.classList.remove('open')}};
@@ -2107,7 +2108,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795025368';
+const APPVER='1795025787';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
