@@ -17,6 +17,8 @@
 <style>
   :root{--yt:#ededed;--chaos:#d4ff3a;--bad:#ffffff;--suit:#d4ff3a;--chill:#ededed;--hard:#d4ff3a;--hot:#d4ff3a;--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:#141414}
   body.latem{--yt:#ffffff;--chaos:#ffffff;--bad:#ffd6d6;--suit:#ffffff;--chill:#9cc3ec;--hard:#ffffff;--hot:#ffffff;--bg:#0b2340;--line:#1d4473;--fg:#ffffff;--muted:#9db4d3;--acc:#ffffff;--acct:#ffffff;--card:#0f2c50;--card2:#12335d;--card3:#183c6c;--line2:#2a5486;--line3:#3a67a0;--soft:#d6e2f2;--inv:#ffffff;--noise:.03;--navbg:#0f2c50}
+  body.ski{--yt:#ff7a1a;--chaos:#ff7a1a;--bad:#ff9a8a;--suit:#ff7a1a;--chill:#8fd3ff;--hard:#ff7a1a;--hot:#ff7a1a;--bg:#14202f;--line:#26384f;--fg:#fff6ea;--muted:#9fb0c4;--acc:#ff7a1a;--acct:#ffa24d;--card:#1a2a3d;--card2:#1f3147;--card3:#263a54;--line2:#33496a;--line3:#456186;--soft:#e6dccb;--inv:#fff6ea;--noise:.03;--navbg:#1a2a3d}
+  body.casino{--yt:#d4af37;--chaos:#d4af37;--bad:#ff6b5a;--suit:#ff6b5a;--chill:#9fd6b3;--hard:#d4af37;--hot:#d4af37;--bg:#06281a;--line:#134a31;--fg:#f5ecd0;--muted:#a8b8a0;--acc:#d4af37;--acct:#e6c35a;--card:#0a3322;--card2:#0d3b28;--card3:#124530;--line2:#1e5c40;--line3:#2d7352;--soft:#e8dcb8;--inv:#f5ecd0;--noise:.03;--navbg:#0a3322}
   body.light{--yt:#FF0033;--chaos:#ff3bd4;--bad:#e8002d;--suit:#e8002d;--chill:#00a3ff;--hard:#ff2d55;--hot:#ffb703;--bg:#ffffff;--line:#e2e2e2;--fg:#000;--muted:#6a6a6a;--acc:#c6ff00;--acct:#4a8f00;--card:#f6f6f6;--card2:#eeeeee;--card3:#e4e4e4;--line2:#d0d0d0;--line3:#b5b5b5;--soft:#2a2a2a;--inv:#000;--noise:.02;--navbg:#ffffff}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif;min-height:100vh;
@@ -453,6 +455,50 @@ body.latem .qstart{padding-right:110px}@media(max-width:600px){body.latem .qstar
 .ly.prem:not(.lock){border:2px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#f7d774,#ffffff 40%,#c9a227 60%,#f7d774) border-box}
 .ly.prem:not(.lock) .lyb2{color:#e6c35a;font-weight:700}
 .ly.lock .lysw,.ly.lock .lyt{filter:grayscale(1);opacity:.45}.ly.lock::after{content:'🔒';position:absolute;top:12px;right:14px;font-size:26px}
+/* ---- Après-ski ---- */
+body.ski{background:linear-gradient(180deg,#0f1a29 0%,#14202f 55%,#1c2a3c 100%) fixed}
+body.ski::before{content:'';position:fixed;inset:-10% 0 0 0;pointer-events:none;z-index:0;opacity:.55;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 80px 120px,#fff,transparent),radial-gradient(3px 3px at 150px 60px,#fff,transparent),radial-gradient(2px 2px at 220px 160px,#fff,transparent),radial-gradient(1.5px 1.5px at 300px 90px,#fff,transparent);background-size:320px 220px;animation:snow 14s linear infinite}
+@keyframes snow{from{transform:translateY(-220px)}to{transform:translateY(0)}}
+body.ski::after{content:'';position:fixed;left:0;right:0;bottom:0;height:34vh;pointer-events:none;z-index:0;opacity:.18;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M0 300 L0 210 L140 90 L230 170 L360 40 L500 190 L620 110 L760 230 L900 70 L1040 190 L1200 120 L1200 300Z' fill='%23fff6ea'/%3E%3Cpath d='M360 40 L330 75 L360 68 L392 80Z M900 70 L870 106 L902 96 L930 108Z' fill='%23ffffff'/%3E%3C/svg%3E") bottom/100% 100% no-repeat}
+body.ski main,body.ski header{position:relative;z-index:1}
+body.ski #ov{background:linear-gradient(180deg,#0f1a29,#14202f)}
+body.ski .brand i{color:#ff7a1a}body.ski .qstart{background:linear-gradient(135deg,#ff7a1a 0 65%,#ffa24d 65%);position:relative;padding-right:100px}
+body.ski .qstart::after{content:'⛷';position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:58px}
+body.ski #spd,body.casino #spd{display:block;overflow:hidden;white-space:nowrap;position:relative;z-index:1;margin:14px 0 4px;border-radius:14px}
+body.ski #spd{background:#fff6ea;color:#14202f}body.casino #spd{background:linear-gradient(90deg,#b8902a,#e6c35a,#b8902a);color:#06281a}
+body.ski #spd .spdi,body.casino #spd .spdi{display:inline-flex;align-items:center;gap:18px;padding:9px 0;animation:spd 45s linear infinite;font-family:'Anton',sans-serif;font-size:18px;letter-spacing:.04em;text-transform:uppercase}
+#spd i{font-style:normal}
+body.ski .p1 .blk{background:#ff7a1a;color:#14202f}
+/* ---- Casino ---- */
+body.casino{background:radial-gradient(ellipse at 50% 0%,#0d4a30 0%,#06281a 60%,#041c12 100%) fixed}
+body.casino::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.07;background-image:repeating-linear-gradient(45deg,#d4af37 0 1px,transparent 1px 26px),repeating-linear-gradient(-45deg,#d4af37 0 1px,transparent 1px 26px)}
+body.casino main,body.casino header{position:relative;z-index:1}
+body.casino #ov{background:radial-gradient(ellipse at 50% 40%,#0d4a30,#06281a 75%)}
+body.casino .brand{background:linear-gradient(180deg,#fff3c4,#d4af37 60%,#9a7414);-webkit-background-clip:text;background-clip:text;color:transparent}body.casino .brand i{color:transparent}
+body.casino .card,body.casino .podc,body.casino .pc,body.casino .game,body.casino .mrow .mtg{border-color:#2d7352}
+body.casino .qstart{background:linear-gradient(135deg,#e6c35a,#b8902a);position:relative;padding-right:100px}body.casino .qstart::after{content:'🎰';position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:56px}
+body.casino .p1 .blk{background:linear-gradient(180deg,#f5d77a,#b8902a);color:#06281a}
+.lysw em{font-style:normal;font-size:40px;margin-left:4px}
+/* ---- specials ---- */
+.spec{border:2px solid transparent;border-radius:24px;padding:16px;margin-bottom:18px;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#f7d774,#ffffff 40%,#c9a227 60%,#f7d774) border-box}
+.spech{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}.spech b{font-family:'Anton',sans-serif;font-weight:400;font-size:30px;text-transform:uppercase}
+.specg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));column-gap:24px}
+.dwrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;width:min(920px,100%);align-items:center}
+.slope{width:100%;max-height:62vh;border-radius:18px}.skr{transition:transform .6s cubic-bezier(.3,1.4,.5,1)}
+.dside{display:flex;flex-direction:column;gap:12px;align-items:center}.downs{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.down{border:1px solid var(--line2);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;text-align:left}.down b{font-size:26px}
+@media(max-width:700px){.dwrap{grid-template-columns:1fr}.slope{max-height:46vh}}
+.tcab svg{width:min(340px,70vw);height:auto;display:block}#tx.pop{animation:pop .25s}
+@keyframes pop{50%{transform:scale(1.08)}}
+.moni{border:3px solid var(--acc);border-radius:26px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;align-items:center;max-width:760px}.moni.trap{border-style:dashed;border-color:var(--line3)}
+.mpre{font-family:'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--acct);font-size:16px}
+.rwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center;width:min(920px,100%)}.rwh{width:100%;max-width:360px;max-height:52vh;margin:0 auto;display:block}
+.rbets{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow:auto}.rbet{display:flex;flex-direction:column;gap:4px;text-align:left}.rbet b{font-family:'Anton',sans-serif;font-weight:400;font-size:20px;text-transform:uppercase}.rbet .seg{flex-wrap:wrap}
+@media(max-width:700px){.rwrap{grid-template-columns:1fr}.rwh{max-width:260px}}
+.slot{display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,#e6c35a,#9a7414);padding:18px;border-radius:26px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.reels{display:flex;gap:10px;background:#111;padding:12px;border-radius:16px}.reel{width:clamp(70px,16vw,120px);height:clamp(80px,18vw,130px);display:grid;place-items:center;font-size:clamp(44px,10vw,76px);background:#fffdf5;border-radius:12px}.reel.stop{animation:pop .3s}
+.lever{width:26px;height:150px;position:relative;padding:0}.lever span{position:absolute;left:8px;top:20px;width:10px;height:110px;background:#ccc;border-radius:6px;transform-origin:bottom;transition:transform .3s}.lever span::before{content:'';position:absolute;left:-9px;top:-22px;width:28px;height:28px;border-radius:50%;background:#c0392b}.lever.down span{transform:scaleY(-.6)}
+.bjh{justify-content:center;gap:8px}.bjh .card{zoom:.75}@media(max-width:700px),(max-height:760px){.bjh .card{zoom:.5}}.card.back{background:repeating-linear-gradient(45deg,#7a1020 0 8px,#9b1b2e 8px 16px);border-color:#d4af37}
 </style>
 </head>
 <body>
@@ -516,19 +562,24 @@ function tick(){const d=new Date();clock.textContent=String(d.getHours()).padSta
 tick();setInterval(tick,10000);
 
 const $=s=>document.querySelector(s),st=$('#st');
-let LATEM=false;try{LATEM=localStorage.getItem('kp_latem')==='1'}catch(e){}
-const isL=()=>document.body.classList.contains('latem');const LT=(a,b)=>isL()?b:a;
-const NAVT={players:['Spelers','Selectie'],music:['Muziek','Sfeer'],games:['Spellen','Wedstrijden'],count:['Teller','Kantine'],big:['Grote spellen','Toernooi'],info:['Info','Clubhuis']};
+let PREM=null;try{PREM=localStorage.getItem('kp_prem')||(localStorage.getItem('kp_latem')==='1'?'latem':null)}catch(e){}
+let LATEM=PREM==='latem';
+const isSki=()=>document.body.classList.contains('ski'),isCas=()=>document.body.classList.contains('casino');
+const TRX={ski:{'Avond op pauze':'Pause raclette','Beste in de spelletjes':'Champion des pistes','De avond loopt':'Les pistes sont ouvertes','Duid aan wie er meedoet. Daarna speel je gewoon wat je wil.':'Duid aan wie er mee de piste op gaat. Daarna speel je gewoon wat je wil.','Hervat':'Remonter','Klassement van de avond':'Le podium du jour','Klassement van die avond':'Le podium de ce jour-là','Klassement':'Podium','Komaan, joegnee':'Après-ski · Val Thorens','Meest gespeelde spellen':'Pistes les plus populaires','Meest meegespeeld':'Le plus de descentes','Meeste drankjes':'Roi du vin chaud','Pauze':'Pause raclette','Snelstart':'Forfait du jour','Spellen tellen niet mee tot je hervat.':'De pistes zijn dicht tot je weer naar boven gaat.','Stop de avond':'Fermeture des pistes','Tussenstand':'Classement provisoire','Verliest het vaakst':'Le plus de chutes','▶ Start de avond':'⛷ Première descente','🍻 Bezig':'⛷ On skie','🎮':'🎿','🎲':'🎿','💀':'🤕'},
+  casino:{'Avond op pauze':'Pauze aan de bar','Beste in de spelletjes':'High roller','De avond loopt':'Het casino is open','Duid aan wie er meedoet. Daarna speel je gewoon wat je wil.':'Duid aan wie er aan tafel zit. Daarna speel je gewoon wat je wil.','Hervat':'Terug aan tafel','Klassement van de avond':'Jackpot van de avond','Klassement van die avond':'Jackpot van die avond','Klassement':'Jackpot','Komaan, joegnee':'Het huis wint altijd','Meest gespeelde spellen':'Populairste tafels','Meest meegespeeld':'Meeste handen gespeeld','Meeste drankjes':'Grootste inzet aan de bar','Pauze':'Pauze aan de bar','Snelstart':'Aan tafel','Spellen tellen niet mee tot je hervat.':'Inzetten tellen niet mee tot je terug aan tafel zit.','Stop de avond':'Rien ne va plus','Tussenstand':'Tussenstand','Verliest het vaakst':'Blut','▶ Start de avond':'🎰 Faites vos jeux','🍻 Bezig':'🎰 De tafels draaien','🎮':'🃏','🎲':'🎰','💀':'💸'}};
+const isL=()=>document.body.classList.contains('latem');const LT=(a,b)=>isL()?b:isSki()?(TRX.ski[a]??a):isCas()?(TRX.casino[a]??a):a;
+const NAVT={players:['Spelers','Selectie','L\'équipe','Tafel'],music:['Muziek','Sfeer','DJ','Lounge'],games:['Spellen','Wedstrijden','Pistes','Speeltafels'],count:['Teller','Kantine','Le bar','Bar'],big:['Grote spellen','Toernooi','Hors-piste','VIP'],info:['Info','Clubhuis','Chalet','Kassa']};
 
 /* ===== FC Latem: spandoek en spreekkoren ===== */
 const CHANTS=['Allez Latem','De Pinte pannenkoeken','De Pinte OCMW','Latem fils à papa','FC Latem · sinds 1955'];
-const drawBanner=()=>{let b=document.getElementById('spd');if(!isL()){if(b)b.remove();return}
+const BANNERS={latem:{t:CHANTS,img:'fclatem-64.png'},ski:{t:['Après-ski','Vin chaud','Tartiflette','Schuss !','Piste noire','Fondue savoyarde','Val Thorens','On remonte ?'],ic:'❄'},casino:{t:['Faites vos jeux','Rien ne va plus','Het huis wint altijd','All-in','Jackpot','Double down','Black is back'],ic:'♠'}};
+const drawBanner=()=>{let b=document.getElementById('spd');const k=isL()?'latem':isSki()?'ski':isCas()?'casino':null;if(!k){if(b)b.remove();return}const BN=BANNERS[k];
   if(!b){b=document.createElement('div');b.id='spd';const h=document.querySelector('header');h.after(b)}
-  const t=CHANTS.map(c=>`<span>${esc(c)}</span><img src="fclatem-64.png" alt="">`).join('');b.innerHTML=`<div class="spdi">${t}${t}</div>`};
+  const t=BN.t.map((c,i)=>`<span>${esc(c)}</span>${BN.img?`<img src="${BN.img}" alt="">`:`<i>${['♠','♥','♦','♣'][i%4]&&k==='casino'?['♠','♥','♦','♣'][i%4]:BN.ic}</i>`}`).join('');b.innerHTML=`<div class="spdi">${t}${t}</div>`};
 
-const applyTerms=()=>{try{drawBanner()}catch(e){}document.querySelectorAll('#nav button').forEach(b=>{const t=NAVT[b.dataset.t],sp=b.querySelector('span');if(t&&sp)sp.textContent=LT(t[0],t[1])});
+const applyTerms=()=>{try{drawBanner()}catch(e){}document.querySelectorAll('#nav button').forEach(b=>{const t=NAVT[b.dataset.t],sp=b.querySelector('span');if(t&&sp)sp.textContent=isL()?t[1]:isSki()?t[2]:isCas()?t[3]:t[0]});
   const mo=$('#motto');if(mo)mo.textContent=LT('Komaan, joegnee','Allez Latem · sinds 1955');
-  document.querySelectorAll('.sec.mono>span:first-child').forEach(e=>{if(!e.dataset.o)e.dataset.o=e.textContent;const m={Spellen:'Wedstrijden',Muziek:'Stadionsfeer',Teller:'Kantine',Spelers:'Selectie'};e.textContent=isL()&&m[e.dataset.o]?m[e.dataset.o]:e.dataset.o})};
+  document.querySelectorAll('.sec.mono>span:first-child').forEach(e=>{if(!e.dataset.o)e.dataset.o=e.textContent;const m=isL()?{Spellen:'Wedstrijden',Muziek:'Stadionsfeer',Teller:'Kantine',Spelers:'Selectie'}:isSki()?{Spellen:'Les pistes',Muziek:'DJ du chalet',Teller:'Le bar',Spelers:'L\'équipe'}:isCas()?{Spellen:'Speeltafels',Muziek:'Lounge',Teller:'Bar',Spelers:'Aan tafel'}:{};e.textContent=m[e.dataset.o]||e.dataset.o})};
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const deck=l=>{let p=shuf(l);return()=>{if(!p.length)p=shuf(l);return p.pop()}};
 
@@ -659,7 +710,7 @@ const G={
 const DOD=[["Je ex zien zoenen met je beste vriend", "je ouders betrappen in bed"], ["Je zoekgeschiedenis op groot scherm", "je chats met je ex voorgelezen"], ["Een date met je prof", "een date met je ex"], ["Altijd zeggen wat je denkt", "nooit meer liegen tegen je partner"], ["Een week geen seks", "een week geen alcohol"], ["Wakker worden naast een vreemde", "wakker worden zonder geheugen"], ["Je crush leest al je berichten", "je moeder leest al je berichten"], ["Een tattoo van je ex' naam", "een tattoo van je eigen naam op je voorhoofd"], ["Nooit meer kussen", "nooit meer pintjes"], ["Je eerste keer opnieuw", "je eerste kater opnieuw"], ["Op Temptation Island", "op Blind Getrouwd"], ["Ontrouw van je partner weten", "nooit weten en gelukkig blijven"], ["Dronken een speech geven op een trouw", "nuchter een striptease op een vrijgezellen"], ["Een relatie met iemand van deze groep", "altijd single"], ["Je ouders zien je dronkenste foto", "je baas ziet je dronkenste foto"], ["Één nacht met een celebrity", "een jaar gratis bier"], ["Je ex wordt je kotgenoot", "je ouders worden je kotgenoten"], ["Alles horen wat mensen over je zeggen", "alles zien wat ze over je typen"], ["Kussen met iemand die slecht kust", "nooit meer kussen"], ["Je gsm onbewaakt een uur bij deze groep laten", "een uur je ex bellen"]];
 const PARA=["Wie hier zou je het liefst daten?", "Met wie zou je een nacht in een hotelkamer willen delen?", "Wie is volgens jou het best in bed?", "Wie zou je nooit voorstellen aan je ouders?", "Wie heeft vanavond de meeste kans om iemand te kussen?", "Wie zou je zoenen als het moest?", "Wie vertrouw je het minst met je geheimen?", "Wie is het meest fake?", "Wie heeft volgens jou de meeste ex'en?", "Wie zou je bellen om een lijk te helpen verbergen?", "Wie zou je het liefst als ex hebben?", "Wie heeft volgens jou de raarste fantasieën?", "Op wie had je ooit een crush?", "Wie is het knapst in deze kamer?", "Wie zou het slechtst zijn in een relatie?", "Wie hier zou je meenemen als date naar een trouwfeest?", "Wie heeft het meeste geheimen voor zijn partner?", "Wie zou je een sexy foto sturen, als het moest?"];
 const CHAOS=["{a} deelt 3 slokken uit.", "{a} en {b} drinken samen, armen in elkaar gehaakt.", "{a}, kies een maatje. Tot het einde drinken jullie samen.", "Iedereen die {a} ooit een bericht stuurde na middernacht, drinkt.", "{a}, imiteer hoe {b} iemand zou versieren. Lacht niemand? Drinken.", "{a} en {b}: steen-papier-schaar. Verliezer drinkt 2.", "Regel: niemand mag nog ‘ja’ zeggen. Bedacht door {a}.", "{a}, noem 5 voetballers in 10 seconden of drink.", "{a} mag een regel verzinnen.", "Iedereen drinkt behalve {a}.", "{a}, vertel je slechtste date. Weigeren = 3 slokken.", "{a} en {b} wisselen van drankje.", "De laatste die zijn neus aanraakt, drinkt.", "{a} kiest wie 2 slokken drinkt.", "{a}, wie hier zou je kussen? Weigeren = ad fundum.", "{a} en {b} staren elkaar aan. Wie eerst lacht, drinkt.", "{a}, geef {b} een compliment over diens uiterlijk, of drink 2.", "Alle singles drinken.", "Iedereen die ooit een ex heeft teruggestuurd, drinkt.", "{a}, laat je laatste foto zien of drink 3.", "{a} fluistert iets in het oor van {b}. {b} beslist of {a} drinkt.", "{a} en {b} doen samen een ad fundum.", "Iedereen die vanavond al iemand knap vond hier, drinkt. Eerlijk zijn.", "{a}, beoordeel ieders outfit. De slechtste drinkt.", "{a} drinkt zoveel slokken als {b} kiest (max 4).", "{a}, vertel met wie hier je zou trouwen, wie je zou kussen en wie je zou ghosten.", "{a} en {b}: wie heeft de meeste ex'en? Die drinkt.", "Iedereen die een datingapp heeft, drinkt.", "{a}, lees je laatste verstuurde bericht voor of drink 3.", "{a} wordt Vragenmeester. Wie een vraag van {a} beantwoordt, drinkt."];
-const MC=c=>{if(document.body.classList.contains('light'))return c;const i=COLORS.indexOf(c);return (document.body.classList.contains('latem')?['#ffffff','#9cc3ec','#5f8fca']:['#d4ff3a','#ededed','#9a9a9a'])[(i<0?0:i)%3]};
+const MC=c=>{if(document.body.classList.contains('light'))return c;const i=COLORS.indexOf(c);const b=document.body.classList;return (b.contains('latem')?['#ffffff','#9cc3ec','#5f8fca']:b.contains('ski')?['#ff7a1a','#fff6ea','#8fd3ff']:b.contains('casino')?['#d4af37','#f5ecd0','#c0392b']:['#d4ff3a','#ededed','#9a9a9a'])[(i<0?0:i)%3]};
 const COLORS=['#d4ff3a','#ff5c8a','#4cc9f0','#ffb703','#a78bfa','#34d399','#fb7185','#f97316','#60a5fa','#e879f9'];
 let ACC=[];try{ACC=JSON.parse(localStorage.getItem('kp_acc')||'[]')}catch(e){}
 try{const old=JSON.parse(localStorage.getItem('kp_players')||'[]');if(!ACC.length&&old.length)ACC=old.map((n,i)=>({id:'a'+Date.now()+i,n,c:COLORS[i%COLORS.length]}))}catch(e){}
@@ -691,7 +742,7 @@ const fullDeck=()=>shuf(RANKS.flatMap(r=>SUITS.map(s=>[r,s[0],s[1]])));
 const cardH=c=>`<div class="card ${c[2]?'red':''}"><div>${c[0]}${c[1]}</div><div class="mid">${c[1]}</div><div class="br">${c[0]}${c[1]}</div></div>`;
 
 Object.assign(G,{
- dod:{i(){const n=nightDeck('dod',withC('dod',DOD));const s=()=>{const[a,b]=n();scr(`<div class="mono">Liever…</div><div class="pr" style="font-size:clamp(34px,5vw,64px)">${a}</div><div class="mono">of</div><div class="pr" style="font-size:clamp(34px,5vw,64px);color:var(--acct)">${b}</div><div class="hint">Op drie: hand omhoog = de bovenste, hand omlaag = de onderste. Minderheid drinkt.</div><button class="btn" id="nx">Volgende</button>`);$('#nx').onclick=s};s()}},
+ dod:{i(){const n=isSki()?nightDeck('dodski',DOD_SKI.concat(DOD)):nightDeck('dod',withC('dod',DOD));const s=()=>{const[a,b]=n();scr(`<div class="mono">${isSki()?'Vous préférez…':'Liever…'}</div><div class="pr" style="font-size:clamp(34px,5vw,64px)">${a}</div><div class="mono">of</div><div class="pr" style="font-size:clamp(34px,5vw,64px);color:var(--acct)">${b}</div><div class="hint">Op drie: hand omhoog = de bovenste, hand omlaag = de onderste. Minderheid drinkt.</div><button class="btn" id="nx">Volgende</button>`);$('#nx').onclick=s};s()}},
  para:{i(){const n=nightDeck('para',withC('para',PARA));
    const a=()=>{scr(`<div class="pr">Geef de iPad<br>aan je buur</div><div class="hint">Alleen jij en je buur mogen het scherm zien.</div><button class="btn" id="sh">Toon vraag</button>`);$('#sh').onclick=b};
    const b=()=>{scr(`<div class="mono">Fluister het antwoord</div><div class="pr" style="font-size:clamp(34px,5vw,64px)">${n()}</div><div class="hint">Je buur zegt luidop alleen een naam. Wie genoemd wordt, mag drinken om de vraag te horen, of muisstil blijven.</div><button class="btn" id="hd">Verberg en geef door</button>`);$('#hd').onclick=a};a()}},
@@ -770,7 +821,7 @@ const KOP={"Dieren":["Giraf","Pinguïn","Kangoeroe","Octopus","Flamingo","Luiaar
  "Gent & studentenleven":["Overpoort","Belfort","Gravensteen","Graslei","Boekentoren","Kot","Examen","Aula","Cursus","Brakke ochtend","Fiets","Studentendoop","Frietkot","Gentse Feesten","Tram","Bibliotheek","Groepswerk","Praesidium","Cantus","Herexamen","Mensa","Proffen","Sint-Pietersstation","Bierbak","Stad"]};
 
 Object.assign(G,{
- quiz:{i(){const n=nightDeck('quiz',QUIZ.concat((CUS.quiz||[]).map(x=>[x[0],x.slice(1,5)])));let c=0;
+ quiz:{i(){const n=isSki()?(()=>{const a=nightDeck('quizski',QUIZ_SKI),b=nightDeck('quiz',QUIZ);let k=0;return()=>(k++%3===2?b:a)()})():nightDeck('quiz',QUIZ.concat((CUS.quiz||[]).map(x=>[x[0],x.slice(1,5)])));let c=0;
    const ask=()=>{c++;T.next();$('#gc').textContent=String(c).padStart(2,'0');const[q,ans]=n(),ok=ans[0],opts=shuf(ans);
      clr();let left=20;scr(`${T.tag()}<div class="timer" id="qt" style="font-size:clamp(40px,6vw,64px)">20</div><div class="pr" style="font-size:clamp(28px,4.2vw,52px)">${q}</div>
        <div class="qgrid">${opts.map(o=>`<button class="qo" data-o="${esc(o)}">${o}</button>`).join('')}</div>`);
@@ -810,7 +861,7 @@ const drawBet=()=>{let b=document.getElementById('betbar');const c=BETS.cur,show
   b.innerHTML=`<span class="bt">⚽ <b>${esc(c.m)}</b><span class="bs"> · vergeet de einduitslag niet</span></span><button id="betgo">Uitslag invullen</button>`;
   $('#betgo').onclick=()=>{WED_RES=true;document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));try{camStop()}catch(e){}clr();$('#ov').classList.remove('boom','ticking');openGame('wed');$('#sg').click()}};
 Object.assign(G,{
- fles:{i(){const od=deck(withC('fles',FLES_OPD));const U=units();let rot=0,busy=false;const n=U.length;
+ fles:{i(){const od=deck(isSki()?FLES_SKI.concat(FLES_SKI,withC('fles',FLES_OPD)):isCas()?FLES_CAS.concat(FLES_CAS,withC('fles',FLES_OPD)):withC('fles',FLES_OPD));const U=units();let rot=0,busy=false;const n=U.length;
    const pos=U.map((u,i)=>{const a=i/n*2*Math.PI-Math.PI/2;return{u,x:50+42*Math.cos(a),y:50+42*Math.sin(a),deg:i/n*360}});
    const big=n>8,sz=n>12?32:big?38:48;
    scr(`<div class="fles${big?' many':''}">${pos.map(p=>`<div class="fn" style="left:${p.x}%;top:${p.y}%">${av(p.u,sz)}<span>${esc(p.u.n.split(' ')[0])}</span></div>`).join('')}
@@ -911,9 +962,9 @@ const photoDel=async ks=>{const db=await PDB();return new Promise(r=>{const tx=d
 const photoClear=async()=>{const db=await PDB();return new Promise(r=>{const tx=db.transaction('photos','readwrite');tx.objectStore('photos').clear();tx.oncomplete=r})};
 const tonight=l=>l.filter(p=>Date.now()-p.t<14*3.6e6);
 let camStream=null;const camStop=()=>{if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}};
-async function booth(){clr();PL=null;$('#gt').textContent='Fotobooth';$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
+async function booth(){if(!frameOk(FRAME))FRAME='neon';clr();PL=null;$('#gt').textContent='Fotobooth';$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="booth"><video id="vd" playsinline autoplay muted></video><canvas id="bpv"></canvas><div class="bcnt" id="bc"></div><div class="bflash" id="bf"></div></div>
-    <div class="seg frs" id="fr">${FRAMES.map(([k,l])=>`<span class="sg ${FRAME===k?'on':''}" data-fr="${k}">${l}</span>`).join('')}</div>
+    <div class="seg frs" id="fr">${FRAMES.filter(([k])=>frameOk(k)).map(([k,l])=>`<span class="sg ${FRAME===k?'on':''}" data-fr="${k}">${l}</span>`).join('')}</div>
     <div class="row"><button class="btn" id="sn">📸 Foto (3-2-1)</button><button class="btn ghost" id="sl">Diavoorstelling</button></div><div class="bthumbs" id="bt"></div>
     <div class="small" id="bi">${window.ZG&&ZG.on()?"Foto's gaan automatisch naar je vriendengroep '"+esc(ZG.group().name)+"', niet naar je fotorol.":"Foto's blijven alleen in de app, niet in je fotorol."} Alle avonden staan in het Fotoalbum (Info). <button class="tbtn" id="bal">📷 Fotoalbum</button><button class="tbtn" id="bw">Wis foto's van vanavond</button></div>`);
   const thumbs=async()=>{const l=tonight(await photoAll());const el=$('#bt');if(!el)return;el.innerHTML=l.slice(-12).reverse().map(p=>`<img src="${URL.createObjectURL(p.blob)}">`).join('');$('#gc').textContent=l.length?String(l.length).padStart(2,'0'):''};
@@ -964,7 +1015,8 @@ function drawTheme(x,c,T,put,mono,ar){const W=1080,p=70,iw=W-2*p,ih=Math.round(i
   if(E.length>1){x.fillText(E[0],p+20,top+20);x.fillText(E[1],W-p-20,top+20);x.fillText(E[2],p+20,top+ih-10)}
   x.save();x.translate(W-60,top+ih+bot/2);x.rotate(-.06);x.fillStyle=T.tag;x.beginPath();x.roundRect(-560,-70,560,130,24);x.fill();logo(x,-280,0,92,T.l1,T.l2,'center');x.restore();
   x.font='110px serif';x.textAlign='center';x.fillText(E[E.length-1],p+50,top+ih+bot/2);mono(stamp(),p+130,top+ih+bot/2,T.date,'left',26)}
-Object.entries(THEMES).forEach(([k,t])=>FRAMES.push([k,t.n]));FRAMES.push(['latem','⚽ FC Latem']);
+Object.entries(THEMES).forEach(([k,t])=>FRAMES.push([k,t.n]));FRAMES.push(['latem','⚽ FC Latem'],['ski','⛷ Après-ski'],['casino','🎰 Casino']);
+const frameOk=k=>!['latem','ski','casino'].includes(k)||(typeof UNL!=='undefined'&&UNL.includes(k));
 const LOGO=new Image();LOGO.src='fclatem.png';
 async function shoot(v){try{await document.fonts.load('80px Anton');await document.fonts.load('28px "JetBrains Mono"')}catch(e){}
   const c=document.createElement('canvas');renderShot(v,FRAME,c);const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.88));const pt=Date.now();await photoAdd(pt,blob);try{window.ZG&&ZG.uploadPhoto(pt,blob)}catch(e){}}
@@ -993,6 +1045,24 @@ function renderShot(v,F,c){const ar=(v.videoHeight/v.videoWidth)||.75,x=c.getCon
     if(LOGO.complete&&LOGO.naturalWidth)x.drawImage(LOGO,p,top+ih+30,170,170);
     x.save();x.font='92px Anton, Impact, sans-serif';x.textBaseline='middle';x.textAlign='left';x.fillStyle='#fff';x.fillText('ALLEZ LATEM!',p+200,top+ih+bot/2-22);x.restore();
     mono('SINDS 1955 · '+stamp(),p+204,top+ih+bot/2+52,'#9cc3ec','left',28)}
+  else if(F==='ski'){const W=1080,p=60,iw=W-2*p,ih=Math.round(iw*ar),top=190,bot=240;c.width=W;c.height=top+ih+bot;const H=c.height,rnd=Math.random;
+    const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0f1a29');g.addColorStop(1,'#1c2a3c');x.fillStyle=g;x.fillRect(0,0,W,H);
+    x.fillStyle='#fff6ea';x.beginPath();x.moveTo(0,top-10);x.lineTo(160,40);x.lineTo(260,120);x.lineTo(420,14);x.lineTo(600,130);x.lineTo(760,50);x.lineTo(900,120);x.lineTo(1080,30);x.lineTo(1080,top-10);x.closePath();x.globalAlpha=.9;x.fill();x.globalAlpha=1;
+    for(let i=0;i<220;i++){x.fillStyle='rgba(255,255,255,'+(.4+rnd()*.6)+')';x.beginPath();x.arc(rnd()*W,rnd()*H,1.5+rnd()*3.5,0,7);x.fill()}
+    x.save();x.font='84px Anton, Impact, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#14202f';x.fillText('APRÈS-SKI',W/2,top-58);x.restore();
+    x.fillStyle='#ff7a1a';x.fillRect(p-10,top-10,iw+20,ih+20);put(p,top,iw,ih);
+    x.font='110px serif';x.textAlign='center';x.textBaseline='middle';x.fillText('⛷',p+70,top+ih+bot/2);
+    x.save();x.font='78px Anton, Impact, sans-serif';x.textAlign='left';x.textBaseline='middle';x.fillStyle='#fff6ea';x.fillText('VAL ZWIJNERIJ',p+160,top+ih+bot/2-26);x.restore();
+    mono('1850 M · '+stamp(),p+164,top+ih+bot/2+46,'#ffa24d','left',28)}
+  else if(F==='casino'){const W=1080,p=70,iw=W-2*p,ih=Math.round(iw*ar),top=200,bot=230;c.width=W;c.height=top+ih+bot;const H=c.height;
+    const g=x.createRadialGradient(W/2,H/2,50,W/2,H/2,H);g.addColorStop(0,'#0d4a30');g.addColorStop(1,'#041c12');x.fillStyle=g;x.fillRect(0,0,W,H);
+    x.strokeStyle='#d4af37';x.lineWidth=10;x.strokeRect(20,20,W-40,H-40);x.lineWidth=2;x.strokeRect(38,38,W-76,H-76);
+    x.save();x.font='86px Anton, Impact, sans-serif';x.textAlign='center';x.textBaseline='middle';const tg=x.createLinearGradient(0,60,0,150);tg.addColorStop(0,'#fff3c4');tg.addColorStop(1,'#b8902a');x.fillStyle=tg;x.fillText('CASINO ZWIJNERIJ',W/2,top/2+6,W-200);x.restore();
+    x.font='70px serif';x.textAlign='center';x.textBaseline='middle';['♠','♥','♦','♣'].forEach((t,i)=>{x.fillStyle=i%3?'#c0392b':'#f5ecd0';x.fillText(t,i<2?90:W-90,i%2?top/2+30:top/2-30)});
+    x.fillStyle='#d4af37';x.fillRect(p-8,top-8,iw+16,ih+16);put(p,top,iw,ih);
+    [[p+70,'#c0392b'],[p+150,'#111'],[p+230,'#d4af37']].forEach(([cx,cc])=>{x.beginPath();x.arc(cx,top+ih+bot/2,46,0,7);x.fillStyle=cc;x.fill();x.lineWidth=8;x.strokeStyle='#f5ecd0';x.setLineDash([10,10]);x.stroke();x.setLineDash([])});
+    x.save();x.font='70px Anton, Impact, sans-serif';x.textAlign='left';x.textBaseline='middle';x.fillStyle='#f5ecd0';x.fillText('FAITES VOS JEUX',p+300,top+ih+bot/2-22,W-p-330);x.restore();
+    mono('RIEN NE VA PLUS · '+stamp(),p+304,top+ih+bot/2+44,'#d4af37','left',26)}
   else if(THEMES[F])drawTheme(x,c,THEMES[F],put,mono,ar);
   else{const W=1080,Hh=Math.round(W*ar),bar=150;c.width=W;c.height=Hh+bar;x.fillStyle='#070707';x.fillRect(0,0,c.width,c.height);put(0,0,W,Hh);
     x.strokeStyle='#d4ff3a';x.lineWidth=14;x.strokeRect(7,7,W-14,c.height-14);logo(x,40,Hh+bar/2+4,72,'#ededed','#d4ff3a');mono(stamp(),W-40,Hh+bar/2,'#8a8a8a')}}
@@ -1102,7 +1172,8 @@ let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill'||m.lvl==='hard').length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
-  $('#gl').outerHTML=`<div id="gl">${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
+  $('#gl').outerHTML=`<div id="gl">${(()=>{const k=isSki()?'ski':isCas()?'cas':null;if(!k)return '';const L=META.filter(m=>m.lvl===k);
+      return `<div class="spec ${k}"><div class="spech"><span class="mono">${k==='ski'?'⛷ Spécialités du chalet':'🎰 Huisspellen van het casino'}</span><b>${k==='ski'?'Après-ski specials':'Casino specials'}</b></div><div class="specg">${L.map(m=>`<button class="game spg" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s} · <b style="color:var(--acct)">Premium</b></span></button>`).join('')}</div></div>`})()}${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
   document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{lvSel=b.dataset.lv;try{localStorage.setItem('kp_lv',lvSel)}catch(e){}renderGames()});
   document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g));
@@ -1156,7 +1227,7 @@ const hhmm=ms=>{const d=new Date(ms);return String(d.getHours()).padStart(2,'0')
 const level=(b,L=.5)=>b<.2?[0,'Bijna nuchter, maar na drinken rijden blijft een slecht idee.']:b<.5?[1,'Onder de wettelijke 0,5‰, maar je reacties zijn al trager. Twijfel je? Laat de auto staan.']
   :b<1?[2,'Boven 0,5‰: autorijden is verboden. Boete en mogelijk rijverbod.']:b<1.5?[2,'Coördinatie en inschatting gaan achteruit. Tijd voor een glas water.']
   :[3,'Stop met drinken. Water, iets eten, en laat iemand een oogje in het zeil houden.'];
-const LC0=['#d4ff3a','#ededed','#ffffff','#ffffff'],LC1=['#3d8a00','#a86f00','#c2410c','#be123c'];const LCc=()=>document.body.classList.contains('light')?LC1:document.body.classList.contains('latem')?['#ffffff','#ffffff','#ffd6d6','#ffd6d6']:LC0;
+const LC0=['#d4ff3a','#ededed','#ffffff','#ffffff'],LC1=['#3d8a00','#a86f00','#c2410c','#be123c'];const LCc=()=>document.body.classList.contains('light')?LC1:document.body.classList.contains('latem')?['#ffffff','#ffffff','#ffd6d6','#ffd6d6']:document.body.classList.contains('ski')?['#8fd3ff','#fff6ea','#ff7a1a','#ff7a1a']:document.body.classList.contains('casino')?['#d4af37','#f5ecd0','#ff6b5a','#ff6b5a']:LC0;
 const NOV_START=new Date('2027-01-01').getTime();const limOf=a=>.5;
 const card=a=>{const p=prof(a.id),b=bacOf(p,a),L=limOf(a),[lv,msg]=level(b,L),zero=Date.now()+b/BETA*3.6e6,legal=Date.now()+Math.max(0,b-L)/BETA*3.6e6,cnt=p.d.length,
   std=(p.d.reduce((s,x)=>s+x.g,0)/10).toFixed(1).replace('.',',');
@@ -1443,23 +1514,25 @@ const statsHTML=()=>{const byId=id=>ACC.find(a=>a.id===id),top=(o,low)=>{const e
 const SUN='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>',MOON='<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>';
 let theme='dark';try{theme=localStorage.getItem('kp_theme')||'dark'}catch(e){}
 
-const applyTheme=()=>{document.body.classList.toggle('latem',LATEM);document.body.classList.toggle('light',theme==='light'&&!LATEM);try{applyTerms();drawAvond()}catch(e){}$('#thm').innerHTML=theme==='light'?MOON:SUN;
-  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=LATEM?'#0b2340':theme==='light'?'#f3f2ec':'#070707';applyNight()};
+const applyTheme=()=>{LATEM=PREM==='latem';['latem','ski','casino'].forEach(k=>document.body.classList.toggle(k,PREM===k));document.body.classList.toggle('light',theme==='light'&&!PREM);try{applyTerms();drawAvond()}catch(e){}$('#thm').innerHTML=theme==='light'?MOON:SUN;
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=PREM==='latem'?'#0b2340':PREM==='ski'?'#14202f':PREM==='casino'?'#06281a':theme==='light'?'#f3f2ec':'#070707';applyNight()};
 /* ===== layouts: gratis + premium (met wachtwoord) ===== */
 const LAYOUTS=[
   {k:'dark',n:'Donker',d:'Zwart-wit met fluogroen.',sw:['#070707','#ededed','#d4ff3a']},
   {k:'light',n:'Licht',d:'Wit en fel, voor overdag.',sw:['#ffffff','#000000','#c6ff00']},
-  {k:'latem',n:'FC Latem',d:'Blauw-wit, clublogo, voetbaltermen en een spandoek.',sw:['#0b2340','#ffffff','#9cc3ec'],premium:1,img:'fclatem-64.png',h:'1d4915a3b2e64d92494965249e0348d27feb3bc268e632809e7d777532629cf4'}];
+  {k:'latem',n:'FC Latem',d:'Blauw-wit, clublogo, voetbaltermen en een spandoek.',sw:['#0b2340','#ffffff','#9cc3ec'],premium:1,img:'fclatem-64.png',h:'1d4915a3b2e64d92494965249e0348d27feb3bc268e632809e7d777532629cf4'},
+  {k:'ski',n:'Après-ski',d:'Chalet, sneeuw en Franse pistes. Met eigen spellen: Descente des As, Télécabine, Le Moniteur dit.',sw:['#14202f','#fff6ea','#ff7a1a'],premium:1,em:'⛷',h:'7c43b19f142e3abb41f941e881d3aac6fdb87d62856b1e68fc3a0167db3cea09'},
+  {k:'casino',n:'Casino',d:'Groen vilt en goud. Met eigen spellen: Roulette, Fruitautomaat, Blackjack tegen het huis.',sw:['#06281a','#f5ecd0','#d4af37'],premium:1,em:'🎰',h:'b4fa9c61375f1aa365b9572a36b1926ddc5b4a0ac0e305ff1421a6e9caa46444'}];
 let UNL=[];try{UNL=JSON.parse(localStorage.getItem('kp_unlocked')||'[]')}catch(e){}
-const curLayout=()=>LATEM?'latem':theme==='light'?'light':'dark';
+const curLayout=()=>PREM||(theme==='light'?'light':'dark');
 const sha=async t=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')};
-const setLayout=k=>{LATEM=k==='latem';if(k==='dark'||k==='light')theme=k;try{localStorage.setItem('kp_latem',LATEM?'1':'0');localStorage.setItem('kp_theme',theme)}catch(e){}
+const setLayout=k=>{PREM=['latem','ski','casino'].includes(k)?k:null;LATEM=PREM==='latem';if(k==='dark'||k==='light')theme=k;try{localStorage.setItem('kp_prem',PREM||'');localStorage.setItem('kp_latem',LATEM?'1':'0');localStorage.setItem('kp_theme',theme)}catch(e){}
   applyTheme();try{renderHead();renderGames();renderInfo()}catch(e){}};
 const openLayouts=()=>{clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Layout';$('#gc').textContent='';$('#ov').classList.add('open');
   const cur=curLayout();
   scr(`<div class="pr" style="font-size:clamp(32px,5vw,58px)">Kies een layout</div><div class="hint">Premium-layouts open je met een wachtwoord. Eén keer ingeven per toestel volstaat.</div>
     <div class="lys">${LAYOUTS.map(l=>{const lock=l.premium&&!UNL.includes(l.k);return `<button class="ly ${l.premium?'prem':''} ${lock?'lock':''} ${cur===l.k?'on':''}" data-ly="${l.k}">
-      <span class="lysw">${l.sw.map(c=>`<i style="background:${c}"></i>`).join('')}${l.img?`<img src="${l.img}" alt="">`:''}</span>
+      <span class="lysw">${l.sw.map(c=>`<i style="background:${c}"></i>`).join('')}${l.img?`<img src="${l.img}" alt="">`:l.em?`<em>${l.em}</em>`:''}</span>
       <span class="lyt"><b>${l.n}</b><span class="small">${l.d}</span></span>
       <span class="lyb2">${lock?'🔒 Premium':l.premium?(cur===l.k?'★ Premium · actief':'★ Premium'):cur===l.k?'✓ Actief':'Gratis'}</span></button>`}).join('')}</div>
     <div id="lypw"></div><button class="btn" id="lyok">Klaar</button>`);
@@ -1473,8 +1546,8 @@ const openLayouts=()=>{clr();CURG=null;$('#ov').classList.remove('ingame');$('#g
     setLayout(l.k);openLayouts()})};
 $('#ltm').onclick=openLayouts;
 // een premium-layout die (nog) niet ontgrendeld is, nooit tonen
-if(LATEM&&!UNL.includes('latem')){LATEM=false;try{localStorage.setItem('kp_latem','0')}catch(e){}}
-$('#thm').onclick=()=>{if(LATEM){LATEM=false;try{localStorage.setItem('kp_latem','0')}catch(e){}applyTheme();try{renderHead();renderGames();renderInfo();const t=document.querySelector('.tab.on');if(t)showTab(t.id.slice(2))}catch(e){};return}theme=theme==='light'?'dark':'light';try{localStorage.setItem('kp_theme',theme)}catch(e){}applyTheme()};
+if(PREM&&!UNL.includes(PREM)){PREM=null;LATEM=false;try{localStorage.setItem('kp_prem','');localStorage.setItem('kp_latem','0')}catch(e){}}
+$('#thm').onclick=()=>{if(PREM){PREM=null;LATEM=false;try{localStorage.setItem('kp_prem','');localStorage.setItem('kp_latem','0')}catch(e){}applyTheme();try{renderHead();renderGames();renderInfo();const t=document.querySelector('.tab.on');if(t)showTab(t.id.slice(2))}catch(e){};return}theme=theme==='light'?'dark':'light';try{localStorage.setItem('kp_theme',theme)}catch(e){}applyTheme()};
 applyTheme();
 renderHead();
 try{drawBet()}catch(e){}
@@ -1682,10 +1755,124 @@ Object.assign(G,{
    pick()}}
 });
 
+/* ===== premium specials: Après-ski en Casino ===== */
+Object.assign(IC,{
+ ski:'<circle cx="15" cy="4.5" r="1.8"/><path d="M4 20l16-6M9 13l3-4 3 2 2-3M12 9l-1 5 4 2"/>',
+ gondola:'<path d="M2 4l20 4M12 6v3"/><rect x="6" y="9" width="12" height="10" rx="2"/><path d="M6 14h12M10 9v5M14 9v5"/>',
+ whistle:'<circle cx="9" cy="14" r="5"/><path d="M13 11l8-4v4l-6 2M9 14h.01"/>',
+ roulette:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/>',
+ slot:'<rect x="3" y="5" width="15" height="14" rx="2"/><path d="M7 9v6M10.5 9v6M14 9v6M18 9h2V6M20 6a1 1 0 1 0 0-.01"/>',
+ cards:'<rect x="3" y="5" width="11" height="15" rx="2"/><path d="M10 4.5l7-1.5 3.5 13.5-6 1.5M6.5 9.5l2 2.5-2 2.5"/>'});
+const SKI_SNOUT=(x,y,w)=>`<ellipse cx="${x}" cy="${y}" rx="${w}" ry="${w*.62}" fill="#d4ff3a" stroke="#000" stroke-width="1"/><ellipse cx="${x-w*.36}" cy="${y}" rx="${w*.16}" ry="${w*.26}" fill="#000"/><ellipse cx="${x+w*.36}" cy="${y}" rx="${w*.16}" ry="${w*.26}" fill="#000"/>`;
+const SKIER=(col,suit)=>`<g><line x1="-16" y1="22" x2="18" y2="18" stroke="#fff6ea" stroke-width="3" stroke-linecap="round"/><line x1="-10" y1="24" x2="22" y2="21" stroke="#fff6ea" stroke-width="3" stroke-linecap="round"/>
+  <path d="M-4 14 L2 2 L9 12" stroke="${col}" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="-7" y="-14" width="15" height="18" rx="5" fill="${col}"/><rect x="-5" y="-11" width="11" height="10" rx="2" fill="#fff"/>${SKI_SNOUT(.5,-6,4.2)}
+  <circle cx="1" cy="-21" r="6" fill="${col}"/><rect x="-5" y="-23" width="12" height="4" rx="2" fill="#ffd54d"/><text x="1" y="-26" text-anchor="middle" font-size="7" fill="#fff">${suit}</text>
+  <line x1="-7" y1="-6" x2="-16" y2="14" stroke="#ccc" stroke-width="1.5"/><line x1="8" y1="-6" x2="17" y2="12" stroke="#ccc" stroke-width="1.5"/></g>`;
+const QUIZ_SKI=[["Wat betekent 'schuss' op de piste?",["Recht naar beneden skiën","Een bocht maken","Remmen in sneeuwploeg","Een sprong"]],["Wat is een 'tire-fesses'?",["Een sleeplift","Een stoeltjeslift","Een skileraar","Een warme drank"]],
+["Welke kleur heeft de moeilijkste piste in Frankrijk?",["Zwart","Rood","Blauw","Groen"]],["Wat is de hoogste berg van West-Europa?",["Mont Blanc","Matterhorn","Grossglockner","Monte Rosa"]],
+["In welke Franse stad waren de eerste Olympische Winterspelen (1924)?",["Chamonix","Grenoble","Albertville","Courchevel"]],["Welke kaas hoort in een tartiflette?",["Reblochon","Comté","Brie","Roquefort"]],
+["Wat is 'vin chaud'?",["Warme gekruide wijn","Witte wijn uit Savoie","Een rode cocktail","Wijn met bier"]],["Welke Franse regio is bekend om fondue en raclette?",["Savoie","Bretagne","Provence","Normandië"]],
+["Wat zeg je in het Frans voor 'proost'?",["Santé !","Bon appétit !","Allez !","Merci !"]],["Hoe heet de skiliftpas in het Frans?",["Le forfait","Le billet","La carte neige","Le ticket"]],
+["Welk skigebied bevat het grootste aaneengesloten skidomein ter wereld?",["Les 3 Vallées","Paradiski","Portes du Soleil","Espace Killy"]],["Wat is het hoogste skidorp van Europa?",["Val Thorens","Tignes","Courchevel","Les Arcs"]],
+["Wat betekent 'hors-piste'?",["Buiten de piste skiën","Een zwarte piste","Een skiwedstrijd","De laatste afdaling"]],["Welk land won ooit de meeste olympische medailles in alpineskiën?",["Oostenrijk","Zwitserland","Frankrijk","Noorwegen"]],
+["Hoe heet het ski-onderdeel met poortjes dicht bij elkaar?",["Slalom","Afdaling","Super-G","Biathlon"]],["Wat is 'génépi'?",["Een kruidenlikeur uit de Alpen","Een skimerk","Een berggerecht","Een sleeplift"]],
+["Wat is 'un moniteur' in een skiresort?",["Een skileraar","Een liftbediende","Een pistebully","Een barman"]],["Hoeveel graden daalt de temperatuur ongeveer per 1000 m hoogte?",["± 6,5 °C","± 1 °C","± 15 °C","± 3 °C"]],
+["Wat is een 'raclette'?",["Gesmolten kaas met aardappelen","Een warme soep","Een skistok","Een Frans dessert"]],["Hoe heet een ski-instructeur die je achterna roept 'pizza!'?",["Je skileraar bij de beginners","Een snowboarder","De liftman","Een pisteur"]],
+["Wat betekent 'la piste est fermée'?",["De piste is gesloten","De piste is open","De piste is zwart","De piste is vol"]],["Wat drink je traditioneel om 16u in de après-ski?",["Een jägerbomb of vin chaud, natuurlijk","Melk","Thee met citroen","Tomatensap"]]];
+const DOD_SKI=[["Een week zwarte pistes","een week alleen maar après-ski"],["Skiën in een onesie","snowboarden in een smoking"],["Elke dag tartiflette","elke dag fondue"],["De sleeplift met je ex","de stoeltjeslift met je baas"],["Vin chaud","jägerbomb"],["Vallen voor de hele lift","vallen voor de skischool met kinderen"],["Een chalet zonder wifi","een chalet zonder warm water"],["Frans spreken de hele avond","met je skibril op tot middernacht"]];
+const FLES_SKI=["Praat tot je volgende beurt met een Frans accent","Doe de schuss-houding 15 seconden","Zing een après-ski-hit met de groep","Bestel je volgende drankje in het Frans","Doe een val zoals een beginner op de piste","Noem 5 Franse kazen in 10 seconden","Doe de 'pizza' en 'frieten' van je skileraar na","Geef iedereen 'la bise' (drie zoenen in de lucht)"];
+const FLES_CAS=["Doe 10 seconden je beste pokerface","Deel de kaarten uit als een croupier: iedereen krijgt een compliment","Zeg 'Rien ne va plus' met je beste Franse croupierstem","Bluf: vertel twee waarheden en één leugen, de groep raadt","Gooi 'all-in': drink je glas half leeg","Kies een tafelgenoot als je 'lucky charm' tot je volgende beurt"];
+const TCAT=["Noem een skigebied","Noem een Franse kaas","Noem een Frans woord dat iedereen kent","Noem iets dat je nodig hebt om te skiën","Noem een Franse voetballer","Noem een land met bergen","Noem een wintersport","Noem een Franse stad","Noem een après-ski-hit","Noem een merk van ski- of snowboardkledij","Noem een Frans gerecht","Noem een Franse wijn of streek"];
+const MONI=[["touchez votre nez","raak je neus aan"],["levez les bras","steek je armen in de lucht"],["dites oh là là","zeg 'oh là là'"],["position de schuss !","ga in de skihouding"],["tapez dans vos mains","klap in je handen"],["fermez les yeux","doe je ogen dicht"],["touchez votre oreille gauche","raak je linkeroor aan"],["levez-vous","sta recht"],["asseyez-vous","ga zitten"],["faites la pizza !","zet je voeten in sneeuwploeg"],["buvez une gorgée","neem een slok"],["criez Allez !","roep 'Allez!'"],["mettez les mains sur la tête","handen op je hoofd"],["faites un clin d'œil","knipoog"],["dansez cinq secondes","dans vijf seconden"],["montrez vos dents","toon je tanden"],["touchez le sol","raak de grond aan"],["faites la bise à votre voisin","geef je buur la bise"]];
+const RW=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26],RED=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+META.push(
+ {k:'descente',lvl:'ski',n:'Descente des As',s:'Vier skiërs · één piste',ic:'ski',p:'2+ spelers',r:["Iedereen krijgt een skiër: ♠, ♥, ♦ of ♣. Ze dragen allemaal het Zwijnerij-logo op hun borstnummer.","Tik op 'Tirer une carte'. De skiër van die kleur zakt één poort.","Zijn alle skiërs voorbij een poort, dan valt er één kaart om: die skiër maakt een chute en moet één poort terug.","Wie als eerste aan de arrivée is, deelt 3 slokken uit. De rest drinkt per poort achterstand (max. 4)."]},
+ {k:'telecab',lvl:'ski',n:'Télécabine',s:'Doorgeven tot de panne',ic:'gondola',p:'3+ spelers',r:["Je krijgt een categorie, bv. 'Noem een Franse kaas'.","Noem iets en geef de iPad door. Herhalen of te lang twijfelen mag niet.","De cabine stijgt, maar niemand weet wanneer ze in panne valt.","Wie de iPad vasthoudt bij de PANNE, drinkt 2 slokken."]},
+ {k:'moniteur',lvl:'ski',n:'Le Moniteur dit',s:'Jacques a dit, op de piste',ic:'whistle',p:'3+ spelers',r:["De skileraar geeft een bevel. Begint het met 'Le moniteur dit', dan doet iedereen het, en wel snel.","Zonder 'Le moniteur dit' is het een val: wie het toch doet, drinkt.","Wie als laatste het juiste bevel uitvoert, drinkt ook.","De vertaling staat er klein onder, voor wie geen Frans praat."]},
+ {k:'roulette',lvl:'cas',n:'Roulette',s:'Faites vos jeux',ic:'roulette',p:'2+ spelers',r:["Iedereen kiest een inzet: rood, zwart, even, oneven of 0.","Rien ne va plus: het wiel draait.","Juist gegokt? Deel 2 slokken uit (op 0 zelfs 5). Fout? Drink 1.","Valt het balletje op 0 en had jij geen 0, dan drink je 2: de bank wint."]},
+ {k:'slots',lvl:'cas',n:'Fruitautomaat',s:'Trek aan de hendel',ic:'slot',p:'1+ spelers',r:["Om de beurt trek je aan de hendel.","3× 7️⃣ = JACKPOT: deel 10 slokken uit. 3× 🐷 = Zwijnerij: iedereen drinkt 3.","3 dezelfde: deel 3 uit. 2 dezelfde: deel 1 uit.","Niets? Het huis wint: drink 1."]},
+ {k:'bj',lvl:'cas',n:'Blackjack',s:'Tegen het huis',ic:'cards',p:'1+ spelers',r:["Om de beurt speel je tegen de bank. Kom zo dicht mogelijk bij 21 zonder erover te gaan.","Kaart = nog een kaart, Pas = stoppen. De bank trekt tot 17.","Gewonnen: deel 2 uit (blackjack: 4). Verloren: drink 1. Over 21: drink 2.","Gelijk? Niemand drinkt."]});
+Object.assign(G,{
+ descente:{i(){const S=[['♠','#2b6cb0'],['♥','#e53e3e'],['♦','#dd6b20'],['♣','#2f855a']],N=7;let pos,dk,chutes,flip,own,done=false;
+   const P=active();
+   const start=()=>{pos=[0,0,0,0];dk=shuf(RANKS.filter(r=>r!=='A').flatMap(r=>SUITS.map(s=>[r,s[0],s[1]])));chutes=dk.splice(0,N-1);flip=0;done=false;
+     own=[[],[],[],[]];shuf(P).forEach((a,i)=>own[i%4].push(a));view('Tirer une carte om te starten.')};
+   const svg=()=>{const W=400,H=600,top=60,bot=540,gy=g=>top+(bot-top)*g/N;let o=`<svg viewBox="0 0 ${W} ${H}" class="slope"><defs><linearGradient id="sn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dbe7f3"/></linearGradient></defs>
+       <path d="M60 0 L340 0 L390 ${H} L10 ${H}Z" fill="url(#sn)"/><text x="200" y="34" text-anchor="middle" font-family="Anton,sans-serif" font-size="22" fill="#14202f">DÉPART</text>`;
+     for(let g=1;g<N;g++){const y=gy(g);o+=`<line x1="40" y1="${y}" x2="360" y2="${y}" stroke="#b7c9dc" stroke-dasharray="4 6"/><path d="M${30+g%2*6} ${y-22}v22M${30+g%2*6} ${y-22}l14 6-14 6" stroke="#14202f" fill="${g%2?'#e53e3e':'#2b6cb0'}" stroke-width="2"/><text x="372" y="${y+4}" font-family="JetBrains Mono,monospace" font-size="11" fill="#7a8ca3">${g}</text>`;
+       const c=chutes[g-1],shown=g<=flip;o+=`<g transform="translate(372,${y-34})"><rect x="-14" y="-2" width="28" height="20" rx="4" fill="${shown?'#fff':'#14202f'}" stroke="#14202f"/><text x="0" y="13" text-anchor="middle" font-size="12" fill="${shown&&c[2]?'#e53e3e':'#14202f'}">${shown?c[1]:'?'}</text></g>`}
+     o+=`<rect x="20" y="${bot+6}" width="360" height="26" fill="#ff7a1a"/><text x="200" y="${bot+25}" text-anchor="middle" font-family="Anton,sans-serif" font-size="18" fill="#14202f">ARRIVÉE</text>`;
+     S.forEach((s,i)=>{const x=95+i*70,y=pos[i]>=N?bot+2:gy(pos[i])-6;o+=`<g class="skr" style="transform:translate(${x}px,${y}px) scale(1.55)">${SKIER(s[1],s[0])}</g>`});
+     return o+'</svg>'};
+   const view=(msg)=>{const lead=Math.max(...pos);$('#gc').textContent='Poort '+lead+'/'+N;
+     scr(`<div class="dwrap">${svg()}<div class="dside"><div class="downs">${S.map((s,i)=>`<div class="down"><b style="color:${s[1]}">${s[0]}</b><span class="small">${own[i].length?own[i].map(a=>esc(a.n)).join(', '):'—'}</span></div>`).join('')}</div>
+       <div class="hint" id="dmsg" style="color:var(--fg);min-height:3em">${msg||''}</div>${done?`<button class="btn" id="dn">Nouvelle descente</button>`:`<button class="btn" id="dd">🎿 Tirer une carte</button>`}<button class="tbtn" id="dr">Skiërs opnieuw loten</button></div></div>`);
+     const d=$('#dd');if(d)d.onclick=draw;const n=$('#dn');if(n)n.onclick=start;$('#dr').onclick=start};
+   const draw=()=>{if(done)return;if(!dk.length)dk=shuf(RANKS.filter(r=>r!=='A').flatMap(r=>SUITS.map(s=>[r,s[0],s[1]])));const c=dk.pop(),i=S.findIndex(s=>s[0]===c[1]);pos[i]++;beep(500+pos[i]*60,.05,.08,'triangle');
+     let msg=`${c[0]}${c[1]} getrokken: ${c[1]} zakt naar poort ${Math.min(pos[i],N)}.`;
+     if(pos[i]>=N){done=true;const w=own[i],L=S.map((s,j)=>j===i?null:[s,own[j],Math.min(4,Math.max(1,N-pos[j]))]).filter(Boolean);
+       joeg('ARRIVÉE !',S[i][0]+' wint de descente');if(w.length)w.forEach(a=>award(a,3,'Descente'));L.forEach(([s,o])=>o.forEach(a=>lose(a)));
+       msg=`<b style="font-size:22px">🏆 ${S[i][0]} wint!</b><br>${w.length?esc(w.map(a=>a.n).join(', '))+': deel 3 slokken uit.':''}<br>${L.filter(x=>x[1].length).map(([s,o,n])=>`${esc(o.map(a=>a.n).join(', '))} (${s[0]}): drink ${n}`).join('<br>')}`;view(msg);return}
+     const mn=Math.min(...pos);if(mn>flip&&flip<N-1){flip++;const cc=chutes[flip-1],j=S.findIndex(s=>s[0]===cc[1]);if(pos[j]>0)pos[j]--;msg+=`<br>❄ Chute ! ${cc[1]} valt en moet terug naar poort ${pos[j]}.`;beep(160,.25,.12,'sawtooth')}
+     view(msg)};
+   start()}},
+ telecab:{i(){const nc=nightDeck('tcat',TCAT);let t0,dur,cat;
+   const ready=()=>{clr();$('#ov').classList.remove('ticking');cat=nc();scr(`<div class="mono">Catégorie</div><div class="pr" style="font-size:clamp(30px,4.6vw,56px)">${cat}</div><div class="hint">Noem iets, geef de iPad door. De cabine kan elk moment in panne vallen.</div><button class="btn" id="tg">🚡 En route !</button><button class="tbtn" id="tn">Andere categorie</button>`);$('#tg').onclick=go;$('#tn').onclick=ready};
+   const go=()=>{clr();dur=(22+Math.random()*45)*1000;t0=Date.now();$('#ov').classList.add('ticking');
+     scr(`<div class="mono">${cat}</div><div class="tcab"><svg viewBox="0 0 300 300"><path d="M0 270 L80 150 L130 200 L210 70 L300 190 L300 300 L0 300Z" fill="#fff6ea" opacity=".9"/><line x1="0" y1="260" x2="300" y2="20" stroke="#9fb0c4" stroke-width="2"/>
+       <g id="cab"><line x1="0" y1="-14" x2="0" y2="0" stroke="#9fb0c4" stroke-width="2"/><rect x="-20" y="0" width="40" height="34" rx="6" fill="#ff7a1a"/><rect x="-14" y="6" width="12" height="12" rx="2" fill="#bfe6ff"/><rect x="2" y="6" width="12" height="12" rx="2" fill="#bfe6ff"/>${SKI_SNOUT(0,26,6)}</g></svg></div>
+       <button class="btn" id="tx">Suivant → geef door</button>`);
+     let n=0;$('#tx').onclick=()=>{n++;beep(900,.03,.06);const b=$('#tx');if(b){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}};
+     const tick=()=>{const p=Math.min(1,(Date.now()-t0)/dur),c=$('#cab');if(!c)return;c.setAttribute('transform',`translate(${20+p*240},${250-p*215})`);
+       if(p>=1){clr();$('#ov').classList.remove('ticking');boomSnd();joeg('PANNE !','Wie de iPad heeft, drinkt 2');scr(`<div class="pr" style="font-size:clamp(40px,7vw,84px)">PANNE !</div><div class="hint" style="color:var(--fg);font-size:20px">Wie de iPad nu vasthoudt, drinkt 2 slokken.</div><button class="btn" id="tr">Volgende cabine</button>`);$('#tr').onclick=ready;return}
+       const left=1-p;if(Math.random()<(left<.25?.9:.35))beep(left<.25?1100:700,.02,.05);timers.push(setTimeout(tick,left<.25?160:380))};tick()};
+   ready()}},
+ moniteur:{i(){const n=nightDeck('moni',MONI);let k=0;
+   const nx=()=>{k++;const[c,v]=n(),real=Math.random()<.68;$('#gc').textContent=String(k).padStart(2,'0');beep(real?1200:500,.08,.1,'square');
+     scr(`<div class="mono">🎿 Le moniteur</div><div class="moni ${real?'':'trap'}"><div class="mpre">${real?'Le moniteur dit :':'&nbsp;'}</div><div class="pr" style="font-size:clamp(36px,6vw,76px)">« ${c} »</div><div class="small">${v}</div></div>
+       <div class="hint">${real?'Iedereen doen! Wie als laatste is, drinkt.':'Geen « Le moniteur dit »… wie het toch deed, drinkt!'}</div><button class="btn" id="mn">Suivant</button>`);$('#mn').onclick=nx};nx()}},
+ roulette:{i(){const P=active(),OPT=[['r','Rood'],['z','Zwart'],['e','Even'],['o','Oneven'],['0','0']];let bets={},rot=0,busy=false;
+   const U=P.length?P:[{id:'_s',n:'Speler'}];U.forEach(a=>bets[a.id]=bets[a.id]||OPT[Math.random()*4|0][0]);
+   const wheel=()=>{const n=RW.length,a=360/n;let o=`<svg viewBox="-110 -110 220 220" class="rwh"><g id="rw" style="transform:rotate(${rot}deg)">`;
+     RW.forEach((v,i)=>{const a0=(i*a-90-a/2)*Math.PI/180,a1=((i+1)*a-90-a/2)*Math.PI/180;const col=v===0?'#1e8a4c':RED.has(v)?'#c0392b':'#111';
+       o+=`<path d="M0 0 L${100*Math.cos(a0)} ${100*Math.sin(a0)} A100 100 0 0 1 ${100*Math.cos(a1)} ${100*Math.sin(a1)}Z" fill="${col}" stroke="#d4af37" stroke-width=".6"/><text transform="rotate(${i*a}) translate(0,-86)" text-anchor="middle" font-size="7" fill="#fff" font-family="JetBrains Mono,monospace">${v}</text>`});
+     return o+`</g><circle r="58" fill="#0a3322" stroke="#d4af37" stroke-width="3"/><circle r="10" fill="#d4af37"/><path d="M0 -112 L-7 -98 L7 -98Z" fill="#f5ecd0"/></svg>`};
+   const view=(res)=>{scr(`<div class="mono">Faites vos jeux</div><div class="rwrap">${wheel()}<div class="rbets">${U.map(a=>`<div class="rbet"><b>${esc(a.n)}</b><div class="seg">${OPT.map(([k,l])=>`<span class="sg ${bets[a.id]===k?'on':''}" data-rb="${a.id}|${k}">${l}</span>`).join('')}</div></div>`).join('')}</div></div>
+     <div class="hint" id="rres" style="color:var(--fg);min-height:2.6em">${res||''}</div><button class="btn" id="rs">🎲 Rien ne va plus · draai</button>`);
+     st.querySelectorAll('[data-rb]').forEach(b=>b.onclick=()=>{if(busy)return;const[id,k]=b.dataset.rb.split('|');bets[id]=k;view(res)});$('#rs').onclick=spin};
+   const spin=()=>{if(busy)return;busy=true;const idx=Math.random()*RW.length|0,v=RW[idx],a=360/RW.length;const cur=((rot%360)+360)%360,target=(360-idx*a)%360;rot+=360*5+((target-cur+360)%360);
+     const w=$('#rw');w.style.transition='transform 4.2s cubic-bezier(.12,.6,.1,1)';w.style.transform=`rotate(${rot}deg)`;$('#rs').disabled=true;
+     for(let i=0;i<14;i++)timers.push(setTimeout(()=>beep(1400-i*40,.02,.05),i*i*20));
+     timers.push(setTimeout(()=>{busy=false;const col=v===0?'0':RED.has(v)?'r':'z',par=v===0?null:v%2?'o':'e';
+       const out=U.map(a=>{const b=bets[a.id],win=b===col||b===par;if(v===0&&b!=='0'){lose(a);return `${esc(a.n)}: drink 2 (la banque gagne)`}if(win){award(a,b==='0'?5:2,'Roulette');return `<b>${esc(a.n)}: deel ${b==='0'?5:2} uit</b>`}lose(a);return `${esc(a.n)}: drink 1`});
+       joeg(v===0?'ZÉRO !':(col==='r'?'ROUGE ':'NOIR ')+v,v===0?'La banque gagne':'');view(`<span style="font-family:Anton,sans-serif;font-size:30px;color:${v===0?'#1e8a4c':col==='r'?'#ff6b5a':'var(--fg)'}">${v} ${v===0?'ZÉRO':col==='r'?'ROUGE':'NOIR'}${par?' · '+(par==='e'?'PAIR':'IMPAIR'):''}</span><br>${out.join(' · ')}`)},4300))};
+   view()}},
+ slots:{i(){const SY=['🍒','🍒','🍒','🍋','🍋','🍋','🔔','🔔','🍺','🍺','🐷','7️⃣'],pick=()=>SY[Math.random()*SY.length|0];let busy=false;
+   const view=(r,msg)=>{T.p||T.next();scr(`${T.tag('Aan de hendel')}<div class="slot"><div class="reels">${(r||['🍒','🍋','7️⃣']).map((x,i)=>`<div class="reel" id="sr${i}">${x}</div>`).join('')}</div><button class="lever" id="sl" aria-label="Trek aan de hendel"><span></span></button></div>
+     <div class="hint" style="color:var(--fg);min-height:2.6em" id="smsg">${msg||'Trek aan de hendel.'}</div><button class="btn" id="sp">🎰 Trek aan de hendel</button>`);$('#sp').onclick=pull;$('#sl').onclick=pull};
+   const pull=()=>{if(busy)return;busy=true;const me=T.p;const res=[pick(),pick(),pick()];if(Math.random()<.04)res[0]=res[1]=res[2]='7️⃣';$('#sp').disabled=true;const lv=$('#sl');lv.classList.add('down');
+     res.forEach((x,i)=>{const el=$('#sr'+i);const iv=setInterval(()=>{if(el)el.textContent=pick()},70);timers.push(iv);timers.push(setTimeout(()=>{clearInterval(iv);if(el){el.textContent=x;el.classList.add('stop')}beep(600+i*200,.05,.08)},900+i*500))});
+     timers.push(setTimeout(()=>{busy=false;const[a,b,c]=res,three=a===b&&b===c,two=a===b||b===c||a===c;let m;
+       if(three&&a==='7️⃣'){m='💰 JACKPOT! Deel 10 slokken uit.';award(me,5,'Fruitautomaat');joeg('JACKPOT !','Deel 10 uit')}
+       else if(three&&a==='🐷'){m='🐷 ZWIJNERIJ! Iedereen drinkt 3.';joeg('JOEGNEE!','Iedereen drinkt 3')}
+       else if(three){m='Drie op een rij! Deel 3 uit.';award(me,3,'Fruitautomaat')}else if(two){m='Twee dezelfde: deel 1 uit.';award(me,1,'Fruitautomaat')}else{m='Het huis wint: drink 1.';lose(me)}
+       const who=me?esc(me.n)+': ':'';T.next();view(res,who+m)},2500))};
+   T.next();view()}},
+ bj:{i(){let dk,ph,dh,me;const val=h=>{let v=0,a=0;h.forEach(c=>{const r=c[0];if(r==='A'){a++;v+=11}else v+=['J','Q','K'].includes(r)?10:+r});while(v>21&&a){v-=10;a--}return v};
+   const deal=()=>{if(!dk||dk.length<15)dk=fullDeck().concat(fullDeck());T.next();me=T.p;ph=[dk.pop(),dk.pop()];dh=[dk.pop(),dk.pop()];if(val(ph)===21)return end(true);view()};
+   const hand=(h,hide)=>`<div class="row bjh">${h.map((c,i)=>hide&&i===1?'<div class="card back"><div class="mid">🐷</div></div>':cardH(c)).join('')}</div>`;
+   const view=()=>{scr(`${T.tag('Aan tafel')}<div class="mono">Bank · ${val([dh[0]])}+?</div>${hand(dh,1)}<div class="mono">Jij · ${val(ph)}</div>${hand(ph)}<div class="row"><button class="btn ghost" id="bs">Pas</button><button class="btn" id="bh">Kaart</button></div>`);
+     $('#bh').onclick=()=>{ph.push(dk.pop());if(val(ph)>21)return end();if(val(ph)===21)return end();view()};$('#bs').onclick=()=>end()};
+   const end=(nat)=>{while(val(dh)<17)dh.push(dk.pop());const p=val(ph),d=val(dh);let m;
+     if(p>21){m='Over 21! Drink 2.';lose(me)}else if(nat&&ph.length===2){m='♠ BLACKJACK! Deel 4 uit.';award(me,4,'Blackjack');joeg('BLACKJACK !','Deel 4 uit')}
+     else if(d>21||p>d){m='Gewonnen! Deel 2 uit.';award(me,2,'Blackjack')}else if(p===d){m='Gelijk: niemand drinkt.'}else{m='De bank wint: drink 1.';lose(me)}
+     scr(`${T.tag('Aan tafel')}<div class="mono">Bank · ${d}</div>${hand(dh)}<div class="mono">${me?esc(me.n):'Jij'} · ${p}</div>${hand(ph)}<div class="pr" style="font-size:clamp(28px,4.4vw,48px)">${m}</div><button class="btn" id="bn">Volgende speler</button>`);$('#bn').onclick=deal};
+   deal()}}});
+
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795013774';
+const APPVER='1795016454';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
