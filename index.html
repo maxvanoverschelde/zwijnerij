@@ -15,8 +15,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{--bad:#ffffff;--suit:#d4ff3a;--chill:#ededed;--hard:#d4ff3a;--hot:#d4ff3a;--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:#141414}
-  body.light{--bad:#e8002d;--suit:#e8002d;--chill:#00a3ff;--hard:#ff2d55;--hot:#ffb703;--bg:#ffffff;--line:#e2e2e2;--fg:#000;--muted:#6a6a6a;--acc:#c6ff00;--acct:#4a8f00;--card:#f6f6f6;--card2:#eeeeee;--card3:#e4e4e4;--line2:#d0d0d0;--line3:#b5b5b5;--soft:#2a2a2a;--inv:#000;--noise:.02;--navbg:#ffffff}
+  :root{--chaos:#d4ff3a;--bad:#ffffff;--suit:#d4ff3a;--chill:#ededed;--hard:#d4ff3a;--hot:#d4ff3a;--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:#141414}
+  body.light{--chaos:#ff3bd4;--bad:#e8002d;--suit:#e8002d;--chill:#00a3ff;--hard:#ff2d55;--hot:#ffb703;--bg:#ffffff;--line:#e2e2e2;--fg:#000;--muted:#6a6a6a;--acc:#c6ff00;--acct:#4a8f00;--card:#f6f6f6;--card2:#eeeeee;--card3:#e4e4e4;--line2:#d0d0d0;--line3:#b5b5b5;--soft:#2a2a2a;--inv:#000;--noise:.02;--navbg:#ffffff}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif;min-height:100vh;
        padding:28px 32px;-webkit-user-select:none;user-select:none;position:relative;overflow-x:hidden}
@@ -235,17 +235,17 @@
   .jury button{border:1px solid var(--line2);border-radius:22px;padding:24px 14px;background:var(--card);display:flex;flex-direction:column;align-items:center;gap:8px}
   .jury b{font-size:54px;line-height:1}.jury .jn{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase}
   .chaosbox{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;border:1px solid var(--line2);border-radius:22px;padding:18px 22px;margin-bottom:14px;background:var(--card)}
-  .chaosbox.on{border-color:#ff3bd4;background:repeating-linear-gradient(135deg,color-mix(in srgb,#ff3bd4 10%,var(--card)) 0 18px,var(--card) 18px 36px)}
-  .chaosbox .tag{font-family:'JetBrains Mono',monospace;font-size:12px;background:#ff3bd4;color:#000;padding:3px 8px;border-radius:999px;vertical-align:middle;letter-spacing:.1em}
-  #cho{position:fixed;inset:0;z-index:15;display:none;align-items:center;justify-content:center;padding:30px;background:repeating-linear-gradient(135deg,#ff3bd4 0 26px,#0a0a0a 26px 52px);animation:chin .35s ease}
+  .chaosbox.on{border-color:var(--chaos);background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--chaos) 10%,var(--card)) 0 18px,var(--card) 18px 36px)}
+  .chaosbox .tag{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--chaos);color:#000;padding:3px 8px;border-radius:999px;vertical-align:middle;letter-spacing:.1em}
+  #cho{position:fixed;inset:0;z-index:15;display:none;align-items:center;justify-content:center;padding:30px;background:repeating-linear-gradient(135deg,var(--chaos) 0 26px,#0a0a0a 26px 52px);animation:chin .35s ease}
   #cho.open{display:flex}
   @keyframes chin{0%{transform:scale(1.15);opacity:0}100%{transform:none;opacity:1}}
-  .chb{background:#070707;color:#ededed;border:3px solid #ff3bd4;border-radius:28px;padding:34px 30px;max-width:900px;width:100%;display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;animation:sh .5s}
-  .chtag{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.3em;color:#ff3bd4;font-size:18px}
+  .chb{background:#070707;color:#ededed;border:3px solid var(--chaos);border-radius:28px;padding:34px 30px;max-width:900px;width:100%;display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;animation:sh .5s}
+  .chtag{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.3em;color:var(--chaos);font-size:18px}
   .cht{font-family:'Anton',sans-serif;font-size:clamp(34px,5.6vw,72px);text-transform:uppercase;line-height:1.02}
   .cht span,.chr span{color:#d4ff3a!important}
-  .chr{font-size:18px;color:#bdbdbd}.chr b{display:block;margin-top:6px;font-family:'Anton',sans-serif;font-weight:400;font-size:30px;text-transform:uppercase;color:#ff3bd4}
-  #chrule{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 96px);z-index:6;background:#ff3bd4;color:#000;border-radius:999px;padding:10px 18px;font-weight:600;display:flex;gap:10px;align-items:center;max-width:92vw;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);cursor:pointer}
+  .chr{font-size:18px;color:#bdbdbd}.chr b{display:block;margin-top:6px;font-family:'Anton',sans-serif;font-weight:400;font-size:30px;text-transform:uppercase;color:var(--chaos)}
+  #chrule{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 96px);z-index:6;background:var(--chaos);color:#000;border-radius:999px;padding:10px 18px;font-weight:600;display:flex;gap:10px;align-items:center;max-width:92vw;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);cursor:pointer}
   #chrule i{font-style:normal;opacity:.6}
   #ov.open~#chrule,body:has(#ov.open) #chrule{bottom:calc(env(safe-area-inset-bottom,0px) + 18px)}
   @media(max-width:760px){.chaosbox{grid-template-columns:1fr}.jury{grid-template-columns:1fr}}
@@ -362,6 +362,15 @@ a:visited{color:inherit}
 }
 .resume{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 100px);z-index:30;display:flex;gap:4px;background:var(--acc);border-radius:999px;padding:4px;box-shadow:0 10px 40px rgba(0,0,0,.5);max-width:calc(100vw - 24px)}
 .resume button{color:#000;font-weight:700;min-height:48px;padding:0 18px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.resume #rsx{padding:0 14px;opacity:.7}
+#wr{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 80px) 12px 12px;overflow-y:auto}#wr.open{display:flex}
+.back.ib{padding:10px 14px;min-height:44px}
+@media(max-width:760px){.back.ib span{display:none}.back.ib{padding:8px 12px}}
+.back{white-space:nowrap}#gt{flex:1;min-width:0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
+#wrk,#rgm{display:none}#ov.game #wrk,#ov.game #rgm{display:inline-flex;align-items:center}
+@media(max-width:600px){.lb,.lb tbody{display:block;width:100%}.lb tr{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n b" "c s";gap:2px 10px;padding:12px 0;border-bottom:1px solid var(--line)}.lb td{padding:0!important;border:0!important}.lb td:first-child{display:none}.lb td.n{grid-area:n;font-size:24px!important}.lb td:nth-child(3){grid-area:c;font-size:14px;color:var(--muted)}.lb td:nth-child(4){grid-area:b;text-align:right}.lb td:nth-child(5){grid-area:s;text-align:right;font-size:14px}}
+#ov.open~#chrule{bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}
+@media(max-width:600px){#chrule{font-size:13px;padding:8px 14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:calc(100vw - 24px)}#chrule span{margin-right:6px}#chrule i{margin-left:6px}
+  #cho{padding:12px}.chb{padding:22px 18px;gap:14px;max-height:calc(100vh - 24px);overflow-y:auto}.cht{font-size:clamp(26px,8vw,40px)}.chr b{font-size:22px}}
 </style>
 </head>
 <body>
@@ -414,7 +423,7 @@ a:visited{color:inherit}
 </nav>
 
 <div id="ov">
-  <div class="bar"><button class="back mono" id="bk">← Terug</button><div id="gt"></div><div style="display:flex;gap:12px;align-items:center"><div class="mono" id="gc"></div><button class="back mono" id="pln" style="display:none;border-color:var(--acc);color:var(--acct)">Volgend spel →</button></div></div>
+  <div class="bar"><button class="back mono" id="bk">← Terug</button><div id="gt"></div><div style="display:flex;gap:8px;align-items:center"><div class="mono" id="gc"></div><button class="back ib" id="wrk" aria-label="Wraak">😈<span> Wraak</span></button><button class="back ib" id="rgm" aria-label="Ander spel">🎲<span> Ander spel</span></button><button class="back mono" id="pln" style="display:none;border-color:var(--acc);color:var(--acct)">Volgend spel →</button></div></div>
   <div id="st"></div>
 </div>
 
@@ -958,7 +967,7 @@ let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill'||m.lvl==='hard').length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
-  $('#gl').outerHTML=`<div id="gl">${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
+  $('#gl').outerHTML=`<div id="gl">${chaosUI()}${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
   document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{lvSel=b.dataset.lv;try{localStorage.setItem('kp_lv',lvSel)}catch(e){}renderGames()});
   document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g));
@@ -967,14 +976,31 @@ function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill
   $('#rnd').onclick=()=>{const l0=META.filter(m=>m.lvl===lvSel),l=l0.length>1?l0.filter(m=>m.k!==window._lastRnd):l0,m=l[Math.random()*l.length|0];window._lastRnd=m.k;beep(660,.05,.1,'triangle');openGame(m.k)}}
 const rulesHtml=r=>{const small=innerHeight<720||innerWidth<560,n=small&&r.length>2?2:r.length;
   return `<ol class="rules">${r.map((x,i)=>`<li class="${i>=n?'hid':''}"><span>${x}</span></li>`).join('')}</ol>${n<r.length?`<button class="tbtn" id="rmore">Alle regels (${r.length}) ▾</button>`:''}`};
-const openGame=k=>{const m=META.find(x=>x.k===k);if(!m){PL=null;return}clr();plBar();$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
+let CURG=null;
+const openGame=k=>{const m=META.find(x=>x.k===k);if(!m){PL=null;return}CURG=m;$('#ov').classList.add('game');clr();plBar();$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="ic" style="width:84px;height:84px;margin:0;border-radius:22px"><svg viewBox="0 0 24 24" style="width:42px;height:42px">${IC[m.ic]}</svg></div>
     ${PL?`<div class="mono" style="color:var(--acct)">Spellenavond · spel ${PL.i+1} van ${PL.list.length}</div>`:''}<div class="pr">${m.n}</div><div class="meta"><span>${(LV[m.lvl]||{n:'Groot spel'}).n}</span><span>${m.p}</span><span>${m.s}</span></div>
     ${rulesHtml(m.r)}<button class="btn" id="sg">Start</button>`);
   const rm=$('#rmore');if(rm)rm.onclick=()=>{st.querySelectorAll('.rules li.hid').forEach(l=>l.classList.remove('hid'));rm.remove()};
   $('#sg').onclick=()=>{try{localStorage.setItem('kp_last',JSON.stringify({k,t:Date.now()}))}catch(e){}bump('games',k);try{wake()}catch(e){}try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){}G[k].i()}};
 
-$('#bk').onclick=()=>{try{localStorage.removeItem('kp_last')}catch(e){}const jg=document.getElementById('jg');if(jg)jg.classList.remove('go');camStop();clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
+
+/* ===== wraak + ander spel ===== */
+const wraak=()=>{const P=active();if(P.length<2){joeg('WRAAK?','Eerst minstens 2 spelers kiezen');return}
+  let s=document.getElementById('wr');if(!s){s=document.createElement('div');s.id='wr';document.body.appendChild(s)}
+  const close=()=>s.classList.remove('open');
+  s.innerHTML=`<div class="qsb"><div class="row" style="justify-content:space-between;width:100%"><div class="nmx" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase">😈 Wraak</div><button class="tbtn" id="wrx">Sluit</button></div>
+    <div class="small">Wie moest net drinken? Die mag terugpakken.</div><div class="row">${P.map(a=>`<button class="pbtn" data-wr="${a.id}">${av(a,40)}<span>${esc(a.n)}</span></button>`).join('')}</div></div>`;
+  s.classList.add('open');s.onclick=e=>{if(e.target===s)close()};$('#wrx').onclick=close;
+  s.querySelectorAll('[data-wr]').forEach(b=>b.onclick=()=>{const a=ACC.find(x=>x.id===b.dataset.wr),fail=Math.random()<.25;
+    if(!fail)bump('wraak',a.id);beep(fail?150:990,.2,.12,fail?'sawtooth':'triangle');
+    s.querySelector('.qsb').innerHTML=`<div class="mono">${fail?'Wraak mislukt':'Wraak!'}</div><div class="pr" style="font-size:clamp(30px,6vw,56px)">${esc(a.n)}</div>
+      <div class="hint" style="font-size:20px;color:var(--fg)">${fail?'Pech: het rad van het lot draait terug. Jij drinkt er nog 1 bij.':'Wijs iemand aan: die drinkt evenveel slokken als jij net.'}</div><button class="btn" id="wrok">Gedaan</button>`;
+    $('#wrok').onclick=close})};
+const otherGame=()=>{const lv=CURG&&CURG.lvl,same=['chill','hard'].includes(lv),pool=META.filter(m=>m.k!==(CURG&&CURG.k)&&['chill','hard'].includes(m.lvl)&&(!same||m.lvl===lv));
+  const m=pool[Math.random()*pool.length|0];if(!m)return;try{localStorage.removeItem('kp_last')}catch(e){}camStop();clr();$('#ov').classList.remove('boom','ticking');PL=null;openGame(m.k)};
+$('#wrk').onclick=wraak;$('#rgm').onclick=otherGame;
+$('#bk').onclick=()=>{CURG=null;$('#ov').classList.remove('game');try{localStorage.removeItem('kp_last')}catch(e){}const jg=document.getElementById('jg');if(jg)jg.classList.remove('go');camStop();clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
 
 /* ===== tabs ===== */
 const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
@@ -1019,7 +1045,7 @@ function renderCount(){const el=$('#t-count'),P=active();
   el.querySelectorAll('[data-wt]').forEach(b=>b.onclick=()=>{prof(b.dataset.wt).w=Date.now();saveC();bump('water',b.dataset.wt);beep(1200,.05,.08,'sine');renderCount()});}
 function overview(){/* iedereen die vanavond iets dronk, ook wie al vertrokken is */
   const rows=ACC.filter(a=>ACT.ids.includes(a.id)||(CNT[a.id]&&prof(a.id).d.length)).map(a=>{const p=prof(a.id),b=bacOf(p,a);const L=limOf(a);return{a,b,L,c:p.d.length,z:Date.now()+b/BETA*3.6e6,l:Date.now()+Math.max(0,b-L)/BETA*3.6e6}}).sort((x,y)=>y.b-x.b);
-  clr();$('#gt').textContent='Einde avond';$('#gc').textContent='';$('#ov').classList.add('open');
+  clr();CURG=null;$('#ov').classList.remove('game');$('#gt').textContent='Einde avond';$('#gc').textContent='';$('#ov').classList.add('open');
   scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Wie blaast er<br>nog positief?</div>
    <table class="lb" style="max-width:860px">${rows.map(r=>{const[lv]=level(r.b,r.L);return `<tr><td>${av(r.a,40)}</td><td class="n">${esc(r.a.n)}${ACT.ids.includes(r.a.id)?'':' <span class="small">(vertrokken)</span>'}</td><td>${r.c} ${r.c===1?'drankje':'drankjes'}</td>
      <td style="font-family:'Anton',sans-serif;font-size:28px;color:${LCc()[lv]}">${r.b.toFixed(2).replace('.',',')}‰</td>
@@ -1151,7 +1177,7 @@ const openCQ=()=>{clr();$('#gt').textContent='Eigen vragen';$('#gc').textContent
 $('#cq').onclick=openCQ;
 
 /* ===== avondstatistieken ===== */
-const statsHTML=()=>{const byId=id=>ACC.find(a=>a.id===id),top=(o,low)=>{const e=Object.entries(STATS[o]).filter(([id])=>byId(id));if(!e.length)return null;e.sort((a,b)=>low?a[1]-b[1]:b[1]-a[1]);return[byId(e[0][0]),e[0][1]]};
+const statsHTML=()=>{const byId=id=>ACC.find(a=>a.id===id),top=(o,low)=>{const e=Object.entries(STATS[o]||{}).filter(([id])=>byId(id));if(!e.length)return null;e.sort((a,b)=>low?a[1]-b[1]:b[1]-a[1]);return[byId(e[0][0]),e[0][1]]};
   const g=Object.entries(STATS.games).sort((a,b)=>b[1]-a[1])[0],gm=g&&META.find(m=>m.k===g[0]);
   STATS.kara=STATS.kara||{};const q=top('quiz'),k=top('kop'),r=top('reflex',true),w=top('water'),kk=top('kara');
   const cell=(l,v)=>`<div><span class="mono">${l}</span><b>${v||'—'}</b></div>`;
@@ -1159,7 +1185,8 @@ const statsHTML=()=>{const byId=id=>ACC.find(a=>a.id===id),top=(o,low)=>{const e
     ${cell('Populairste spel',gm?gm.n+' · '+g[1]+'×':'')}${cell('Quizkoning',q?esc(q[0].n)+' · '+q[1]:'')}
     ${cell('Beste raadder',k?esc(k[0].n)+' · '+k[1]:'')}${cell('Snelste reflex',r?esc(r[0].n)+' · '+r[1]+'ms':'')}
     ${cell('Waterheld',w?esc(w[0].n)+' · '+w[1]+'×':'')}${cell('Spellen gespeeld',Object.values(STATS.games).reduce((a,b)=>a+b,0)||'')}
-    ${(()=>{const d=ACC.map(x=>[x,(CNT[x.id]&&prof(x.id).d.length)||0]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1])[0];return cell('Meeste drankjes',d?esc(d[0].n)+' · '+d[1]:'')})()}${cell('Karaokester',kk?esc(kk[0].n)+' · '+kk[1]+'🔥':'')}${cell('Sinds',hhmm(STATS.t))}</div>`};
+    ${(()=>{const d=ACC.map(x=>[x,(CNT[x.id]&&prof(x.id).d.length)||0]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1])[0];return cell('Meeste drankjes',d?esc(d[0].n)+' · '+d[1]:'')})()}${cell('Karaokester',kk?esc(kk[0].n)+' · '+kk[1]+'🔥':'')}${(()=>{const sp=top('spill'),wr=top('wraak'),all=ACC.flatMap(x=>CNT[x.id]?prof(x.id).d.map(d=>[x,d.t]):[]).sort((a,b)=>a[1]-b[1]),f=all[0],l=all[all.length-1];
+      return cell('Morskampioen',sp?esc(sp[0].n)+' · '+sp[1]+'×':'')+cell('Wraakkoning',wr?esc(wr[0].n)+' · '+wr[1]+'×':'')+cell('Eerste drankje',f?esc(f[0].n)+' · '+hhmm(f[1]):'')+cell('Nachtuil',l&&all.length>1?esc(l[0].n)+' · '+hhmm(l[1]):'')})()}${cell('Sinds',hhmm(STATS.t))}</div>`};
 
 
 /* ===== licht / donker ===== */
@@ -1377,7 +1404,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795004097';
+const APPVER='1795004348';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);

@@ -186,7 +186,8 @@ const renderPlayer=()=>{const s=Pl.state;if(!s)return;const me=s.players.find(p=
   if(s.phase==='lobby'){app.innerHTML=`<div class="mono">Quiz ${esc(s.code)}</div><div class="h1">Je zit erin</div><div class="hint">Wacht tot de quiz start op de iPad.</div>`;return}
   if(s.phase==='end'){const r=s.players.slice().sort((a,b)=>b.s-a.s);app.innerHTML=`<div class="h1">Gedaan</div><div class="h2">${me?me.s:0} juist</div><div class="hint">Plaats ${r.findIndex(p=>p.id===Pl.pid)+1} van ${r.length}. Kijk naar de iPad.</div>`;return}
   const locked=s.locked.includes(Pl.pid),mine=s.buzz===Pl.pid,open=s.phase==='q'&&!s.buzz&&!locked;
-  app.innerHTML=`<div class="mono">Vraag ${s.n} / ${s.max} · ${me?me.s:0} punten</div>
+  const rk=s.players.slice().sort((a,b)=>b.s-a.s),pos=me?1+rk.filter(p=>p.s>me.s).length:0,lead=rk[0];
+  app.innerHTML=`<div class="mono">Vraag ${s.n} / ${s.max} · ${me?me.s:0} ${me&&me.s===1?'punt':'punten'}${pos&&rk.length>1&&rk[0].s>0?' · plaats '+pos+'/'+rk.length:''}</div>${lead&&lead.s>0&&lead.id!==Pl.pid?`<div class="small" style="color:var(--muted)">👑 ${esc(lead.n)} leidt met ${lead.s}</div>`:lead&&lead.s>0?'<div class="small" style="color:var(--acc)">👑 Jij leidt!</div>':''}
     <button class="bigbuzz ${open?'':'off'} ${mine?'mine':''}" id="bz" ${open?'':'disabled'}>${s.phase==='shown'?(mine?'JUIST!':locked?'FOUT':s.buzz?'✓':'—'):mine?'JIJ!':s.buzz?esc(s.buzzN):locked?'GEBLOKT':s.phase==='q'?'BUZZ':'…'}</button>
     <div class="hint">${s.phase==='shown'?(mine?'Juist! +1 punt voor jou.':s.buzz?esc(s.buzzN)+' had het juist.':locked?'Fout. Niemand had het juist.':'Niemand had het. Kijk naar de iPad.'):mine?'Jij was eerst: geef je antwoord hardop.':s.buzz?esc(s.buzzN)+' mag antwoorden.':locked?'Fout geantwoord: je wacht deze vraag over.':s.phase==='q'?'Lees de vraag op de iPad en druk als je het weet.':'Wacht op de volgende vraag.'}</div>`;
   if(s.phase==='shown'&&mine&&Pl.lastOk!==s.n){Pl.lastOk=s.n;vib([60,60,120])}
