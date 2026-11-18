@@ -15,8 +15,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{--chaos:#d4ff3a;--bad:#ffffff;--suit:#d4ff3a;--chill:#ededed;--hard:#d4ff3a;--hot:#d4ff3a;--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:#141414}
-  body.light{--chaos:#ff3bd4;--bad:#e8002d;--suit:#e8002d;--chill:#00a3ff;--hard:#ff2d55;--hot:#ffb703;--bg:#ffffff;--line:#e2e2e2;--fg:#000;--muted:#6a6a6a;--acc:#c6ff00;--acct:#4a8f00;--card:#f6f6f6;--card2:#eeeeee;--card3:#e4e4e4;--line2:#d0d0d0;--line3:#b5b5b5;--soft:#2a2a2a;--inv:#000;--noise:.02;--navbg:#ffffff}
+  :root{--yt:#ededed;--chaos:#d4ff3a;--bad:#ffffff;--suit:#d4ff3a;--chill:#ededed;--hard:#d4ff3a;--hot:#d4ff3a;--bg:#070707;--line:#1f1f1f;--fg:#ededed;--muted:#6b6b6b;--acc:#d4ff3a;--acct:#d4ff3a;--card:#0c0c0c;--card2:#111;--card3:#1b1b1b;--line2:#2c2c2c;--line3:#3a3a3a;--soft:#bdbdbd;--inv:#ededed;--noise:.07;--navbg:#141414}
+  body.light{--yt:#FF0033;--chaos:#ff3bd4;--bad:#e8002d;--suit:#e8002d;--chill:#00a3ff;--hard:#ff2d55;--hot:#ffb703;--bg:#ffffff;--line:#e2e2e2;--fg:#000;--muted:#6a6a6a;--acc:#c6ff00;--acct:#4a8f00;--card:#f6f6f6;--card2:#eeeeee;--card3:#e4e4e4;--line2:#d0d0d0;--line3:#b5b5b5;--soft:#2a2a2a;--inv:#000;--noise:.02;--navbg:#ffffff}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif;min-height:100vh;
        padding:28px 32px;-webkit-user-select:none;user-select:none;position:relative;overflow-x:hidden}
@@ -606,12 +606,13 @@ Object.assign(G,{
    play()}},
  mex:{i(){let thr=0,max=3,round=[],cur=null,pl=1;
    const score=(a,b)=>{const h=Math.max(a,b),l=Math.min(a,b);if(h===2&&l===1)return{v:1000,t:'MEX'};if(a===b)return{v:a*100,t:a*100+''};return{v:h*10+l,t:''+h+l}};
-   const view=(d1,d2,anim)=>{const P=active();$('#gc').textContent='Beurt · '+pname(pl-1);
-     scr(`<div class="dice ${anim?'roll':''}">${die(d1||1)}${die(d2||1)}</div>
+   const view=(d1,d2,anim)=>{const P=active(),U=units(),u=U.length?U[(pl-1)%U.length]:null,all=U.length&&round.length>=U.length;$('#gc').textContent='Worp '+thr+'/'+max;
+     scr(`${all?`<div class="turn" style="padding-left:22px"><div><div class="mono">Ronde klaar</div><b>Iedereen heeft gegooid</b></div></div>`:u?`<div class="turn">${av(u,48)}<div><div class="mono">Aan de beurt · gooit nu</div><b>${esc(u.n)}</b></div></div>`:`<div class="turn" style="padding-left:22px"><div><div class="mono">Aan de beurt</div><b>Speler ${pl}</b></div></div>`}
+       <div class="dice ${anim?'roll':''}">${die(d1||1)}${die(d2||1)}</div>
        <div class="pr">${cur?cur.t:'—'}</div>
-       <div class="hint">Worp ${thr} van ${max}${pl>1?' (bepaald door '+pname(0)+')':''}. ${round.length?'Laagste tot nu: <b style="color:var(--fg)">'+Math.min(...round.map(r=>r.v===1000?9999:r.v)).toString().replace('9999','MEX')+'</b>':''}</div>
-       <div class="row">${thr<max?'<button class="btn ghost" id="rl">Gooi</button>':''}${thr>0?'<button class="btn" id="kp">Houden · volgende</button>':''}</div>
-       ${round.length>=2?`<button class="btn ${P.length&&round.length>=P.length?'':'ghost'}" id="en">Einde ronde</button>`:''}`);
+       <div class="hint">Worp ${thr} van ${max}${pl>1?' (bepaald door '+pname(0)+')':''}. ${round.length?(()=>{const lo=Math.min(...round.map(r=>r.v)),i=round.findIndex(r=>r.v===lo);return 'Laagste tot nu: <b style="color:var(--fg)">'+round[i].t+'</b> van '+pname(i)})():''}</div>
+       <div class="row">${thr<max&&!all?'<button class="btn ghost" id="rl">Gooi</button>':''}${thr>0?'<button class="btn" id="kp">Houden · volgende</button>':''}</div>
+       ${round.length>=2||all?`<button class="btn ${all?'':'ghost'}" id="en">Einde ronde</button>`:''}`);
      const r=$('#rl'),k=$('#kp'),e=$('#en');if(r)r.onclick=roll;if(k)k.onclick=keep;if(e)e.onclick=end};
    const roll=()=>{thr++;const a=1+Math.random()*6|0,b=1+Math.random()*6|0;cur=score(a,b);beep(300,.05,.08,'triangle');view(a,b,1)};
    const keep=()=>{if(pl===1)max=thr;round.push(cur);pl++;thr=0;cur=null;view()};
@@ -962,7 +963,7 @@ const META=[
  {k:'lot',lvl:'chill',n:'De Loting',s:'BOB · afwas · volgende ronde',ic:'lot',tag:'Nieuw',p:'Iedereen',r:["Kies wat er geloot wordt: BOB, afwas, wie de volgende ronde haalt…","Tik op Loot. De namen draaien en vertragen tot er één overblijft.","Geen discussie: het lot heeft gesproken."]},
  {k:'wed',lvl:'chill',n:'Wedkantoor',s:'Voorspel de match',ic:'ball',tag:'Nieuw',p:'2+ spelers',r:["Vul de match in, bv. Real Madrid - Bayern.","Iedereen stelt zijn voorspelde score in.","Na de match vul je de uitslag in. Exacte score: deel 3 slokken uit. Juiste winnaar: deel 1 uit. Fout: 1 slok.","De weddenschap blijft bewaard tot je de uitslag invult, ook als je de app sluit."]},
  {k:'duel',lvl:'hard',n:'Teamduel',s:'Team tegen team',ic:'vs',tag:'Teams',p:'2+ teams',r:["Twee teams worden tegen elkaar geloot.","Lees de uitdaging voor. Soms loopt er een timer van 30 seconden.","Tik wie won. Het verliezende team drinkt samen.","De stand wordt bijgehouden tot je terug gaat."]},
- {k:'kara',lvl:'chill',n:'Karaoke',s:'Rad · uitdaging · jury',ic:'mic',tag:'Nieuw',p:'2+ spelers',r:["Het rad kiest wie er moet zingen. Met teams aan zingt het hele team samen.","Je krijgt een categorie (bv. ‘Een Belgische klassieker’) en een uitdaging (bv. ‘met een West-Vlaams accent’).","Tik het nummer in en open de karaoke-versie op YouTube: dan staat de tekst op het scherm. Bluetooth-box aan, en gaan.","Na het nummer beslist de jury: 🔥 ster (deel 3 slokken uit), 👍 prima of 💀 vals (zanger drinkt 2). Weigeren = ad fundum."]},
+ {k:'kara',lvl:'chill',n:'Karaoke',s:'Rad · uitdaging · jury',ic:'mic',tag:'Nieuw',p:'2+ spelers',r:["Het rad kiest wie er moet zingen. Met teams aan zingt het hele team samen.","Je krijgt een categorie (bv. ‘Een Belgische klassieker’) en een uitdaging (bv. ‘met een West-Vlaams accent’).","Tik het nummer in en open het op YouTube: het origineel mét zang en de tekst in beeld. Bluetooth-box aan, en gaan.","Na het nummer beslist de jury: 🔥 ster (deel 3 slokken uit), 👍 prima of 💀 vals (zanger drinkt 2). Weigeren = ad fundum."]},
  {k:'wbi',lvl:'chill',n:'Wie Ben Ik?',s:'Naam op je kop · ja/nee',ic:'head',tag:'Nieuw',p:'3+ spelers',r:["Kies een categorie: Bekende Belgen, voetballers, filmpersonages, artiesten, iemand hier aan tafel of een mix.","Hou de iPad op je voorhoofd met het scherm naar de groep. Je ziet de naam niet, de rest wel.","Stel ja/nee-vragen. De groep antwoordt enkel met ja of nee. Je hebt 2 minuten.","Geraden? Hoe sneller, hoe meer slokken je uitdeelt. Opgeven of tijd op: 2 slokken."]},
  {k:'teken',lvl:'big',n:'Tekenen',s:'Teken op de iPad, de rest raadt',ic:'eye',tag:'Teams',p:'2+ teams',r:["De tekenaar bekijkt stiekem het woord.","Hij tekent het op de iPad, zonder letters of cijfers. Zijn team (of de rest) raadt.","Geraden binnen 60 seconden: 2 punten en 2 slokken uitdelen.","Niet geraden: de tekenaar drinkt 2 slokken."]},
  {k:'ww',lvl:'solo',n:'Weerwolven',s:'Met jullie gsm\'s · lobby met code',ic:'wolf',tag:'Groot spel',p:'5-30 spelers',r:["Eén iemand maakt de lobby en speelt gewoon mee. Die krijgt een code en een QR-code, de rest scant die met zijn gsm en komt zo in de lobby.","Het spel kiest zelf hoeveel weerwolven en welke rollen er meedoen, afhankelijk van het aantal spelers. Vanaf 6 spelers is er ook een verteller die op zijn gsm de tekst en de knoppen krijgt.","’s Nachts kiest iedereen op zijn gsm. Ook de burgers tikken iets aan, zodat niemand opvalt.","Overdag discussiëren jullie met een timer. Elke weerwolf krijgt een geheime opdracht die hij moet uitvoeren. Betrap ze!","Stemmen gebeurt op de gsm. De burgemeester telt dubbel. Via 📖 Rollen ziet iedereen wat elke rol doet."]}];
@@ -1303,10 +1304,10 @@ Object.assign(G,{
      scr(`${T.tag('Op het podium')}<div class="mono">Categorie</div><div class="pr" style="font-size:clamp(30px,4.4vw,54px)">${c.cat}</div>
        <div class="kch"><span class="mono">Uitdaging</span><b>${c.ch}</b></div>
        <div class="srch" style="width:min(720px,92vw)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="kq" placeholder="Welk nummer? (artiest + titel)" autocomplete="off">
-         <a class="sb" id="kyt" style="--c:#FF0033" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=karaoke">Karaoke-versie</a></div>
-       <div class="hint">Tip: de karaoke-versie op YouTube toont de tekst op het scherm. Weigeren = ad fundum.</div>
+         <a class="sb" id="kyt" style="--c:var(--yt)" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=lyrics">▶ Met tekst + zang</a></div>
+       <div class="hint">De knop zoekt het origineel mét zang en de tekst in beeld, zodat je kan meezingen. Weigeren = ad fundum.</div>
        <div class="row"><button class="tbtn" id="kr">Andere categorie</button><button class="btn" id="kd">Klaar met zingen</button></div>`);
-     const setQ=()=>{const q=($('#kq').value.trim()||c.cat)+' karaoke';$('#kyt').href='https://www.youtube.com/results?search_query='+encodeURIComponent(q)};$('#kq').oninput=setQ;setQ();
+     const setQ=()=>{const q=($('#kq').value.trim()||c.cat)+' lyrics';$('#kyt').href='https://www.youtube.com/results?search_query='+encodeURIComponent(q)};$('#kq').oninput=setQ;setQ();
      $('#kr').onclick=()=>{c.cat=nc();card()};$('#kd').onclick=jury};
    const jury=()=>{const c=cur;scr(`<div class="mono">De jury beslist</div><div class="pr" style="font-size:clamp(30px,4.4vw,54px)">Hoe was ${esc(c.who.n)}?</div>
      <div class="jury">${KJURY.map(j=>`<button data-j="${j.k}"><b>${j.e}</b><span class="jn">${j.n}</span><span class="small">${j.d}</span></button>`).join('')}</div>`);
@@ -1409,7 +1410,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795007216';
+const APPVER='1795007553';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
