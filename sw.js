@@ -1,6 +1,6 @@
 // Zwijnerij offline: pagina's eerst van het net, anders uit de cache
-const C='zwijnerij-v6';
-const CORE=['./','./index.html','./manifest.json','./icon-180.png','./icon-512.png','./fclatem.png','./fclatem-64.png'];
+const C='zwijnerij-v7';
+const CORE=['./','./index.html','./manifest.json','./icon-180.png','./icon-512.png','./fclatem.png','./fclatem-64.png','./pinte.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET')return;const u=new URL(r.url);
