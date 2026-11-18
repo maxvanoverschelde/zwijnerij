@@ -1153,17 +1153,17 @@ const prof=id=>{const p=CNT[id]||(CNT[id]={d:[]});if(p.d.length&&Date.now()-p.d[
 const bacOf=(p,a)=>{if(!p.d.length)return 0;const B=BODY[a&&a.g]||BODY.v,g=p.d.reduce((s,x)=>s+x.g,0),h=(Date.now()-p.d[0].t)/3.6e6;return Math.max(0,g/(B.w*B.r)-BETA*h)};
 const durTxt=h=>{const m=Math.ceil(h*60);return m<60?m+' min':Math.floor(m/60)+'u'+String(m%60).padStart(2,'0')};
 const hhmm=ms=>{const d=new Date(ms);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
-const level=(b,L=.5)=>L===.2&&b>=.2&&b<.5?[2,'Boven 0,2‰: met een rijbewijs van minder dan 3 jaar mag je niet rijden.']:b<.2?[0,'Bijna nuchter, maar na drinken rijden blijft een slecht idee.']:b<.5?[1,'Onder de wettelijke 0,5‰, maar je reacties zijn al trager. Twijfel je? Laat de auto staan.']
+const level=(b,L=.5)=>b<.2?[0,'Bijna nuchter, maar na drinken rijden blijft een slecht idee.']:b<.5?[1,'Onder de wettelijke 0,5‰, maar je reacties zijn al trager. Twijfel je? Laat de auto staan.']
   :b<1?[2,'Boven 0,5‰: autorijden is verboden. Boete en mogelijk rijverbod.']:b<1.5?[2,'Coördinatie en inschatting gaan achteruit. Tijd voor een glas water.']
   :[3,'Stop met drinken. Water, iets eten, en laat iemand een oogje in het zeil houden.'];
 const LC0=['#d4ff3a','#ededed','#ffffff','#ffffff'],LC1=['#3d8a00','#a86f00','#c2410c','#be123c'];const LCc=()=>document.body.classList.contains('light')?LC1:document.body.classList.contains('latem')?['#ffffff','#ffffff','#ffd6d6','#ffd6d6']:LC0;
-const NOV_START=new Date('2027-01-01').getTime();const limOf=a=>a&&a.nov&&Date.now()>=NOV_START?.2:.5;
+const NOV_START=new Date('2027-01-01').getTime();const limOf=a=>.5;
 const card=a=>{const p=prof(a.id),b=bacOf(p,a),L=limOf(a),[lv,msg]=level(b,L),zero=Date.now()+b/BETA*3.6e6,legal=Date.now()+Math.max(0,b-L)/BETA*3.6e6,cnt=p.d.length,
   std=(p.d.reduce((s,x)=>s+x.g,0)/10).toFixed(1).replace('.',',');
-  return `<div class="pc" style="border-color:color-mix(in srgb,${MC(a.c)} 30%,var(--line))"><div class="h"><div style="display:flex;gap:14px;align-items:center">${av(a,48)}<div><div class="nmx">${esc(a.n)}</div><div class="small" style="margin-top:6px">${a.g==='m'?'Man':a.g==='v'?'Vrouw':'Geslacht niet ingesteld'}${a.nov?' · Beginner':''} · ${cnt} ${cnt===1?'drankje':'drankjes'} · ${std} standaardglazen</div></div></div>
+  return `<div class="pc" style="border-color:color-mix(in srgb,${MC(a.c)} 30%,var(--line))"><div class="h"><div style="display:flex;gap:14px;align-items:center">${av(a,48)}<div><div class="nmx">${esc(a.n)}</div><div class="small" style="margin-top:6px">${a.g==='m'?'Man':a.g==='v'?'Vrouw':'Geslacht niet ingesteld'} · ${cnt} ${cnt===1?'drankje':'drankjes'} · ${std} standaardglazen</div></div></div>
     <div><div class="bac" style="color:${LCc()[lv]}">${b.toFixed(2).replace('.',',')}</div><div class="small" style="text-align:right">‰ geschat</div></div></div>
     <div class="dr">${DRINKS.map((d,i)=>`<button data-n="${a.id}" data-d="${i}"><b>+</b>${d.k}<span class="small">${d.s}</span></button>`).join('')}</div>
-    <div class="warn lvl${lv}">${msg}${b>=L?`<br><b>Je blaast positief tot ±${hhmm(legal)}</b>${(b-L)/BETA>=8?' (morgen)':''}, nog ±${durTxt((b-L)/BETA)}.`:b>0?`<br><b>Onder de ${L===.2?'0,2':'0,5'}‰: je blaast niet positief.</b>`:''}${a.nov&&L===.5&&b>=.2?`<br><span style="opacity:.85">Rijbewijs &lt; 3 jaar: vanaf 2027 geldt voor jou 0,2‰. Dan zou je positief blazen tot ±${hhmm(Date.now()+(b-.2)/BETA*3.6e6)}.</span>`:''}${b>0?`<br><span style="opacity:.75">Alcohol volledig weg: ±${hhmm(zero)}.</span>`:''}</div>
+    <div class="warn lvl${lv}">${msg}${b>=L?`<br><b>Je blaast positief tot ±${hhmm(legal)}</b>${(b-L)/BETA>=8?' (morgen)':''}, nog ±${durTxt((b-L)/BETA)}.`:b>0?`<br><b>Onder de ${L===.2?'0,2':'0,5'}‰: je blaast niet positief.</b>`:''}${b>0?`<br><span style="opacity:.75">Alcohol volledig weg: ±${hhmm(zero)}.</span>`:''}</div>
     ${needWater(a.id,b)?`<div class="water"><span>💧 Tijd voor een glas water${b>=1?'. Je zit hoog':''}.</span><button class="tbtn" data-wt="${a.id}">Gedronken</button></div>`:''}
     <div class="row" style="justify-content:flex-end"><button class="tbtn" data-n="${a.id}" data-un="1">Laatste ongedaan maken</button></div></div>`};
 const needWater=(id,b)=>{const p=prof(id),last=p.w||0,recent=p.d.filter(x=>Date.now()-x.t<60*6e4).length;return Date.now()-last>40*6e4&&(recent>=3||b>=.8||(p.d.length>=4&&p.d.length%3===1))};
@@ -1215,7 +1215,7 @@ const bindTeamUI=()=>{const el=$('#t-players');
 function renderPlayers(){const el=$('#t-players'),P=active();
   el.innerHTML=`<div class="sec mono"><span>Spelers</span><span>${P.length} doen mee</span></div>
    <div class="hint" style="text-align:left;margin-bottom:18px">Tik op een profiel om het aan of uit te zetten voor vanavond. Komt er iemand bij of vertrekt er iemand? Gewoon aan- of uittikken. Spellen en teller passen zich meteen aan.</div>
-   <div class="accs">${ACC.map(a=>{const on=ACT.ids.includes(a.id);return `<button class="acc ${on?'on':''}" style="--c:${MC(a.c)}" data-a="${a.id}">${av(a,56)}<div><div class="nmx">${esc(a.n)}</div><div class="st" style="margin-top:6px">${on?'● Doet mee':'○ Niet vanavond'}</div></div><div class="seg"><span class="sg ${a.g==='m'?'on':''}" data-g="m" data-id="${a.id}">Man</span><span class="sg ${a.g==='v'?'on':''}" data-g="v" data-id="${a.id}">Vrouw</span></div><span class="sg nv ${a.nov?'on':''}" data-nov="${a.id}">Rijbewijs &lt; 3 jaar</span><span class="x" data-del="${a.id}">✕</span></button>`}).join('')}
+   <div class="accs">${ACC.map(a=>{const on=ACT.ids.includes(a.id);return `<button class="acc ${on?'on':''}" style="--c:${MC(a.c)}" data-a="${a.id}">${av(a,56)}<div><div class="nmx">${esc(a.n)}</div><div class="st" style="margin-top:6px">${on?'● Doet mee':'○ Niet vanavond'}</div></div><div class="seg"><span class="sg ${a.g==='m'?'on':''}" data-g="m" data-id="${a.id}">Man</span><span class="sg ${a.g==='v'?'on':''}" data-g="v" data-id="${a.id}">Vrouw</span></div><span class="x" data-del="${a.id}">✕</span></button>`}).join('')}
      <div class="acc new" id="na">${newC!==null?`<input class="nm" id="nn" placeholder="Naam of bijnaam" maxlength="16" style="width:100%"><div class="seg"><span class="sg ${newG==='m'?'on':''}" data-ng="m">Man</span><span class="sg ${newG==='v'?'on':''}" data-ng="v">Vrouw</span></div><div class="sw">${COLORS.map(c=>`<button data-c="${c}" style="--c:${MC(c)}" class="${c===newC?'on':''}"></button>`).join('')}</div>${document.body.classList.contains('light')?'':'<div class="small" style="opacity:.7">De volle kleuren zie je in de lichte modus.</div>'}<div class="row" style="width:100%"><button class="tbtn" id="nc">Annuleer</button><button class="btn" id="ns" style="padding:14px 26px">Maak aan</button></div>`
        :`<span style="font-size:44px;line-height:1">+</span><span class="mono">Nieuw profiel</span>`}</div></div>
    ${teamUI()}
@@ -1246,7 +1246,6 @@ const FACTS=[["1 glas / uur","Je lever breekt ongeveer één standaardglas (10 g
 ["0,5‰","De algemene limiet in België. Voor professionele chauffeurs is dat 0,2‰. Daarboven riskeer je een boete. Sinds juli 2026 zijn die 10% duurder."],
 ["12 uur rijverbod","Blaas je positief, dan mag je sinds juli 2026 minstens 12 uur niet rijden. Pas daarna, met een negatieve test, mag je weer achter het stuur."],
 ["0,8‰ = 15 dagen","Vanaf 0,8‰ ben je sinds februari 2026 overal in België ter plaatse je rijbewijs kwijt voor 15 dagen."],
-["2027: 0,2‰","Heb je je rijbewijs nog geen 3 jaar, dan geldt vanaf 2027 een limiet van 0,2‰. Dat is ongeveer één pint. Zet het aan bij je profiel."],
 ["Ook de fiets","Fietsers en steppers zijn ook bestuurders. Dronken fietsen is gevaarlijk én strafbaar."],
 ["De ochtend erna","Na een zware avond zit je 's ochtends vaak nog boven de limiet. 8 pinten wegwerken duurt ±8 uur, vanaf je laatste glas."],
 ["Water ertussen","Eén glas water per drankje: minder kater, en je drinkt automatisch trager."],
@@ -1686,7 +1685,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795013515';
+const APPVER='1795013774';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
@@ -1711,7 +1710,7 @@ const rpc=async(fn,args)=>{const r=await fetch(URL0+'/rest/v1/rpc/'+fn,{method:'
 const pubUrl=p=>URL0+'/storage/v1/object/public/zwphotos/'+p;
 const fmt=c=>c?c.slice(0,4)+'-'+c.slice(4):'';
 const link=c=>location.origin+location.pathname+'?g='+(c||CUR);
-const clean=a=>({id:a.id,n:a.n,c:a.c,g:a.g||null,nov:!!a.nov});
+const clean=a=>({id:a.id,n:a.n,c:a.c,g:a.g||null});
 const persistAcc=()=>{try{localStorage.setItem('kp_acc',JSON.stringify(ACC));localStorage.setItem('kp_active',JSON.stringify(ACT))}catch(e){}LS.set(accKey(CUR),ACC)};
 const switchTo=code=>{LS.set(accKey(CUR),ACC);LS.set('kp_act_'+(CUR||'local'),ACT.ids);CUR=code;D=code?Object.assign(EMPTY(),LS.get('kp_gd_'+code,{})):EMPTY();ACC=LS.get(accKey(code),[]);
   const ids=new Set(ACC.map(a=>a.id));ACT.ids=LS.get('kp_act_'+(code||'local'),ACT.ids).filter(id=>ids.has(id));persistAcc();saveG();last=0;err='';renderHead();try{renderGames()}catch(e){}if(code)ZG.sync()};
@@ -1730,7 +1729,7 @@ const ZG=window.ZG={
       if(CUR!==code){busy=false;return}
       if(!g){err='Deze groep bestaat niet meer.';busy=false;drawP();return}
       g0.name=g.name;D={evenings:g.evenings||[],photos:g.photos||[],gone:g.gone||[],gone_evenings:g.gone_evenings||[],gone_photos:g.gone_photos||[]};
-      let ch=false;(g.players||[]).forEach(p=>{const a=ACC.find(x=>x.id===p.id);if(a){['n','c','g','nov'].forEach(k=>{if(p[k]!==undefined&&a[k]!==p[k]){a[k]=p[k];ch=true}})}else{ACC.push(clean(p));ch=true}});
+      let ch=false;(g.players||[]).forEach(p=>{const a=ACC.find(x=>x.id===p.id);if(a){['n','c','g'].forEach(k=>{if(p[k]!==undefined&&a[k]!==p[k]){a[k]=p[k];ch=true}})}else{ACC.push(clean(p));ch=true}});
       const gone=new Set(D.gone);if(ACC.some(a=>gone.has(a.id))){ACC=ACC.filter(a=>!gone.has(a.id));ACT.ids=ACT.ids.filter(id=>!gone.has(id));ch=true}
       persistAcc();
       const ge=new Set(D.gone_evenings);if(HIST.some(h=>ge.has(h.t0))){HIST=HIST.filter(h=>!ge.has(h.t0));saveHist()}
@@ -1768,7 +1767,7 @@ window.renderPlayers=renderPlayers=function(){const el=$('#t-players');if(!el)re
   const form=mode==='new'?`<div class="grp"><div class="gi"><span class="mono">👥 Nieuwe groep</span><b>Hoe heet jullie groep?</b></div><div class="row"><input class="nm" id="zgn" maxlength="40" placeholder="Bv. Kot Kortrijksepoort" autocomplete="off"><button class="btn" id="zgc2">Maak groep</button><button class="tbtn" id="zgb">Annuleer</button></div><div class="small" id="zgm"></div></div>`
     :mode==='join'?`<div class="grp"><div class="gi"><span class="mono">👥 Meedoen met een groep</span><b>Typ de code</b><span class="small">Of open gewoon de link die je kreeg.</span></div><div class="row"><input class="nm" id="zgj" maxlength="9" placeholder="ABCD-EFGH" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn" id="zgj2">Doe mee</button><button class="tbtn" id="zgb">Annuleer</button></div><div class="small" id="zgm"></div></div>`:'';
   const rows=ACC.map(a=>{const on=ACT.ids.includes(a.id),ed=edit===a.id;return `<div class="mrow ${on?'on':''}"><button class="mtg" data-tg="${a.id}">${av(a,44)}<span class="mn">${esc(a.n)}</span><span class="mst">${on?'✓ Doet mee':'Niet vanavond'}</span></button><button class="tbtn med" data-ed="${a.id}" aria-label="Bewerk ${esc(a.n)}">${ed?'✕':'✎'}</button></div>
-    ${ed?`<div class="medit"><div class="seg"><span class="sg ${a.g==='m'?'on':''}" data-gg="m" data-id="${a.id}">Man</span><span class="sg ${a.g==='v'?'on':''}" data-gg="v" data-id="${a.id}">Vrouw</span></div><span class="sg ${a.nov?'on':''}" data-nv="${a.id}">Rijbewijs &lt; 3 jaar</span><button class="tbtn" data-rm="${a.id}">${g?'Uit de groep halen':'Verwijderen'}</button></div>`:''}`}).join('');
+    ${ed?`<div class="medit"><div class="seg"><span class="sg ${a.g==='m'?'on':''}" data-gg="m" data-id="${a.id}">Man</span><span class="sg ${a.g==='v'?'on':''}" data-gg="v" data-id="${a.id}">Vrouw</span></div><button class="tbtn" data-rm="${a.id}">${g?'Uit de groep halen':'Verwijderen'}</button></div>`:''}`}).join('');
   el.innerHTML=`<div class="sec mono"><span>${g?'Mijn groepen':'Vriendengroep'}</span><span>${GROUPS.length?GROUPS.length+(GROUPS.length===1?' groep':' groepen'):''}</span></div>
    ${GROUPS.length?`<div class="gchs">${gl}</div>`:`<div class="grp"><div class="gi"><b>Niet altijd alle namen intikken</b><span class="small">Maak een groep met je vrienden. Op een ander toestel open je gewoon de link en zijn alle spelers, klassementen en foto's er meteen.</span></div></div>`}
    <div class="row" style="justify-content:flex-start;margin:10px 0 18px"><button class="tbtn" id="zgnw">+ Nieuwe groep</button><button class="tbtn" id="zgjn">Ik heb een code</button></div>${form}
@@ -1790,7 +1789,6 @@ window.renderPlayers=renderPlayers=function(){const el=$('#t-players');if(!el)re
   el.querySelectorAll('[data-tg]').forEach(b=>b.onclick=()=>{const id=b.dataset.tg;ACT.ids=ACT.ids.includes(id)?ACT.ids.filter(i=>i!==id):[...ACT.ids,id];saveA();beep(ACT.ids.includes(id)?880:440,.05,.08,'triangle');renderPlayers();renderHead()});
   el.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{edit=edit===b.dataset.ed?null:b.dataset.ed;renderPlayers()});
   el.querySelectorAll('[data-gg]').forEach(b=>b.onclick=()=>{const a=ACC.find(x=>x.id===b.dataset.id);a.g=b.dataset.gg;saveA();renderPlayers()});
-  el.querySelectorAll('[data-nv]').forEach(b=>b.onclick=()=>{const a=ACC.find(x=>x.id===b.dataset.nv);a.nov=!a.nov;saveA();renderPlayers()});
   el.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker? Tik nog eens';return}const id=b.dataset.rm;ZG.delPlayer(id);ACC=ACC.filter(a=>a.id!==id);ACT.ids=ACT.ids.filter(i=>i!==id);delete CNT[id];saveC();saveA();edit=null;renderPlayers();renderHead()});
   el.querySelectorAll('[data-ag]').forEach(b=>b.onclick=()=>{const v=$('#zan').value;addG=b.dataset.ag;renderPlayers();$('#zan').value=v;$('#zan').focus()});
   const add=()=>{const v=$('#zan').value.trim();if(!v)return $('#zan').focus();const a={id:'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),n:v,c:COLORS[ACC.length%COLORS.length],g:addG};ACC.push(a);ACT.ids.push(a.id);saveA();renderPlayers();renderHead();$('#zan').focus()};
