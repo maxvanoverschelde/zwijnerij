@@ -1196,7 +1196,7 @@ const rulesHtml=r=>{const small=innerHeight<720||innerWidth<560,n=small&&r.lengt
 let CURG=null;
 const avOff=()=>!AV||AV.end;
 const openGame=k=>{const m=META.find(x=>x.k===k);if(!m){PL=null;return}
-  if(avOff()&&!['big','solo'].includes(m.lvl)){clr();PL=null;plBar();document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));$('#ov').classList.add('ingame','open');$('#gt').textContent=m.n;$('#gc').textContent='';
+  if(avOff()&&m.lvl!=='solo'){clr();PL=null;plBar();document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));$('#ov').classList.add('ingame','open');$('#gt').textContent=m.n;$('#gc').textContent='';
     scr(`<div class="pr" style="font-size:clamp(32px,5vw,60px)">Je bent nog geen avond begonnen</div><div class="hint">Start eerst de avond: dan tellen de scores, slokken en het klassement mee. Daarna start <b style="color:var(--fg)">${m.n}</b> vanzelf.</div><button class="btn" id="gav">▶ Start de avond</button>`);
     $('#gav').onclick=()=>{window._pendG=k;quickStart()};return}
   CURG=m;document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));$('#ov').classList.add('ingame');clr();plBar();$('#gt').textContent=m.n;$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
@@ -1954,7 +1954,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795018264';
+const APPVER='1795019474';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
