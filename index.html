@@ -437,9 +437,9 @@ body.latem .qstart{padding-right:110px}@media(max-width:600px){body.latem .qstar
 @media (prefers-reduced-motion:reduce){#spd .spdi{animation:none}}
 .gchs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:10px}
 .gch{display:flex;flex-direction:column;gap:4px;text-align:left;border:1px solid var(--line2);border-radius:18px;padding:14px 16px;background:var(--card);min-height:84px}.gch b{font-family:'Anton',sans-serif;font-weight:400;font-size:24px;text-transform:uppercase}.gch.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,var(--card))}
-.mlist{display:flex;flex-direction:column;gap:8px}.mrow{display:flex;gap:8px;align-items:stretch}.mtg{flex:1;display:flex;align-items:center;gap:12px;border:1px solid var(--line2);border-radius:16px;padding:8px 14px 8px 8px;min-height:60px;text-align:left;background:var(--card);min-width:0}
-.mrow.on .mtg{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,var(--card))}.mn{flex:1;font-family:'Anton',sans-serif;font-size:22px;text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mst{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}.mrow.on .mst{color:var(--acct)}.mrow:not(.on) .av{opacity:.45}
+.mlist{display:flex;flex-direction:column;gap:8px}.mbr{display:flex;gap:8px;align-items:stretch}.mtg{flex:1;display:flex;align-items:center;gap:12px;border:1px solid var(--line2);border-radius:16px;padding:8px 14px 8px 8px;min-height:60px;text-align:left;background:var(--card);min-width:0}
+.mbr.on .mtg{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,var(--card))}.mn{flex:1;font-family:'Anton',sans-serif;font-size:22px;text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mst{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}.mbr.on .mst{color:var(--acct)}.mbr:not(.on) .av{opacity:.45}
 .med{min-width:52px}.medit{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 4px 10px 56px}
 .madd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}.madd .nm{flex:1 1 200px;width:auto;min-width:0;max-width:100%}@media(max-width:420px){.madd .nm{flex-basis:100%}}.grp .nm{min-width:0;max-width:100%}
 .albbar{justify-content:flex-start;gap:8px;width:100%}.albh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -475,7 +475,7 @@ body.casino::before{content:'';position:fixed;inset:0;pointer-events:none;z-inde
 body.casino main,body.casino header{position:relative;z-index:1}
 body.casino #ov{background:radial-gradient(ellipse at 50% 40%,#0d4a30,#06281a 75%)}
 body.casino .brand{background:linear-gradient(180deg,#fff3c4,#d4af37 60%,#9a7414);-webkit-background-clip:text;background-clip:text;color:transparent}body.casino .brand i{color:transparent}
-body.casino .card,body.casino .podc,body.casino .pc,body.casino .game,body.casino .mrow .mtg{border-color:#2d7352}
+body.casino .card,body.casino .podc,body.casino .pc,body.casino .game,body.casino .mbr .mtg{border-color:#2d7352}
 body.casino .qstart{background:linear-gradient(135deg,#e6c35a,#b8902a);position:relative;padding-right:100px}body.casino .qstart::after{content:'🎰';position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:56px}
 body.casino .p1 .blk{background:linear-gradient(180deg,#f5d77a,#b8902a);color:#06281a}
 .lysw em{font-style:normal;font-size:40px;margin-left:4px}
@@ -1872,7 +1872,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795016454';
+const APPVER='1795016746';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
@@ -1953,7 +1953,7 @@ window.renderPlayers=renderPlayers=function(){const el=$('#t-players');if(!el)re
   const gl=GROUPS.map(x=>`<button class="gch ${x.code===CUR?'on':''}" data-gs="${x.code}"><span class="mono">👥 Groep</span><b>${esc(x.name)}</b><span class="small">${x.code===CUR?ACC.length+' '+(ACC.length===1?'persoon':'personen'):'tik om te kiezen'}</span></button>`).join('');
   const form=mode==='new'?`<div class="grp"><div class="gi"><span class="mono">👥 Nieuwe groep</span><b>Hoe heet jullie groep?</b></div><div class="row"><input class="nm" id="zgn" maxlength="40" placeholder="Bv. Kot Kortrijksepoort" autocomplete="off"><button class="btn" id="zgc2">Maak groep</button><button class="tbtn" id="zgb">Annuleer</button></div><div class="small" id="zgm"></div></div>`
     :mode==='join'?`<div class="grp"><div class="gi"><span class="mono">👥 Meedoen met een groep</span><b>Typ de code</b><span class="small">Of open gewoon de link die je kreeg.</span></div><div class="row"><input class="nm" id="zgj" maxlength="9" placeholder="ABCD-EFGH" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.12em"><button class="btn" id="zgj2">Doe mee</button><button class="tbtn" id="zgb">Annuleer</button></div><div class="small" id="zgm"></div></div>`:'';
-  const rows=ACC.map(a=>{const on=ACT.ids.includes(a.id),ed=edit===a.id;return `<div class="mrow ${on?'on':''}"><button class="mtg" data-tg="${a.id}">${av(a,44)}<span class="mn">${esc(a.n)}</span><span class="mst">${on?'✓ Doet mee':'Niet vanavond'}</span></button><button class="tbtn med" data-ed="${a.id}" aria-label="Bewerk ${esc(a.n)}">${ed?'✕':'✎'}</button></div>
+  const rows=ACC.map(a=>{const on=ACT.ids.includes(a.id),ed=edit===a.id;return `<div class="mbr ${on?'on':''}"><button class="mtg" data-tg="${a.id}">${av(a,44)}<span class="mn">${esc(a.n)}</span><span class="mst">${on?'✓ Doet mee':'Niet vanavond'}</span></button><button class="tbtn med" data-ed="${a.id}" aria-label="Bewerk ${esc(a.n)}">${ed?'✕':'✎'}</button></div>
     ${ed?`<div class="medit"><div class="seg"><span class="sg ${a.g==='m'?'on':''}" data-gg="m" data-id="${a.id}">Man</span><span class="sg ${a.g==='v'?'on':''}" data-gg="v" data-id="${a.id}">Vrouw</span></div><button class="tbtn" data-rm="${a.id}">${g?'Uit de groep halen':'Verwijderen'}</button></div>`:''}`}).join('');
   el.innerHTML=`<div class="sec mono"><span>${g?'Mijn groepen':'Vriendengroep'}</span><span>${GROUPS.length?GROUPS.length+(GROUPS.length===1?' groep':' groepen'):''}</span></div>
    ${GROUPS.length?`<div class="gchs">${gl}</div>`:`<div class="grp"><div class="gi"><b>Niet altijd alle namen intikken</b><span class="small">Maak een groep met je vrienden. Op een ander toestel open je gewoon de link en zijn alle spelers, klassementen en foto's er meteen.</span></div></div>`}
