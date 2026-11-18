@@ -771,23 +771,47 @@ const tonight=l=>l.filter(p=>Date.now()-p.t<14*3.6e6);
 let camStream=null;const camStop=()=>{if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}};
 async function booth(){clr();PL=null;$('#gt').textContent='Fotobooth';$('#gc').textContent='';$('#ov').classList.add('open');st.style.position='';
   scr(`<div class="booth"><video id="vd" playsinline autoplay muted></video><div class="bcnt" id="bc"></div><div class="bflash" id="bf"></div></div>
+    <div class="seg" id="fr">${FRAMES.map(([k,l])=>`<span class="sg ${FRAME===k?'on':''}" data-fr="${k}">${l}</span>`).join('')}</div>
     <div class="row"><button class="btn" id="sn">📸 Foto (3-2-1)</button><button class="btn ghost" id="sl">Diavoorstelling</button></div><div class="bthumbs" id="bt"></div>
     <div class="small" id="bi">Foto's blijven alleen op deze iPad. <button class="tbtn" id="bw">Alles wissen</button></div>`);
   const thumbs=async()=>{const l=tonight(await photoAll());const el=$('#bt');if(!el)return;el.innerHTML=l.slice(-12).reverse().map(p=>`<img src="${URL.createObjectURL(p.blob)}">`).join('');$('#gc').textContent=l.length?String(l.length).padStart(2,'0'):''};
   try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false});$('#vd').srcObject=camStream}
   catch(e){$('#vd').outerHTML='<div class="hint" style="padding:40px">Geen camera. Geef de app toegang tot de camera in de instellingen van de iPad (Safari › Camera).</div>'}
-  thumbs();
+  thumbs();const vprev=()=>{const v=$('#vd');if(v&&v.style)v.style.filter=frameCss[FRAME]||''};vprev();
+  st.querySelectorAll('[data-fr]').forEach(b=>b.onclick=()=>{FRAME=b.dataset.fr;try{localStorage.setItem('kp_frame',FRAME)}catch(e){}st.querySelectorAll('[data-fr]').forEach(x=>x.classList.toggle('on',x===b));vprev();beep(800,.04,.08)});
   $('#sn').onclick=()=>{const v=$('#vd');if(!v||!camStream)return;let n=3;const bc=$('#bc');bc.textContent=n;beep(700,.08);
     const t=setInterval(()=>{n--;if(n>0){bc.textContent=n;beep(700,.08)}else{clearInterval(t);bc.textContent='';beep(1400,.15);const f=$('#bf');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');shoot(v).then(thumbs)}},900);timers.push(t)};
   $('#sl').onclick=()=>{camStop();slides()};
   $('#bw').onclick=e=>{const b=e.currentTarget;if(b.dataset.s){photoClear().then(thumbs);b.textContent='Gewist'}else{b.dataset.s=1;b.textContent='Zeker? Tik nog eens'}}}
-async function shoot(v){const W=1080,Hh=Math.round(W*(v.videoHeight/v.videoWidth||.75)),bar=150,c=document.createElement('canvas');c.width=W;c.height=Hh+bar;const x=c.getContext('2d');
-  x.fillStyle='#070707';x.fillRect(0,0,c.width,c.height);x.save();x.translate(W,0);x.scale(-1,1);x.drawImage(v,0,0,W,Hh);x.restore();
-  x.strokeStyle='#d4ff3a';x.lineWidth=14;x.strokeRect(7,7,W-14,c.height-14);
-  try{await document.fonts.load('80px Anton')}catch(e){}
-  x.fillStyle='#ededed';x.font='72px Anton, Impact, sans-serif';x.textBaseline='middle';x.fillText('ZWIJN',40,Hh+bar/2+4);const w1=x.measureText('ZWIJN').width;x.fillStyle='#d4ff3a';x.fillText('ERIJ',40+w1,Hh+bar/2+4);
-  const d=new Date();x.fillStyle='#8a8a8a';x.font='28px "JetBrains Mono", monospace';x.textAlign='right';x.fillText(d.toLocaleDateString('nl-BE',{day:'numeric',month:'short'})+' · '+hhmm(d.getTime()),W-40,Hh+bar/2);
-  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.85));await photoAdd(Date.now(),blob)}
+if(window.CanvasRenderingContext2D&&!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h)};
+const FRAMES=[['neon','Neon'],['pola','Polaroid'],['zw','Zwart-wit'],['film','Filmrol'],['feest','Feest']];
+let FRAME=(()=>{try{return localStorage.getItem('kp_frame')||'neon'}catch(e){return'neon'}})();
+const frameCss={zw:'grayscale(1) contrast(1.15)',film:'sepia(.55) contrast(1.05) saturate(1.2)'};
+const logo=(x,X,Y,sz,c1,c2,al='left')=>{x.save();x.font=sz+'px Anton, Impact, sans-serif';x.textBaseline='middle';const a=x.measureText('ZWIJN').width,b=x.measureText('ERIJ').width;
+  let s=al==='center'?X-(a+b)/2:al==='right'?X-a-b:X;x.textAlign='left';x.fillStyle=c1;x.fillText('ZWIJN',s,Y);x.fillStyle=c2;x.fillText('ERIJ',s+a,Y);x.restore()};
+const stamp=()=>{const d=new Date();return d.toLocaleDateString('nl-BE',{day:'numeric',month:'short'})+' · '+hhmm(d.getTime())};
+const pix=(x,X,Y,w,h,f)=>{const im=x.getImageData(X,Y,w,h),d=im.data;for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2];const o=f(r,g,b);d[i]=o[0];d[i+1]=o[1];d[i+2]=o[2]}x.putImageData(im,X,Y)};
+async function shoot(v){try{await document.fonts.load('80px Anton');await document.fonts.load('28px "JetBrains Mono"')}catch(e){}
+  const F=FRAME,ar=(v.videoHeight/v.videoWidth)||.75,c=document.createElement('canvas'),x=c.getContext('2d');
+  const put=(X,Y,w,h)=>{x.save();x.translate(X+w,Y);x.scale(-1,1);const vw=v.videoWidth,vh=v.videoHeight,s=Math.max(w/vw,h/vh),sw=w/s,sh=h/s;x.drawImage(v,(vw-sw)/2,(vh-sh)/2,sw,sh,0,0,w,h);x.restore()};
+  const mono=(t,X,Y,col,al='right',sz=28)=>{x.save();x.font=sz+'px "JetBrains Mono", monospace';x.fillStyle=col;x.textAlign=al;x.textBaseline='middle';x.fillText(t,X,Y);x.restore()};
+  if(F==='pola'){const W=1080,p=50,iw=W-2*p,ih=Math.round(iw*ar),bot=240;c.width=W;c.height=p+ih+bot;x.fillStyle='#fbfbf7';x.fillRect(0,0,c.width,c.height);put(p,p,iw,ih);
+    logo(x,W/2,p+ih+bot/2-18,96,'#111','#6fa800','center');mono(stamp(),W/2,p+ih+bot-46,'#888','center',26)}
+  else if(F==='zw'){const W=1080,H=Math.round(W*ar);c.width=W;c.height=H;put(0,0,W,H);pix(x,0,0,W,H,(r,g,b)=>{let l=.3*r+.59*g+.11*b;l=Math.max(0,Math.min(255,(l-128)*1.2+128));return[l,l,l]});
+    const gr=x.createLinearGradient(0,H-260,0,H);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,.75)');x.fillStyle=gr;x.fillRect(0,H-260,W,260);
+    logo(x,50,H-80,110,'#fff','#d4ff3a');mono(stamp(),W-50,H-70,'#ddd');x.strokeStyle='#fff';x.lineWidth=10;x.strokeRect(5,5,W-10,H-10)}
+  else if(F==='film'){const W=1080,side=90,iw=W-2*side,ih=Math.round(iw*ar),top=40,bar=140;c.width=W;c.height=top+ih+bar;x.fillStyle='#111';x.fillRect(0,0,c.width,c.height);put(side,top,iw,ih);
+    pix(x,side,top,iw,ih,(r,g,b)=>[Math.min(255,r*.9+g*.25+20),Math.min(255,r*.3+g*.75+8),Math.min(255,b*.6+15)]);
+    x.fillStyle='#e9e4d8';for(let yy=24;yy<c.height-20;yy+=56){x.beginPath();x.roundRect(28,yy,34,26,5);x.roundRect(W-62,yy,34,26,5);x.fill()}
+    logo(x,side,top+ih+bar/2,78,'#e9e4d8','#ffb000');mono('ZW-'+String(Date.now()%1000).padStart(3,'0')+'  '+stamp(),W-side,top+ih+bar/2,'#ffb000')}
+  else if(F==='feest'){const W=1080,p=70,iw=W-2*p,ih=Math.round(iw*ar),bot=200;c.width=W;c.height=p+ih+bot;x.fillStyle='#0a0a0a';x.fillRect(0,0,c.width,c.height);
+    const cols=['#d4ff3a','#ff3bd4','#3bd4ff','#ffd23f','#ff5c6c'];for(let i=0;i<260;i++){x.save();x.fillStyle=cols[i%5];x.translate(Math.random()*W,Math.random()*c.height);x.rotate(Math.random()*6);x.fillRect(-9,-4,18,8);x.restore()}
+    x.save();x.shadowColor='#ff3bd4';x.shadowBlur=30;x.fillStyle='#000';x.fillRect(p-8,p-8,iw+16,ih+16);x.restore();put(p,p,iw,ih);
+    x.save();x.translate(W-60,p+ih+bot/2);x.rotate(-.06);x.fillStyle='#d4ff3a';x.beginPath();x.roundRect(-560,-70,560,130,24);x.fill();logo(x,-280,0,92,'#000','#ff3bd4','center');x.restore();
+    x.font='110px serif';x.textBaseline='middle';x.fillText('🐷',p-10,p+ih+bot/2);mono(stamp(),p+140,p+ih+bot/2,'#ededed','left',26)}
+  else{const W=1080,Hh=Math.round(W*ar),bar=150;c.width=W;c.height=Hh+bar;x.fillStyle='#070707';x.fillRect(0,0,c.width,c.height);put(0,0,W,Hh);
+    x.strokeStyle='#d4ff3a';x.lineWidth=14;x.strokeRect(7,7,W-14,c.height-14);logo(x,40,Hh+bar/2+4,72,'#ededed','#d4ff3a');mono(stamp(),W-40,Hh+bar/2,'#8a8a8a')}
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.88));await photoAdd(Date.now(),blob)}
 async function slides(){clr();$('#gt').textContent='Diavoorstelling';$('#ov').classList.add('open');const l=tonight(await photoAll());
   if(!l.length){scr(`<div class="pr">Nog geen foto's</div><div class="hint">Neem eerst wat foto's in de Fotobooth.</div><button class="btn" id="fb">Naar Fotobooth</button>`);$('#fb').onclick=booth;return}
   let i=0;scr(`<img class="slide" id="si" src=""><div class="row"><button class="tbtn" id="pv">←</button><span class="mono" id="sc"></span><button class="tbtn" id="nv">→</button></div>`);
@@ -1281,7 +1305,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1794952043';
+const APPVER='1794993122';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
