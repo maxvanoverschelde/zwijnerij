@@ -539,7 +539,7 @@ body.casino .p1 .blk{background:linear-gradient(180deg,#f5d77a,#b8902a);color:#0
 <div class="sec mono"><span>Spellen</span><span id="gn"></span></div>
 <button class="qstart" id="snel"><span class="mono">Snelstart</span><b>▶ Start de avond</b><span class="small">Spelers kiezen en eventueel teams loten</span></button>
 <div id="gl"></div>
-<div class="row" style="justify-content:flex-start;margin-top:20px"><button class="tbtn" id="cq">+ Eigen vragen toevoegen</button><button class="tbtn" id="hr">Huisregels</button></div>
+<div class="row" style="justify-content:flex-start;margin-top:20px"><button class="tbtn" id="cq">+ Eigen vragen toevoegen</button></div>
 <div class="sec mono" style="margin-top:34px"><span>Extra's</span><span></span></div>
 <div class="mrow">
   <button class="mcard" id="boothb"><div class="mono" style="color:var(--acct)">Fotobooth</div><div class="nmx">Foto's van de avond</div><div class="small">3-2-1 en klik, met een Zwijnerij-kader. Op het einde een diavoorstelling.</div></button>
@@ -1320,7 +1320,7 @@ function renderPlayers(){const el=$('#t-players'),P=active();
        :`<span style="font-size:44px;line-height:1">+</span><span class="mono">Nieuw profiel</span>`}</div></div>
    
    <div class="row" style="justify-content:space-between;margin-top:22px"><span class="small">Alleen naam, kleur en man/vrouw (voor de promilleschatting en King's Cup). Niets anders wordt opgeslagen, en alleen op deze iPad.</span>
-   <div class="row"><button class="tbtn" id="pall">Iedereen aan</button><button class="tbtn" id="pnone">Teller leegmaken</button></div></div>`;
+   <div class="row"><button class="tbtn" id="pall">Iedereen aan</button></div></div>`;
   el.querySelectorAll('[data-a]').forEach(b=>b.onclick=e=>{const nv=e.target.closest('[data-nov]');if(nv){const a=ACC.find(x=>x.id===nv.dataset.nov);a.nov=!a.nov;saveA();renderPlayers();return}
     const gs=e.target.closest('[data-g][data-id]');if(gs){const a=ACC.find(x=>x.id===gs.dataset.id);a.g=gs.dataset.g;saveA();renderPlayers();return}
     const d=e.target.closest('[data-del]');if(d){
@@ -1335,7 +1335,7 @@ function renderPlayers(){const el=$('#t-players'),P=active();
     $('#nn').onkeydown=e=>{if(e.key==='Enter')save()};$('#ns').onclick=save;$('#nc').onclick=()=>{newC=null;renderPlayers()}}
   try{bindTeamUI()}catch(e){}
   $('#pall').onclick=()=>{ACT.ids=ACC.map(a=>a.id);saveA();renderPlayers();renderHead()};
-  $('#pnone').onclick=e=>{const b=e.currentTarget;if(b.dataset.sure){ACT.ids=[];CNT={};STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{},kara:{}};saveS();saveC();saveA();try{Object.keys(localStorage).filter(k=>k.startsWith('kp_used_')).forEach(k=>localStorage.removeItem(k))}catch(x){}renderPlayers();renderHead()}
+  if($('#pnone'))$('#pnone').onclick=e=>{const b=e.currentTarget;if(b.dataset.sure){ACT.ids=[];CNT={};STATS={t:Date.now(),games:{},quiz:{},kop:{},reflex:{},water:{},kara:{}};saveS();saveC();saveA();try{Object.keys(localStorage).filter(k=>k.startsWith('kp_used_')).forEach(k=>localStorage.removeItem(k))}catch(x){}renderPlayers();renderHead()}
     else{b.dataset.sure=1;b.textContent='Wist selectie, teller, statistieken en vragen. Zeker?'}};}
 function renderHead(){const P=active();$('#hs').innerHTML=P.length?P.map(a=>`<button class="qa" data-q="${a.id}">${av(a,34)}</button>`).join('')+'<span class="mono qhint">Tik op iemand voor +1</span>':'<span class="mono">Geen spelers geselecteerd</span>'}
 
@@ -1470,10 +1470,7 @@ const drawAvond=()=>{const b=$('#snel');if(!b)return;let c=$('#avc');if(!c){c=do
 const renderInfo=()=>{const cs=CATS(),g=gamesCat(),pick=k=>cs.find(c=>c.k===k),top1=c=>c&&c.r[0]?`${esc(c.r[0][0].n)}<span class="small"> · ${c.u(c.r[0][1])}</span>`:'—';
   const hi=[['🎲','Meest gespeelde spel',g.r[0]?esc(g.r[0][0].n)+`<span class="small"> · ${g.r[0][1]}×</span>`:'—'],['🎮','Speelde het meest mee',top1(pick('play'))],['💦','Morste het meest',top1(pick('spill'))],['💀','Verliest het vaakst',top1(pick('lose'))]];
   const rest=cs.filter(c=>!['play','spill','lose'].includes(c.k)&&c.r.length);
-  $('#t-info').innerHTML=`<div class="sec mono"><span>${AV&&!AV.end?'Deze avond · sinds '+hhmm(AV.t0):AV&&AV.end?'Vorige avond':'Vanavond'}</span><span>${AV&&AV.paused?'⏸ pauze':''}</span></div>
-   <div class="hilites">${hi.map(([e,k,v])=>`<div class="hil"><span class="e">${e}</span><span class="mono">${k}</span><b>${v}</b></div>`).join('')}</div>
-   ${rest.length?`<div class="pods">${rest.map(podHTML).join('')}</div>`:'<p class="small" style="margin:6px 0 0">Speel wat spelletjes: hier verschijnen dan de podiums.</p>'}
-   ${hourHTML()}<div class="row" style="justify-content:flex-start;margin:18px 0 30px"><button class="tbtn" id="irk">🏆 Volledig klassement</button><button class="tbtn" id="icq">✏️ Eigen vragen en opdrachten</button></div>
+  $('#t-info').innerHTML=`<div class="row" style="justify-content:flex-start;margin:0 0 30px"><button class="tbtn" id="irk">🏆 Klassement van ${AV&&AV.end?'de vorige avond':'vanavond'}</button></div>
    <div class="sec mono"><span>🗓 Vorige avonden</span><span>tik voor het klassement</span></div>${histHTML()}<div style="height:26px"></div>
    <div class="sec mono"><span>📖 Recordboek · alle avonden</span><span>${allHist().length} ${allHist().length===1?'avond':'avonden'}</span></div>${recHTML()}<div style="height:26px"></div>
    <button class="albcard" id="ialb"><span class="e">📷</span><span><span class="mono">Fotoalbum</span><b>Bekijk de foto's van alle avonden</b><span class="small" id="ialbn">Blijven in de app, niet in je fotorol.</span></span><span class="ar">→</span></button>
@@ -1482,7 +1479,7 @@ const renderInfo=()=>{const cs=CATS(),g=gamesCat(),pick=k=>cs.find(c=>c.k===k),t
    <details><summary>App op het beginscherm</summary><p>Safari › Deel › Zet op beginscherm, dan opent de Zwijnerij schermvullend.</p></details></div>`;
   $('#irk').onclick=openRank;document.querySelectorAll('[data-ho]').forEach(b=>b.onclick=()=>openRankH(+b.dataset.ho));
   document.querySelectorAll('[data-hd]').forEach(b=>b.onclick=()=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker?';setTimeout(()=>{if(b.isConnected){delete b.dataset.s;b.textContent='🗑'}},3000);return}delEvening(+b.dataset.hd);renderInfo()});
-  const ha=$('#hdall');if(ha)ha.onclick=()=>{if(!ha.dataset.s){ha.dataset.s=1;ha.textContent='Alles wissen? Tik nog eens';return}allHist().forEach(h=>delEvening(h.t0));renderInfo()};$('#icq').onclick=()=>openCQ();$('#ialb').onclick=()=>{ALB_SEL=null;album()};
+  const ha=$('#hdall');if(ha)ha.onclick=()=>{if(!ha.dataset.s){ha.dataset.s=1;ha.textContent='Alles wissen? Tik nog eens';return}allHist().forEach(h=>delEvening(h.t0));renderInfo()};$('#ialb').onclick=()=>{ALB_SEL=null;album()};
   photoAll().then(l0=>{const lt=new Set(l0.map(p=>p.t)),l=l0.concat(((window.ZG&&ZG.photos())||[]).filter(p=>!lt.has(p.t)));const e=$('#ialbn');if(e&&l.length){const n=new Set(l.map(p=>nightKey(p.t))).size;e.textContent=l.length+" foto's van "+n+(n===1?' avond':' avonden')+(window.ZG&&ZG.on()?' · gedeeld met '+ZG.group().name:' · blijven in de app')}})};
 renderInfo();
 
@@ -1637,7 +1634,7 @@ const PRESETS=[{k:'warm',n:'Opwarmer',s:'3 chill, daarna 2 full send',f:()=>shuf
 const plBar=()=>{const b=$('#pln');b.style.display=PL?'':'none';b.onclick=()=>plNext();savePL()};
 const savePL=()=>{try{localStorage.setItem('kp_pl',JSON.stringify(PL?{...PL,t:Date.now()}:null))}catch(e){}};
 const plNext=()=>{if(!PL)return;clr();PL.list=PL.list.filter(k=>META.some(m=>m.k===k));PL.i++;savePL();if(PL.i>=PL.list.length){PL=null;plBar();joeg('KLAAR!','Joegnee, wat een avond');$('#ov').classList.remove('open','ticking');return}
-  const hr=HOUSE.length?HOUSE[Math.random()*HOUSE.length|0]:null;$('#gt').textContent='Speelreeks';$('#gc').textContent='';
+  const hr=null;$('#gt').textContent='Speelreeks';$('#gc').textContent='';
   scr(`<div class="mono">Volgende: spel ${PL.i+1} van ${PL.list.length}</div><div class="pr">${META.find(m=>m.k===PL.list[PL.i]).n}</div>
     ${hr?`<div class="hint">Huisregel blijft gelden: <b style="color:var(--fg)">${esc(hr)}</b></div>`:''}<button class="btn" id="pg">Naar het spel</button>`);
   $('#pg').onclick=()=>openGame(PL.list[PL.i])};
@@ -1684,7 +1681,7 @@ const openHR=()=>{clr();PL=null;plBar();$('#gt').textContent='Huisregels';$('#gc
    <textarea class="cq" id="hrt">${esc(HOUSE.join('\n'))}</textarea><button class="btn" id="hrs">Opslaan</button>`);
   $('#hrs').onclick=()=>{HOUSE=$('#hrt').value.split('\n').map(s=>s.trim()).filter(Boolean);saveH();$('#hrs').textContent='Opgeslagen ✓';setTimeout(()=>{const b=$('#hrs');if(b)b.textContent='Opslaan'},1500)}};
 
-$('#hr').onclick=openHR;
+if($('#hr'))$('#hr').onclick=openHR;
 /* ===== KARAOKE ===== */
 const KCAT=['Een Nederlandstalige meezinger','Een hit uit de jaren 2000','Een Disney-nummer','Een Belgische klassieker','Een power-ballad','Een rapnummer','Een nummer uit de jaren 80','Iets voor de afterparty','Een boyband- of girlband-hit','Een kampvuurlied','Een eurosong-nummer','Een nummer dat iedereen kent maar niemand kan zingen','Een schlager','Het nummer van je eerste fuif'];
 const KCH=['met een zwaar West-Vlaams accent','fluisterend, maar met volle overtuiging','als opera','met je ogen dicht','als duet met {b}','met een pen als microfoon en een choreo','in slow motion dansend','als nieuwslezer','met de rest als backing vocals','terwijl {b} het in gebarentaal vertaalt','als boze leraar','alsof je op een groot festival staat','met elke zin hoger','op één been','zonder tekst: alleen nananana','als romantisch serenade voor {b}','en bij elk refrein drinkt de hele groep','gewoon normaal, maar dan perfect','met je rug naar het publiek','alsof je net gedumpt bent'];
@@ -2062,7 +2059,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795024121';
+const APPVER='1795024611';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
@@ -2155,7 +2152,7 @@ window.renderPlayers=renderPlayers=function(){const el=$('#t-players');if(!el)re
    <div class="madd"><input class="nm" id="zan" maxlength="16" placeholder="${g?'Persoon toevoegen aan '+esc(g.name):'Naam of bijnaam'}" autocomplete="off"><div class="seg"><span class="sg ${addG==='m'?'on':''}" data-ag="m">Man</span><span class="sg ${addG==='v'?'on':''}" data-ag="v">Vrouw</span></div><button class="btn" id="zaa">+ Voeg toe</button></div>
    <div class="row" style="justify-content:flex-start;margin:12px 0 0"><button class="tbtn" id="pall">Iedereen doet mee</button><button class="tbtn" id="pnoo">Niemand</button></div>
    
-   <div class="row" style="justify-content:space-between;margin-top:22px"><span class="small">Alleen naam, kleur en man/vrouw (voor de promilleschatting en King's Cup). ${g?'Gedeeld met de groep.':'Alleen op dit toestel.'}</span><button class="tbtn" id="pnone">Teller en statistieken leegmaken</button></div>`;
+   <div class="row" style="justify-content:space-between;margin-top:22px"><span class="small">Alleen naam, kleur en man/vrouw (voor de promilleschatting en King's Cup). ${g?'Gedeeld met de groep.':'Alleen op dit toestel.'}</span></div>`;
   const on=(id,f)=>{const e=document.getElementById(id);if(e)e.onclick=f};
   el.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>ZG.select(b.dataset.gs));
   on('zgnw',()=>{mode='new';renderPlayers();$('#zgn').focus()});on('zgjn',()=>{mode='join';renderPlayers();$('#zgj').focus()});on('zgb',()=>{mode=null;renderPlayers()});
