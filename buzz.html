@@ -116,8 +116,19 @@ const join=(code,pid,meta,onMsg)=>new Promise(res=>{ch=sb.channel('bq-'+code,{co
 const send=p=>ch&&ch.send({type:'broadcast',event:'m',payload:p});
 
 const SONGS=[["Stromae","Alors on danse"],["Stromae","Papaoutai"],["Angèle","Balance ton quoi"],["Lost Frequencies","Are You With Me"],["Dua Lipa","Levitating"],["The Weeknd","Blinding Lights"],["Ed Sheeran","Shape of You"],["Queen","Bohemian Rhapsody"],["Queen","Don't Stop Me Now"],["Michael Jackson","Billie Jean"],["ABBA","Dancing Queen"],["ABBA","Mamma Mia"],["Bon Jovi","Livin' on a Prayer"],["Toto","Africa"],["a-ha","Take On Me"],["Journey","Don't Stop Believin'"],["The Killers","Mr. Brightside"],["Avicii","Wake Me Up"],["Avicii","Levels"],["David Guetta","Titanium"],["Calvin Harris","Summer"],["Daft Punk","Get Lucky"],["Pharrell Williams","Happy"],["Mark Ronson","Uptown Funk"],["Rihanna","Umbrella"],["Rihanna","We Found Love"],["Beyoncé","Crazy in Love"],["Eminem","Lose Yourself"],["Eminem","Without Me"],["50 Cent","In Da Club"],["OutKast","Hey Ya!"],["Shakira","Hips Don't Lie"],["Shakira","Waka Waka"],["Luis Fonsi","Despacito"],["Las Ketchup","The Ketchup Song"],["Los del Rio","Macarena"],["Vengaboys","We're Going to Ibiza"],["Aqua","Barbie Girl"],["Eiffel 65","Blue"],["Scooter","How Much Is the Fish?"],["Kate Ryan","Désenchantée"],["2 Unlimited","No Limit"],["Technotronic","Pump Up the Jam"],["Mr. Probz","Waves"],["Coldplay","Viva la Vida"],["Coldplay","Yellow"],["Oasis","Wonderwall"],["Nirvana","Smells Like Teen Spirit"],["AC/DC","Highway to Hell"],["The White Stripes","Seven Nation Army"],["Arctic Monkeys","Do I Wanna Know?"],["Billie Eilish","bad guy"],["Harry Styles","As It Was"],["Taylor Swift","Shake It Off"],["Miley Cyrus","Flowers"],["Lady Gaga","Poker Face"],["Katy Perry","Firework"],["Britney Spears","...Baby One More Time"],["Spice Girls","Wannabe"],["Backstreet Boys","I Want It That Way"],["Bruno Mars","Uptown Funk"],["Bruno Mars","Locked Out of Heaven"],["Adele","Rolling in the Deep"],["Gotye","Somebody That I Used to Know"],["Imagine Dragons","Believer"],["Måneskin","Beggin'"],["Ava Max","Sweet but Psycho"],["Tones and I","Dance Monkey"],["Lewis Capaldi","Someone You Loved"],["Bon Jovi","It's My Life"],["Whitney Houston","I Wanna Dance with Somebody"],["Cyndi Lauper","Girls Just Want to Have Fun"],["Gloria Gaynor","I Will Survive"],["Earth, Wind & Fire","September"],["Village People","Y.M.C.A."],["Tiësto","The Business"],["Dimitri Vegas & Like Mike","Mammoth"],["Netsky","Iron Heart"],["K3","Alle kleuren"],["Clouseau","Daar gaat ze"],["Bart Peeters","Slaap zacht, Elisabeth"],["Gorki","Mia"],["Hooverphonic","Mad About You"],["Milk Inc.","Walk on Water"],["Natalia","Gone to Stay"],["Regi","Kom wat dichterbij"],["Snollebollekes","Links rechts"],["Wham!","Last Christmas"],["Mariah Carey","All I Want for Christmas Is You"],["Linkin Park","In the End"],["Survivor","Eye of the Tiger"],["Kanye West","Stronger"],["Drake","God's Plan"],["Post Malone","Sunflower"],["Doja Cat","Say So"],["Lizzo","About Damn Time"],["Sabrina Carpenter","Espresso"],["Chappell Roan","Pink Pony Club"],["Bad Bunny","Tití Me Preguntó"]];
-const fetchSong=async s=>{try{const r=await fetch('https://itunes.apple.com/search?term='+encodeURIComponent(s[0]+' '+s[1])+'&entity=song&limit=5&country=BE');const j=await r.json();const t=(j.results||[]).find(x=>x.previewUrl);return t?{url:t.previewUrl,art:t.artworkUrl100}:null}catch(e){return null}};
-let AUD=null;const stopAud=()=>{if(AUD){AUD.pause()}};
+const jsonp=url=>new Promise((res,rej)=>{const cb='itcb'+Date.now()+(Math.random()*1e6|0),sc=document.createElement('script');
+  const done=()=>{clearTimeout(to);try{delete window[cb]}catch(e){}sc.remove()},to=setTimeout(()=>{done();rej(new Error('timeout'))},7000);
+  window[cb]=d=>{done();res(d)};sc.onerror=()=>{done();rej(new Error('jsonp'))};sc.src=url+'&callback='+cb;document.head.appendChild(sc)});
+const fetchSong=async s=>{const url='https://itunes.apple.com/search?term='+encodeURIComponent(s[0]+' '+s[1])+'&entity=song&limit=5&country=BE';let j=null;
+  try{const r=await fetch(url);j=await r.json()}catch(e){try{j=await jsonp(url)}catch(e2){return null}}
+  const t=((j&&j.results)||[]).find(x=>x.previewUrl);return t?{url:t.previewUrl,art:t.artworkUrl100}:null};
+/* één audio-element dat bij de eerste tik ontgrendeld wordt (nodig op iPad/iPhone) */
+const AUD=new Audio();AUD.preload='auto';let audOk=false;
+const unlockAud=()=>{if(audOk)return;audOk=true;try{AUD.muted=true;const p=AUD.play();if(p&&p.catch)p.catch(()=>{});AUD.pause();AUD.muted=false}catch(e){}};
+document.addEventListener('pointerdown',unlockAud,{capture:true});
+const stopAud=()=>{try{AUD.pause()}catch(e){}};
+const playAud=()=>{if(!H.song)return;if(AUD.src!==H.song.url){AUD.src=H.song.url;AUD.load()}AUD.muted=false;AUD.volume=1;
+  const p=AUD.play();const m=document.getElementById('amsg');if(p&&p.then)p.then(()=>{if(m)m.textContent=''}).catch(()=>{if(m)m.textContent='Geen geluid? Tik op ▶ Speel fragment en zet het volume van de iPad of de box hoger.'})};
 /* ===== quizmaster: de iPad ===== */
 const H={mode:'music',sdeck:[],code:null,players:{},order:[],phase:'lobby',deck:[],qi:-1,q:null,buzz:null,locked:[],score:{},wrong:{},n:0,max:15};
 const saveH=()=>ls.set('bq_host',{...H,t:Date.now()});
@@ -128,9 +139,9 @@ const next=async()=>{stopAud();if(H.n>=H.max){H.phase='end';broadcast();return}
   const music=H.mode==='music'||(H.mode==='mix'&&Math.random()<.5);
   if(music){if(!H.sdeck.length)H.sdeck=shuf(SONGS.map((_,i)=>i));let s,info=null,tries=0;app.innerHTML='<div class="h2">Fragment laden…</div>';
     while(!info&&tries<5&&H.sdeck.length){s=SONGS[H.sdeck.pop()];info=await fetchSong(s);tries++}
-    if(info){H.q=['🎵 Welk nummer is dit?',s[1]+' · '+s[0]];H.song=info;AUD=new Audio(info.url);AUD.preload='auto'}else{H.song=null;if(H.mode==='music'){H.q=['Geen internet voor muziek','Probeer opnieuw'];}}}
+    if(info){H.q=['🎵 Welk nummer is dit?',s[1]+' · '+s[0]];H.song=info;H.note=null;AUD.src=info.url;AUD.load()}else{H.song=null;H.note='Het fragment kon niet laden (internet?). Daarom een quizvraag.'}}else H.note=null;
   if(!music||!H.song){H.song=null;if(!H.deck.length||H.qi>=H.deck.length-1){H.deck=shuf(QS.map((_,i)=>i));H.qi=-1}H.qi++;H.q=QS[H.deck[H.qi]]}
-  H.n++;H.buzz=null;H.locked=[];H.reveal=false;H.phase='q';beep(520,.12);broadcast()};
+  H.n++;H.buzz=null;H.locked=[];H.reveal=false;H.phase='q';beep(520,.12);broadcast();if(H.song)setTimeout(playAud,600)};
 const onHostMsg=m=>{
   if(m.t==='join'){if(!H.players[m.pid]){let nn=m.n.slice(0,16),k=2;while(Object.values(H.players).some(p=>p.n.toLowerCase()===nn.toLowerCase()))nn=m.n.slice(0,14)+' '+(k++);H.players[m.pid]={n:nn};H.order.push(m.pid);beep(880)}broadcast();return}
   if(m.t==='buzz'&&H.phase==='q'&&!H.buzz&&H.players[m.pid]&&!H.locked.includes(m.pid)){H.buzz=m.pid;stopAud();buzzSnd();broadcast();return}
@@ -156,14 +167,14 @@ const renderHost=()=>{
   const q=H.q;
   const ms=!!H.song;
   app.innerHTML=`<div class="mono">${ms?'Liedje':'Vraag'} ${H.n} / ${H.max}</div><div class="qq">${esc(q[0])}</div>
-    ${ms?`${H.reveal&&H.song.art?`<img src="${H.song.art.replace('100x100','300x300')}" style="width:180px;height:180px;border-radius:16px">`:''}<div class="row"><button class="btn ghost" id="pl">▶ Speel fragment</button><button class="tbtn" id="ps">⏸ Pauze</button></div>`:''}
+    ${ms?`${H.reveal&&H.song.art?`<img src="${H.song.art.replace('100x100','300x300')}" style="width:180px;height:180px;border-radius:16px">`:''}<div class="row"><button class="btn ghost" id="pl">▶ Speel fragment</button><button class="tbtn" id="ps">⏸ Pauze</button></div><div class="small" id="amsg" style="color:var(--muted)"></div>`:H.note?`<div class="small" style="color:var(--muted)">${esc(H.note)}</div>`:''}
     ${H.reveal?`<div class="ans">${esc(q[1])}</div>`:''}
     ${H.phase==='q'&&H.buzz?`<div class="bz">🔔 ${esc(nm(H.buzz))}</div><div class="hint">${esc(nm(H.buzz))} mag antwoorden. Fout? Dan drinkt ${esc(nm(H.buzz))} een slok en mogen de anderen opnieuw buzzen.</div>
       <div class="row"><button class="btn red" id="no">✗ Fout</button>${ms?'<button class="btn ghost" id="ok1">✓ Titel óf artiest (1)</button><button class="btn" id="ok">✓ Allebei (2)</button>':'<button class="btn" id="ok">✓ Juist</button>'}</div>`
     :H.phase==='q'?`<div class="hint">Buzzers staan open${H.locked.length?` (niet voor ${H.locked.map(p=>esc(nm(p))).join(', ')})`:''}. Wie eerst drukt, mag antwoorden.</div><div class="row"><button class="tbtn" id="sk">Niemand weet het · toon antwoord</button></div>`
     :`<div class="row"><button class="btn" id="nx">${H.n>=H.max?'Naar de uitslag':'Volgende vraag'}</button></div>`}
     ${board}`;
-  const b=id=>$(id);if(b('#ok'))b('#ok').onclick=()=>judge(true,ms?2:1);if(b('#ok1'))b('#ok1').onclick=()=>judge(true,1);if(b('#pl'))b('#pl').onclick=()=>{try{AUD.play()}catch(e){}};if(b('#ps'))b('#ps').onclick=stopAud;if(b('#no'))b('#no').onclick=()=>judge(false);
+  const b=id=>$(id);if(b('#ok'))b('#ok').onclick=()=>judge(true,ms?2:1);if(b('#ok1'))b('#ok1').onclick=()=>judge(true,1);if(b('#pl'))b('#pl').onclick=()=>{AUD.currentTime=0;playAud()};if(b('#ps'))b('#ps').onclick=stopAud;if(b('#no'))b('#no').onclick=()=>judge(false);
   if(b('#sk'))b('#sk').onclick=()=>{H.reveal=true;H.phase='shown';broadcast()};if(b('#nx'))b('#nx').onclick=next};
 const makeCode=()=>Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
 const startHost=async resume=>{wake();const s=ls.get('bq_host',null);
