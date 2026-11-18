@@ -1946,7 +1946,7 @@ const PAK=[['Drink 2','d',2],['Deel 2 uit','w',2],['🪨 Kolen! Drink 3','d',3],
 const PAKC=['#e8333f','#1f8f55','#f2c14e','#fff8f0','#2b6cb0','#e8333f','#1f8f55','#f2c14e','#c81d2b'];
 META.push(
  {k:'pakjes',lvl:'ski',n:'Pakjes',s:'Open een cadeautje',ic:'gift',p:'2+ spelers',r:["Onder de boom liggen 9 pakjes.","Om de beurt open je er één: tik erop.","In elk pakje zit iets: drinken, uitdelen, kolen of een jackpot.","Zijn ze allemaal open, dan komen er nieuwe pakjes."]},
- {k:'sneeuw',lvl:'ski',n:'Sneeuwbal',s:'Gooi op de Kerstman',ic:'snow',p:'1+ spelers',r:["De Kerstman sleet heen en weer door de lucht.","Tik op GOOI: je sneeuwbal vliegt recht omhoog.","Raak: deel 2 uit en de Kerstman gaat sneller.","Mis: drink 1."]},
+ {k:'sneeuw',lvl:'ski',n:'Sneeuwbal',s:'Gooi op de Kerstman',ic:'snow',p:'1+ spelers',r:["De Kerstman sleet heen en weer door de lucht en keert soms onverwacht om.","Tik op GOOI: je sneeuwbal vliegt recht omhoog.","Raak: deel 2 uit en de Kerstman gaat sneller.","Mis: drink 1."]},
  {k:'boom',lvl:'ski',n:'Kerstboom',s:'Stapel de kerstballen',ic:'tree',p:'2+ spelers',r:["Een kerstbal zwaait heen en weer boven de toren.","Om de beurt tik je op LOS: de bal valt op de stapel.","Ligt hij te scheef, dan valt de hele toren om.","Wie de toren laat vallen, drinkt evenveel slokken als er ballen lagen (max. 6)."]});
 Object.assign(G,{
  pakjes:{i(){let open=[],deal=shuf(PAK).slice(0,9);
@@ -1956,30 +1956,30 @@ Object.assign(G,{
      if(p[1]==='d')lose(me,p[2]);else if(p[1]==='w')award(me,p[2],'Pakjes');else if(p[1]==='a')sipAll(p[2]);if(p[2]>=4||p[0].startsWith('🪨'))joeg(p[1]==='w'?'JACKPOT !':'KOLEN !',p[0].replace(/^\S+ /,''));
      T.next();if(open.filter(Boolean).length>=9){open=[];deal=shuf(PAK).slice(0,9)}view(`<b>${who}${p[0]}</b>`)};
    view()}},
- sneeuw:{i(){let x=160,dir=1,sp=2.6,busy=false,me;
+ sneeuw:{i(){let x=160,dir=1,sp=4.4,busy=false,me;
    const santa=(x,hit)=>`<g transform="translate(${x},62)${hit?' rotate(25)':''}"><path d="M-34 14h56q10 0 12-10" stroke="#8b5a2b" stroke-width="4" fill="none"/><rect x="-30" y="0" width="44" height="12" rx="4" fill="#c81d2b"/><circle cx="-4" cy="-10" r="11" fill="#c81d2b"/><circle cx="-4" cy="-22" r="7" fill="#f1c7a1"/><path d="M-11 -20q7 12 14 0" fill="#fff"/><path d="M-11 -26q7-12 14 0z" fill="#c81d2b"/><circle cx="3" cy="-30" r="2.6" fill="#fff"/><rect x="-12" y="-27" width="16" height="3" rx="1.5" fill="#fff"/>${hit?'<text x="-4" y="-34" text-anchor="middle" font-size="14">💫</text>':''}</g>`;
    const view=(msg,hit,bx,by)=>{scr(`${T.tag('Aan de sneeuwbal')}<svg viewBox="0 0 320 260" class="pitch" id="snw"><rect width="320" height="260" rx="14" fill="#0f2a44"/><circle cx="40" cy="30" r="1.6" fill="#fff"/><circle cx="110" cy="18" r="1.2" fill="#fff"/><circle cx="270" cy="34" r="1.6" fill="#fff"/><circle cx="210" cy="14" r="1" fill="#fff"/>
        <path d="M0 230q80-22 160 0t160 0v30H0z" fill="#fff8f0"/><g id="sa">${santa(x,hit)}</g><circle id="sb" cx="${bx??160}" cy="${by??222}" r="9" fill="#fff" stroke="#bcd" stroke-width="1.5"/><path d="M160 212v-130" stroke="#fff" stroke-dasharray="3 7" opacity=".25"/></svg>
        <div class="hint" id="snm" style="color:var(--fg);min-height:2.4em">${msg||'Tik op GOOI als de Kerstman recht boven je sneeuwbal vliegt.'}</div><button class="btn" id="sg2">❄ GOOI</button>`);$('#sg2').onclick=throwB};
-   const loop=()=>{if(busy)return;x+=dir*sp;if(x>285){x=285;dir=-1}if(x<35){x=35;dir=1}const g=$('#sa');if(g)g.innerHTML=santa(x,false)};
+   const loop=()=>{if(busy)return;if(Math.random()<.015)dir=-dir;x+=dir*sp;if(x>285){x=285;dir=-1}if(x<35){x=35;dir=1}const g=$('#sa');if(g)g.innerHTML=santa(x,false)};
    const start=()=>{clr();busy=false;T.next();me=T.p;view();timers.push(setInterval(loop,16))};
    const throwB=()=>{if(busy)return;busy=true;$('#sg2').disabled=true;let y=222;const b=$('#sb');beep(500,.05,.1,'triangle');
-     const iv=setInterval(()=>{y-=13;if(b)b.setAttribute('cy',y);if(y<=62){clearInterval(iv);const hit=Math.abs(x-160)<20,who=me?esc(me.n)+': ':'';
-       if(hit){award(me,2,'Sneeuwbal');sp=Math.min(7.5,sp+.6);joeg('RAAK !','Ho ho ho');view(`<b>${who}Kerstman geraakt! Deel 2 uit.</b>`,true,160,62)}
-       else{lose(me,1);sp=2.6;beep(160,.25,.12,'sawtooth');view(`${who}Mis! Drink 1.`,false,160,40)}
+     const iv=setInterval(()=>{y-=13;if(b)b.setAttribute('cy',y);if(y<=62){clearInterval(iv);const hit=Math.abs(x-160)<13,who=me?esc(me.n)+': ':'';
+       if(hit){award(me,2,'Sneeuwbal');sp=Math.min(10,sp+.8);joeg('RAAK !','Ho ho ho');view(`<b>${who}Kerstman geraakt! Deel 2 uit.</b>`,true,160,62)}
+       else{lose(me,1);sp=4.4;beep(160,.25,.12,'sawtooth');view(`${who}Mis! Drink 1.`,false,160,40)}
        $('#sg2').textContent=nxN('Volgende',1);$('#sg2').onclick=start}},16);timers.push(iv)};
    start()}},
- boom:{i(){let stack=[],sx=160,dir=1,sp=2.2,busy=false;const R=15,TOL=22,COL=['#e8333f','#f2c14e','#2b6cb0','#1f8f55','#fff8f0','#c81d2b'];
+ boom:{i(){let stack=[],sx=160,dir=1,sp=3.6,busy=false;const R=15,TOL=15,COL=['#e8333f','#f2c14e','#2b6cb0','#1f8f55','#fff8f0','#c81d2b'];
    const top=()=>stack.length?stack[stack.length-1]:{x:160};
    const ballS=(x,y,c)=>`<g transform="translate(${x},${y})"><rect x="-3" y="${-R-5}" width="6" height="5" fill="#c9a227"/><circle r="${R}" fill="${c}" stroke="rgba(0,0,0,.25)"/><circle cx="-5" cy="-5" r="4" fill="#fff" opacity=".55"/></g>`;
    const view=(msg,fall)=>{T.p||T.next();const vis=stack.slice(-6),base=232;
      scr(`${T.tag('Aan de beurt')}<div class="mono">Toren: ${stack.length} ${stack.length===1?'bal':'ballen'}</div><svg viewBox="0 0 320 260" class="pitch" id="bm"><rect width="320" height="260" rx="14" fill="#0d1f16"/><path d="M160 30l90 200H70z" fill="#1f6f3f" opacity=".35"/><rect y="236" width="320" height="24" fill="#fff8f0"/>
        <g ${fall?'class="tfall"':''}>${vis.map((b,i)=>ballS(b.x,base-R-i*(2*R+2),b.c)).join('')}</g><line x1="${sx}" y1="0" x2="${sx}" y2="22" stroke="#c9a227" stroke-width="1.5"/><g id="bsw">${fall?'':ballS(sx,22+R+5,COL[stack.length%COL.length])}</g></svg>
-       <div class="hint" id="bmm" style="color:var(--fg);min-height:2.4em">${msg||'Tik op LOS als de bal recht boven de toren hangt.'}</div><button class="btn" id="bl2">🎄 LOS</button>`);$('#bl2').onclick=fall?()=>{stack=[];sp=2.2;view();run()}:drop;if(fall)$('#bl2').textContent=nxN('Nieuwe toren',1)};
+       <div class="hint" id="bmm" style="color:var(--fg);min-height:2.4em">${msg||'Tik op LOS als de bal recht boven de toren hangt.'}</div><button class="btn" id="bl2">🎄 LOS</button>`);$('#bl2').onclick=fall?()=>{stack=[];sp=3.6;view();run()}:drop;if(fall)$('#bl2').textContent=nxN('Nieuwe toren',1)};
    const loop=()=>{if(busy)return;sx+=dir*sp;if(sx>280){sx=280;dir=-1}if(sx<40){sx=40;dir=1}const g=$('#bsw'),l=st.querySelector('#bm line');if(g)g.innerHTML=ballS(sx,22+R+5,COL[stack.length%COL.length]);if(l){l.setAttribute('x1',sx);l.setAttribute('x2',sx)}};
    const run=()=>{clr();busy=false;timers.push(setInterval(loop,16))};
    const drop=()=>{if(busy)return;busy=true;const me=T.p,who=me?esc(me.n)+': ':'',off=Math.abs(sx-top().x);
-     if(!stack.length||off<=TOL){stack.push({x:stack.length?sx:sx,c:COL[stack.length%COL.length]});beep(700+stack.length*40,.05,.08,'triangle');sp=Math.min(6.5,sp+.35);T.next();view(`${who}ligt erop! Toren: ${stack.length}.`);run()}
+     if(!stack.length||off<=TOL){stack.push({x:stack.length?sx:sx,c:COL[stack.length%COL.length]});beep(700+stack.length*40,.05,.08,'triangle');sp=Math.min(9,sp+.5);T.next();view(`${who}ligt erop! Toren: ${stack.length}.`);run()}
      else{const n=Math.min(6,Math.max(1,stack.length));lose(me,n);boomSnd();joeg('TIMBER !','Drink '+n);clr();view(`<b>${who}de toren valt om! Drink ${n}.</b>`,true);T.next()}};
    view();run()}}});
 
@@ -2129,7 +2129,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795026794';
+const APPVER='1795027102';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
