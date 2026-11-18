@@ -919,7 +919,7 @@ function renderBig(){const card=(ic,n,s,p,attr)=>`<${attr.startsWith('href')?'a'
   $('#t-big').innerHTML=`<div class="sec mono"><span>Met jullie gsm's</span><span>lobby met code</span></div><div class="bigs">
    ${card('wolf','Weerwolven','Rollen, nachten en stemmen op je gsm. Eén iemand maakt de lobby en speelt mee.','5-30 spelers','href="ww.html"')}
    ${card('eye','Imposter','Iedereen krijgt hetzelfde geheime woord, behalve de imposter. Wie is het?','4-20 spelers','href="imposter.html"')}
-   ${card('mic','Buzzerquiz','Raad het liedje, quizvragen of een mix. Jullie buzzen op je gsm, de iPad is de quizmaster.','2-20 spelers','href="buzz.html?host=1"')}
+   ${card('mic','Raad het liedje','De iPad speelt een fragment, jullie buzzen op je gsm. Titel én artiest = 2 punten.','2-20 spelers','href="buzz.html?host=1"')}
    <div class="sec mono" style="margin-top:34px"><span>In teams op de iPad</span><span></span></div><div class="bigs">
    ${META.filter(m=>m.lvl==='big').map(m=>card(m.ic,m.n,m.s,m.p,`data-big="${m.k}"`)).join('')}</div>`;
   $('#t-big').querySelectorAll('[data-big]').forEach(b=>b.onclick=()=>openGame(b.dataset.big))}
@@ -967,7 +967,7 @@ let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill'||m.lvl==='hard').length).padStart(2,'0')+' spellen';
   const list=META.filter(m=>m.lvl===lvSel);
-  $('#gl').outerHTML=`<div id="gl">${chaosUI()}${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
+  $('#gl').outerHTML=`<div id="gl">${compUI()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Hele avond</span><b>Spellenavond</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
   document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{lvSel=b.dataset.lv;try{localStorage.setItem('kp_lv',lvSel)}catch(e){}renderGames()});
   document.querySelectorAll('#gl .game').forEach(b=>b.onclick=()=>openGame(b.dataset.g));
@@ -1404,7 +1404,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795004348';
+const APPVER='1795004401';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
