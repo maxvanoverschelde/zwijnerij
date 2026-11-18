@@ -568,6 +568,15 @@ body.casino .p1 .blk{background:linear-gradient(180deg,#f5d77a,#b8902a);color:#0
 </div>
 
 <script>
+/* ===== spel bevriezen tijdens een verrassing ===== */
+window.__FZ=false;window.__FZT=0;window.__FZS=0;const gnow=()=>Date.now()-window.__FZT-(window.__FZ?Date.now()-window.__FZS:0);
+(()=>{const _si=window.setInterval.bind(window),_st=window.setTimeout.bind(window),_ct=window.clearTimeout.bind(window),_ci=window.clearInterval.bind(window);let tid=5e6;const M=new Map();
+  window.setInterval=(f,ms,...a)=>_si(()=>{if(!window.__FZ&&typeof f==='function')f(...a)},ms);
+  window.setTimeout=(f,ms,...a)=>{const id=tid++;const run=()=>{if(window.__FZ){M.set(id,_st(run,200));return}M.delete(id);if(typeof f==='function')f(...a)};M.set(id,_st(run,ms));return id};
+  window.clearTimeout=id=>{if(M.has(id)){_ct(M.get(id));M.delete(id)}else _ct(id)};
+  window.clearInterval=id=>{if(M.has(id)){_ct(M.get(id));M.delete(id)}else _ci(id)};
+  window.freezeGame=on=>{if(on&&!window.__FZ){window.__FZ=true;window.__FZS=Date.now()}else if(!on&&window.__FZ){window.__FZT+=Date.now()-window.__FZS;window.__FZ=false}};})();
+
 const D=['zo','ma','di','wo','do','vr','za'],M=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
 function tick(){const d=new Date();clock.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
   date.textContent=D[d.getDay()]+' '+String(d.getDate()).padStart(2,'0')+' '+M[d.getMonth()]+' '+d.getFullYear();}
@@ -664,13 +673,13 @@ const G={
    const choose=()=>{clr();$('#ov').classList.remove('ticking');scr(`<div class="mono">Hoe lang tikt de bom?</div><div class="pr" style="font-size:clamp(34px,5vw,60px)">Kaboom</div>
      <div class="row">${Object.entries(LEN).map(([k,v])=>`<button class="btn ${k===len?'':'ghost'}" data-len="${k}">${v[2]}<span class="small" style="display:block;margin-top:4px;text-transform:none;letter-spacing:0">${v[3]}</span></button>`).join('')}</div>`);
      st.querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{len=b.dataset.len;try{localStorage.setItem('kp_bomlen',len)}catch(e){}start()})};
-   const start=()=>{beep(220,.05,.01);const total=LEN[len][0]+Math.random()*LEN[len][1],t0=Date.now();
+   const start=()=>{beep(220,.05,.01);const total=LEN[len][0]+Math.random()*LEN[len][1],t0=gnow();
      const show=()=>scr(`<div class="pulse" id="pu"></div><div class="pr" style="font-size:clamp(36px,5.4vw,70px)">${n()}</div><div class="hint">Voorlezen en doorgeven aan wie het best past.</div><button class="btn" id="nx">Volgende</button>`);
      show();$('#nx').onclick=nxt;
      function nxt(){show();$('#nx').onclick=nxt;sp()}
-     function sp(){const left=1-(Date.now()-t0)/total,s=Math.max(.15,left)*1.1;const p=$('#pu');if(p)p.style.setProperty('--sp',s+'s');const o=$('#ov');o.classList.add('ticking');o.style.setProperty('--sp',s+'s');o.style.setProperty('--hot',(1-left).toFixed(2))}
+     function sp(){const left=1-(gnow()-t0)/total,s=Math.max(.15,left)*1.1;const p=$('#pu');if(p)p.style.setProperty('--sp',s+'s');const o=$('#ov');o.classList.add('ticking');o.style.setProperty('--sp',s+'s');o.style.setProperty('--hot',(1-left).toFixed(2))}
      sp();
-     const tickLoop=()=>{const el=Date.now()-t0;if(el>=total)return;const left=1-el/total,iv=Math.max(110,left*1000);beep(1200,.03,.12);sp();timers.push(setTimeout(tickLoop,iv))};
+     const tickLoop=()=>{const el=gnow()-t0;if(el>=total)return;const left=1-el/total,iv=Math.max(110,left*1000);beep(1200,.03,.12);sp();timers.push(setTimeout(tickLoop,iv))};
      tickLoop();
      timers.push(setTimeout(()=>{clr();boomSnd();joeg('JOEGNEE!','Wie hem vasthoudt, drinkt');$('#ov').classList.remove('ticking');const o=$('#ov');o.classList.remove('boom');void o.offsetWidth;o.classList.add('boom');st.classList.add('shake');
        scr(`<div class="timer" style="color:var(--bad)">BOEM</div><div class="pr" style="font-size:clamp(30px,4vw,48px)">Wie de iPad vasthoudt, drinkt</div><div class="row"><button class="btn ghost" id="al">Andere lengte</button><button class="btn" id="ag">Nog een ronde</button></div>`);
@@ -823,9 +832,9 @@ Object.assign(G,{
      let live=false,order=[],t0=0;const zs=[...st.querySelectorAll('.zone')];
      zs.forEach(z=>z.onpointerdown=e=>{e.preventDefault();const i=+z.dataset.z;if(order.some(o=>o.i===i))return;
        if(!live){z.classList.add('bad');z.innerHTML=`${zn(i)}<br><span class="mono" style="color:#000">te vroeg · drink</span>`;order.push({i,t:-1});beep(140,.2,.15,'sawtooth')}
-       else{const t=Date.now()-t0;order.push({i,t});z.classList.add('done');z.innerHTML=`${zn(i)}<br><span class="mono">${t} ms</span>`;beep(900,.04,.1)}
+       else{const t=gnow()-t0;order.push({i,t});z.classList.add('done');z.innerHTML=`${zn(i)}<br><span class="mono">${t} ms</span>`;beep(900,.04,.1)}
        if(order.length===n)finish()});
-     timers.push(setTimeout(()=>{if(order.length===n)return;live=true;t0=Date.now();st.querySelector('.zones').classList.add('go');beep(1400,.12,.2);
+     timers.push(setTimeout(()=>{if(order.length===n)return;live=true;t0=gnow();st.querySelector('.zones').classList.add('go');beep(1400,.12,.2);
        zs.forEach(z=>{if(!z.classList.contains('bad')&&!z.classList.contains('done'))z.innerHTML=`${zn(+z.dataset.z)}<br><span class="mono" style="color:#000">TIK!</span>`})},1800+Math.random()*4500));
      const finish=()=>{clr();timers.push(setTimeout(()=>{st.style.position='';const ok=order.filter(o=>o.t>=0).sort((a,b)=>a.t-b.t),bad=order.filter(o=>o.t<0);
        if(ok.length){const ix=i=>U>=n?(off+i)%U:i,fu=ok[0].i<U||U>=n?units()[ix(ok[0].i)]:null;if(fu)award(fu,2,'Reflex');const f=ok[0],a=fu&&active().length===U?active()[ix(f.i)]:null;if(a){const cur=STATS.reflex[a.id];if(!cur||f.t<cur){STATS.reflex[a.id]=f.t;saveS()}}}
@@ -1868,12 +1877,12 @@ Object.assign(G,{
    start()}},
  telecab:{i(){const nc=nightDeck('tcat',TCAT),ns=nightDeck('tstraf',TSTRAF);let t0,dur;
    const ready=()=>{clr();$('#ov').classList.remove('ticking');scr(`<div class="mono">🚡 Télécabine</div><div class="pr" style="font-size:clamp(30px,4.6vw,56px)">Instappen !</div><div class="hint">Elke keer een nieuwe vraag: antwoord en geef de iPad door. Bij de panne drinkt wie de iPad vasthoudt 4 slokken.</div><button class="btn" id="tg">🚡 En route !</button>`);$('#tg').onclick=go};
-   const go=()=>{clr();dur=(22+Math.random()*45)*1000;t0=Date.now();$('#ov').classList.add('ticking');
+   const go=()=>{clr();dur=(22+Math.random()*45)*1000;t0=gnow();$('#ov').classList.add('ticking');
      scr(`<div class="pr tq" id="tq" style="font-size:clamp(26px,4.2vw,50px);min-height:2.3em;display:flex;align-items:center;justify-content:center">${nc()}</div><div class="tcab"><svg viewBox="0 0 300 300"><path d="M0 270 L80 150 L130 200 L210 70 L300 190 L300 300 L0 300Z" fill="#fff6ea" opacity=".9"/><line x1="0" y1="260" x2="300" y2="20" stroke="#9fb0c4" stroke-width="2"/>
        <g id="cab"><line x1="0" y1="-14" x2="0" y2="0" stroke="#9fb0c4" stroke-width="2"/><rect x="-20" y="0" width="40" height="34" rx="6" fill="#ff7a1a"/><rect x="-14" y="6" width="12" height="12" rx="2" fill="#bfe6ff"/><rect x="2" y="6" width="12" height="12" rx="2" fill="#bfe6ff"/>${SKI_SNOUT(0,26,6)}</g></svg></div>
        <button class="btn" id="tx">Suivant → geef door</button>`);
      $('#tx').onclick=()=>{beep(900,.03,.06);const q=$('#tq');if(q)q.textContent=nc();const b=$('#tx');if(b){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}};
-     const tick=()=>{const p=Math.min(1,(Date.now()-t0)/dur),c=$('#cab');if(!c)return;c.setAttribute('transform',`translate(${20+p*240},${250-p*215})`);
+     const tick=()=>{const p=Math.min(1,(gnow()-t0)/dur),c=$('#cab');if(!c)return;c.setAttribute('transform',`translate(${20+p*240},${250-p*215})`);
        if(p>=1){clr();$('#ov').classList.remove('ticking');boomSnd();joeg('PANNE !','Drink 4 slokken');scr(`<div class="pr" style="font-size:clamp(40px,7vw,84px)">PANNE !</div><div class="mono">Wie de iPad nu vasthoudt</div><div class="moni"><div class="pr" style="font-size:clamp(30px,5vw,58px)">🍺 Drink 4 slokken</div></div><button class="btn" id="tr">Volgende cabine</button>`);$('#tr').onclick=ready;return}
        const left=1-p;if(Math.random()<(left<.25?.9:.35))beep(left<.25?1100:700,.02,.05);timers.push(setTimeout(tick,left<.25?160:380))};tick()};
    ready()}},
@@ -2061,8 +2070,8 @@ const SUR=[[p=>`${p} drinkt 2 slokken`,'d1',2],[p=>`${p} mag 3 slokken uitdelen`
 const surFire=()=>{const P=active();if(!P.length)return;const sh=shuf(P),a=sh[0],b=sh[1]||sh[0],[f,k,n]=SUR[Math.random()*SUR.length|0],txt=f(esc(a.n),esc(b.n));
   if(k==='d1')lose(a,n);else if(k==='d2'){lose(a,n);if(b!==a)lose(b,n)}else if(k==='w1')award(a,n,'Verrassing');else if(k==='a')sipAll(n);
   let p=document.getElementById('surp');if(!p){p=document.createElement('div');p.id='surp';document.body.appendChild(p)}
-  p.innerHTML=`<div class="spi"><div class="mono">🎲 Ongeplande verrassing</div><div class="spt">${txt}</div><button class="btn" id="surok">✓ Gedaan</button></div>`;p.classList.add('open');boomSnd();
-  $('#surok').onclick=()=>p.classList.remove('open')};
+  p.innerHTML=`<div class="spi"><div class="mono">🎲 Ongeplande verrassing</div><div class="spt">${txt}</div><button class="btn" id="surok">✓ Gedaan</button></div>`;p.classList.add('open');boomSnd();try{freezeGame(true)}catch(e){}
+  $('#surok').onclick=()=>{p.classList.remove('open');try{freezeGame(false)}catch(e){}}};
 setInterval(()=>{try{if(!AV||AV.end||AV.paused||!AV.sur)return;if(document.getElementById('surp')?.classList.contains('open'))return;if(!AV.nx)AV.nx=Date.now()+10*6e4;
   if(Date.now()>=AV.nx){AV.nx=Date.now()+(6+Math.random()*8)*6e4;saveAV();surFire()}}catch(e){}},15000);
 
@@ -2120,7 +2129,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795026191';
+const APPVER='1795026794';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
