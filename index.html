@@ -1838,7 +1838,7 @@ const MONI=[["touchez votre nez","raak je neus aan"],["levez les bras","steek je
 const RW=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26],RED=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
 META.push(
  {k:'descente',lvl:'ski',n:'Descente',s:'Vier skiërs · één piste',ic:'ski',p:'2+ spelers',r:["Iedereen krijgt een skiër: ♠, ♥, ♦ of ♣. Ze dragen allemaal het Zwijnerij-logo op hun borstnummer.","Tik op 'Tirer une carte'. De skiër van die kleur zakt één poort.","Zijn alle skiërs voorbij een poort, dan valt er één kaart om: die skiër maakt een chute en moet één poort terug.","Wie als eerste aan de arrivée is, deelt 3 slokken uit. De rest drinkt per poort achterstand (max. 4)."]},
- {k:'telecab',lvl:'ski',n:'Télécabine',s:'Doorgeven tot de panne',ic:'gondola',p:'3+ spelers',r:["Elke beurt krijg je een nieuwe, simpele vraag, bv. 'Noem een Franse kaas'.","Antwoord, tik op Suivant en geef de iPad door. Te lang twijfelen mag niet.","De cabine stijgt, maar niemand weet wanneer ze in panne valt.","Wie de iPad vasthoudt bij de PANNE, voert de straf uit."]},
+ {k:'telecab',lvl:'ski',n:'Télécabine',s:'Doorgeven tot de panne',ic:'gondola',p:'3+ spelers',r:["Elke beurt krijg je een nieuwe, simpele vraag, bv. 'Noem een Franse kaas'.","Antwoord, tik op Suivant en geef de iPad door. Te lang twijfelen mag niet.","De cabine stijgt, maar niemand weet wanneer ze in panne valt.","Wie de iPad vasthoudt bij de PANNE, drinkt 4 slokken."]},
  {k:'moniteur',lvl:'ski',n:'Moniteur',s:'Jacques a dit, op de piste',ic:'whistle',p:'3+ spelers',r:["De skileraar geeft een bevel. Begint het met 'Le moniteur dit', dan doet iedereen het, en wel snel.","Zonder 'Le moniteur dit' is het een val: wie het toch doet, drinkt.","Wie als laatste het juiste bevel uitvoert, drinkt ook.","De vertaling staat er klein onder, voor wie geen Frans praat."]},
  {k:'roulette',lvl:'cas',n:'Roulette',s:'Faites vos jeux',ic:'roulette',p:'2+ spelers',r:["Iedereen kiest een inzet: rood, zwart, even, oneven of 0.","Rien ne va plus: het wiel draait.","Juist gegokt? Deel 2 slokken uit (op 0 zelfs 5). Fout? Drink 1.","Valt het balletje op 0 en had jij geen 0, dan drink je 2: de bank wint."]},
  {k:'slots',lvl:'cas',n:'Fruitautomaat',s:'Trek aan de hendel',ic:'slot',p:'1+ spelers',r:["Om de beurt trek je aan de hendel.","3× 7️⃣ = JACKPOT: deel 4 slokken uit (ongeveer 1 op 15). 3× 🐷 = Zwijnerij: iedereen drinkt 2.","3 dezelfde: deel 2 uit. 2 dezelfde: deel 1 uit.","Niets? Het huis wint: drink 1."]},
@@ -1868,14 +1868,14 @@ Object.assign(G,{
      view(msg)};
    start()}},
  telecab:{i(){const nc=nightDeck('tcat',TCAT),ns=nightDeck('tstraf',TSTRAF);let t0,dur;
-   const ready=()=>{clr();$('#ov').classList.remove('ticking');scr(`<div class="mono">🚡 Télécabine</div><div class="pr" style="font-size:clamp(30px,4.6vw,56px)">Instappen !</div><div class="hint">Elke keer een nieuwe vraag: antwoord en geef de iPad door. Bij de panne doet wie de iPad vasthoudt de straf.</div><button class="btn" id="tg">🚡 En route !</button>`);$('#tg').onclick=go};
+   const ready=()=>{clr();$('#ov').classList.remove('ticking');scr(`<div class="mono">🚡 Télécabine</div><div class="pr" style="font-size:clamp(30px,4.6vw,56px)">Instappen !</div><div class="hint">Elke keer een nieuwe vraag: antwoord en geef de iPad door. Bij de panne drinkt wie de iPad vasthoudt 4 slokken.</div><button class="btn" id="tg">🚡 En route !</button>`);$('#tg').onclick=go};
    const go=()=>{clr();dur=(22+Math.random()*45)*1000;t0=Date.now();$('#ov').classList.add('ticking');
      scr(`<div class="pr tq" id="tq" style="font-size:clamp(26px,4.2vw,50px);min-height:2.3em;display:flex;align-items:center;justify-content:center">${nc()}</div><div class="tcab"><svg viewBox="0 0 300 300"><path d="M0 270 L80 150 L130 200 L210 70 L300 190 L300 300 L0 300Z" fill="#fff6ea" opacity=".9"/><line x1="0" y1="260" x2="300" y2="20" stroke="#9fb0c4" stroke-width="2"/>
        <g id="cab"><line x1="0" y1="-14" x2="0" y2="0" stroke="#9fb0c4" stroke-width="2"/><rect x="-20" y="0" width="40" height="34" rx="6" fill="#ff7a1a"/><rect x="-14" y="6" width="12" height="12" rx="2" fill="#bfe6ff"/><rect x="2" y="6" width="12" height="12" rx="2" fill="#bfe6ff"/>${SKI_SNOUT(0,26,6)}</g></svg></div>
        <button class="btn" id="tx">Suivant → geef door</button>`);
      $('#tx').onclick=()=>{beep(900,.03,.06);const q=$('#tq');if(q)q.textContent=nc();const b=$('#tx');if(b){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}};
      const tick=()=>{const p=Math.min(1,(Date.now()-t0)/dur),c=$('#cab');if(!c)return;c.setAttribute('transform',`translate(${20+p*240},${250-p*215})`);
-       if(p>=1){clr();$('#ov').classList.remove('ticking');boomSnd();const sf=ns();joeg('PANNE !','Straf voor wie de iPad heeft');scr(`<div class="pr" style="font-size:clamp(40px,7vw,84px)">PANNE !</div><div class="mono">Wie de iPad nu vasthoudt</div><div class="moni"><div class="pr" style="font-size:clamp(26px,4.2vw,48px)">${sf}</div></div><button class="btn" id="tr">Volgende cabine</button>`);$('#tr').onclick=ready;return}
+       if(p>=1){clr();$('#ov').classList.remove('ticking');boomSnd();joeg('PANNE !','Drink 4 slokken');scr(`<div class="pr" style="font-size:clamp(40px,7vw,84px)">PANNE !</div><div class="mono">Wie de iPad nu vasthoudt</div><div class="moni"><div class="pr" style="font-size:clamp(30px,5vw,58px)">🍺 Drink 4 slokken</div></div><button class="btn" id="tr">Volgende cabine</button>`);$('#tr').onclick=ready;return}
        const left=1-p;if(Math.random()<(left<.25?.9:.35))beep(left<.25?1100:700,.02,.05);timers.push(setTimeout(tick,left<.25?160:380))};tick()};
    ready()}},
  moniteur:{i(){const n=nightDeck('moni',MONI);let k=0;
@@ -2049,7 +2049,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795023542';
+const APPVER='1795023704';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
