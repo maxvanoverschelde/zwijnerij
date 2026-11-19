@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#070707">
+<meta name="theme-color" content="#0b1630">
 <title>Imposter · Zwijnerij</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,11 +13,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root{--bg:#070707;--fg:#ededed;--muted:#7a7a7a;--line:#222;--card:#101010;--acc:#d4ff3a;--wolf:#ffffff;--moon:#bdbdbd}
+:root{--bg:#0b1630;--fg:#eef3ff;--muted:#8693b8;--line:#22366a;--card:#101e3d;--acc:#d4ff3a;--wolf:#ffffff;--moon:#c5cfe8}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui,sans-serif}
 body{padding:calc(env(safe-area-inset-top,0px) + 20px) max(20px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom,0px) + 24px) max(20px,env(safe-area-inset-left));min-height:100vh;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
-body.night{background:radial-gradient(circle at 50% -10%,#1c1c1c 0%,#070707 60%)}
+body.night{background:radial-gradient(circle at 50% -10%,#1c1c1c 0%,#0b1630 60%)}
 button,input{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer}
 .mono{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--muted)}
@@ -32,7 +32,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;justify-conten
 .btn:active{transform:scale(.96)}.btn.ghost{background:none;color:var(--fg);border:1px solid #333}.btn.red{background:var(--wolf);color:#000}
 .btn:disabled{opacity:.35}
 .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
-input.f{background:#111;border:1px solid #2c2c2c;border-radius:16px;padding:18px 20px;font-size:22px;width:min(420px,88vw);outline:none;text-align:center}
+input.f{background:#14244a;border:1px solid #2c2c2c;border-radius:16px;padding:18px 20px;font-size:22px;width:min(420px,88vw);outline:none;text-align:center}
 input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;text-transform:uppercase}
 .code-big{font-family:'Anton',sans-serif;font-size:clamp(70px,14vw,150px);letter-spacing:.18em;color:var(--acc);line-height:1}
 .lobby{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center;width:100%}
@@ -47,7 +47,7 @@ input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;tex
 .choice{border:1px solid #2c2c2c;border-radius:18px;padding:20px 12px;font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;background:var(--card)}
 .choice.sel{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 15%,var(--card));color:var(--acc)}
 .choice.wolfsel{border-color:var(--wolf);color:var(--wolf)}
-.role{border-radius:28px;padding:30px 24px;width:min(560px,100%);border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,#0a0a0a);display:flex;flex-direction:column;gap:12px;align-items:center}
+.role{border-radius:28px;padding:30px 24px;width:min(560px,100%);border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,#0d1a38);display:flex;flex-direction:column;gap:12px;align-items:center}
 .role .emo{font-size:72px;line-height:1}
 .role .rn{font-family:'Anton',sans-serif;font-size:46px;text-transform:uppercase;color:var(--c);line-height:1}
 .task{border:2px dashed var(--wolf);border-radius:20px;padding:18px;max-width:560px}
@@ -62,7 +62,7 @@ input.code{font-family:'Anton',sans-serif;font-size:44px;letter-spacing:.3em;tex
 .log{font-size:15px;color:var(--muted);max-width:640px;line-height:1.6}
 .err{color:var(--wolf)}
 .rlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;width:100%;max-width:900px;text-align:left}
-.rc{border:1px solid color-mix(in srgb,var(--c) 50%,#222);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--c) 6%,#0a0a0a)}
+.rc{border:1px solid color-mix(in srgb,var(--c) 50%,#222);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--c) 6%,#0d1a38)}
 .rc b{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase;color:var(--c)}.rc span{font-size:14px;color:#bdbdbd;line-height:1.4}
 .script{border:1px solid #333;border-radius:20px;padding:16px 20px;max-width:560px;text-align:left;display:flex;flex-direction:column;gap:10px;font-size:18px;line-height:1.45;background:#0d0d0d}
 .wrow2{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #222;padding:10px 4px;text-align:left}.wrow2.dead{opacity:.4;text-decoration:line-through}
@@ -82,7 +82,7 @@ a,a:visited{color:inherit}
 a,a:visited{color:inherit}#home{color:var(--fg)}
 .tbtn{min-height:44px}#home{white-space:nowrap;display:inline-flex;align-items:center}
 @media(max-width:360px){#home{padding:11px 10px;letter-spacing:.02em}.brand{font-size:26px!important}}
-</style>
+body{background:radial-gradient(ellipse at 50% -10%,#1c3166 0%,#0b1630 55%,#081125 100%) fixed #0b1630}</style>
 </head>
 <body>
 <div class="top"><a href="./" class="tbtn" style="text-decoration:none" id="home">← Zwijnerij</a><div class="brand">Impos<i>ter</i></div><div class="mono" id="me"></div></div>
