@@ -1526,12 +1526,13 @@ const renderInfo=()=>{const cs=CATS(),g=gamesCat(),pick=k=>cs.find(c=>c.k===k),t
    <div class="sec mono"><span>👤 Spelersprofielen</span><span>tik op iemand</span></div><div class="row" style="justify-content:flex-start">${ACC.map(a=>`<button class="tbtn" data-pf="${a.id}">${esc(a.n)}</button>`).join('')||'<span class="small">Nog geen spelers.</span>'}</div><div style="height:26px"></div>
    <div class="sec mono"><span>📖 Recordboek · alle avonden</span><span>${allHist().length} ${allHist().length===1?'avond':'avonden'}</span></div>${recHTML()}<div style="height:26px"></div>
    <button class="albcard" id="ialb"><span class="e">📷</span><span><span class="mono">Fotoalbum</span><b>Bekijk de foto's van alle avonden</b><span class="small" id="ialbn">Blijven in de app, niet in je fotorol.</span></span><span class="ar">→</span></button>
+   <div class="sec mono"><span>💾 Back-up</span><span>spelers, avonden, records</span></div><div class="row" style="justify-content:flex-start"><button class="tbtn" id="bkx">💾 Back-up opslaan</button><button class="tbtn" id="bki">↺ Back-up terugzetten</button><input type="file" id="bkf" accept=".json,application/json" style="display:none"></div><div class="small" style="margin:6px 0 26px">Bewaar het bestand in je Bestanden of mail het naar jezelf. Foto's zitten er niet in; die van een groep staan online.</div>
    <div class="sec mono"><span>Goed om te weten</span><span>${String(FACTS.length).padStart(2,'0')}</span></div>
    <div class="facc">${FACTS.map(([k,p])=>`<details><summary>${k}</summary><p>${p}</p></details>`).join('')}
    <details><summary>App op het beginscherm</summary><p>Safari › Deel › Zet op beginscherm, dan opent de Zwijnerij schermvullend.</p></details></div>`;
   $('#irk').onclick=openRank;document.querySelectorAll('[data-ho]').forEach(b=>b.onclick=()=>openRankH(+b.dataset.ho));
   document.querySelectorAll('[data-hd]').forEach(b=>b.onclick=()=>{if(!b.dataset.s){b.dataset.s=1;b.textContent='Zeker?';setTimeout(()=>{if(b.isConnected){delete b.dataset.s;b.textContent='🗑'}},3000);return}delEvening(+b.dataset.hd);renderInfo()});
-  const ha=$('#hdall');if(ha)ha.onclick=()=>{if(!ha.dataset.s){ha.dataset.s=1;ha.textContent='Alles wissen? Tik nog eens';return}allHist().forEach(h=>delEvening(h.t0));renderInfo()};$('#ialb').onclick=()=>{ALB_SEL=null;album()};
+  const ha=$('#hdall');if(ha)ha.onclick=()=>{if(!ha.dataset.s){ha.dataset.s=1;ha.textContent='Alles wissen? Tik nog eens';return}allHist().forEach(h=>delEvening(h.t0));renderInfo()};$('#ialb').onclick=()=>{ALB_SEL=null;album()};$('#bkx').onclick=()=>bkSave();$('#bki').onclick=()=>$('#bkf').click();$('#bkf').onchange=e=>{const f=e.target.files&&e.target.files[0];if(f)bkLoad(f)};
   photoAll().then(l0=>{const lt=new Set(l0.map(p=>p.t)),l=l0.concat(((window.ZG&&ZG.photos())||[]).filter(p=>!lt.has(p.t)));const e=$('#ialbn');if(e&&l.length){const n=new Set(l.map(p=>nightKey(p.t))).size;e.textContent=l.length+" foto's van "+n+(n===1?' avond':' avonden')+(window.ZG&&ZG.on()?' · gedeeld met '+ZG.group().name:' · blijven in de app')}})};
 renderInfo();
 
@@ -2116,6 +2117,17 @@ const drinkPop=(title,dr,ui)=>{let p=document.getElementById('dpop');if(!p){p=do
   const L=(a,e,c)=>a.length?`<div class="dpl"><div class="mono">${e}</div>${a.map(([n,k])=>`<div class="dpr ${c}"><b>${esc(n)}</b><span>${k}</span></div>`).join('')}</div>`:'';
   p.innerHTML=`<div class="dpi"><div class="dpt">${title}</div>${L(dr,'🍺 Drinken','d')}${L(ui,'🎁 Uitdelen','w')}${!dr.length&&!ui.length?'<div class="small">Niemand drinkt.</div>':''}<button class="btn" id="dpok">OK</button></div>`;
   p.classList.add('open');const close=()=>p.classList.remove('open');p.onclick=close;clearTimeout(p._t);p._t=setTimeout(close,9000)};
+/* ===== Back-up ===== */
+const bkSave=()=>{const d={app:'zwijnerij',v:1,t:Date.now(),ls:{}};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('kp_'))d.ls[k]=localStorage.getItem(k)}
+  const blob=new Blob([JSON.stringify(d)],{type:'application/json'}),name='zwijnerij-backup-'+new Date().toISOString().slice(0,10)+'.json',file=new File([blob],name,{type:'application/json'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'Zwijnerij back-up'}).catch(()=>{})}else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove()}
+  joeg('💾 OPGESLAGEN',Object.keys(d.ls).length+' onderdelen')};
+const bkLoad=f=>{const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||d.app!=='zwijnerij'||!d.ls)throw 0;
+  clr();$('#gt').textContent='Back-up terugzetten';$('#gc').textContent='';$('#ov').classList.add('open');
+  scr(`<div class="pr" style="font-size:clamp(30px,5vw,56px)">Back-up terugzetten?</div><div class="hint">Van ${new Date(d.t).toLocaleString('nl-BE',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}. Alles wat nu op dit toestel staat, wordt vervangen. Foto's blijven staan.</div><div class="row"><button class="tbtn" id="bkn">Annuleer</button><button class="btn" id="bky">↺ Terugzetten</button></div>`);
+  $('#bkn').onclick=()=>$('#bk').click();$('#bky').onclick=()=>{Object.keys(localStorage).filter(k=>k.startsWith('kp_')).forEach(k=>localStorage.removeItem(k));Object.entries(d.ls).forEach(([k,v])=>{try{localStorage.setItem(k,v)}catch(e){}});location.reload()}}
+  catch(e){joeg('OEPS','Geen geldige back-up')}};r.readAsText(f)};
+
 /* ===== Koning van de avond ===== */
 const crownKing=(done)=>{const P=active();if(!P.length||!AV){done&&done();return}const k=P[Math.random()*P.length|0];AV.king=k.id;AV.rule='';saveAV();renderHead();
   let p=document.getElementById('surp');if(!p){p=document.createElement('div');p.id='surp';document.body.appendChild(p)}
@@ -2199,7 +2211,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795092985';
+const APPVER='1795093812';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
