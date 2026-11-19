@@ -1276,7 +1276,7 @@ let CNT={};try{CNT=JSON.parse(localStorage.getItem('kp_count')||'{}')}catch(e){}
 const saveC=()=>{try{localStorage.setItem('kp_count',JSON.stringify(CNT))}catch(e){}};
 const BODY={m:{w:80,r:.68},v:{w:61,r:.55}};/* gemiddelde ±20-jarige; onbekend = vrouw-waarden (voorzichtigst) */
 const prof=id=>{const p=CNT[id]||(CNT[id]={d:[]});if(p.d.length&&Date.now()-p.d[p.d.length-1].t>24*3.6e6)p.d=[];return p};
-const bacOf=(p,a)=>{if(!p.d.length)return 0;const B=BODY[a&&a.g]||BODY.v,g=p.d.reduce((s,x)=>s+x.g,0),h=(Date.now()-p.d[0].t)/3.6e6;return Math.max(0,g/(B.w*B.r)-BETA*h)};
+const bacOf=(p,a)=>{if(!p.d.length)return 0;const B=BODY[a&&a.g]||BODY.v,L=p.d.slice().sort((x,y)=>x.t-y.t);let b=0,t=L[0].t;L.forEach(x=>{b=Math.max(0,b-BETA*(x.t-t)/3.6e6)+x.g/(B.w*B.r);t=x.t});return Math.max(0,b-BETA*(Date.now()-t)/3.6e6)};
 const durTxt=h=>{const m=Math.ceil(h*60);return m<60?m+' min':Math.floor(m/60)+'u'+String(m%60).padStart(2,'0')};
 const hhmm=ms=>{const d=new Date(ms);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const level=(b,L=.5)=>b<.2?[0,'Bijna nuchter, maar na drinken rijden blijft een slecht idee.']:b<.5?[1,'Onder de wettelijke 0,5‰, maar je reacties zijn al trager. Twijfel je? Laat de auto staan.']
@@ -2337,7 +2337,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795097284';
+const APPVER='1795097358';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
