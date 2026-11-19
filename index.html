@@ -1407,6 +1407,8 @@ const gamesCatH=h=>({e:LT('🎲','⚽'),n:LT('Meest gespeelde spellen','Populair
 const dLong=t=>new Date(t).toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 const totDr=h=>Object.values(h.drinks||{}).reduce((a,x)=>a+x,0);
 const delEvening=t0=>{const h=allHist().find(x=>x.t0===t0),t1=h?(h.end||t0+16*3.6e6)+30*60e3:t0+16*3.6e6;HIST=HIST.filter(x=>x.t0!==t0);saveHist();try{window.ZG&&ZG.delEvening(t0)}catch(e){}
+  /* drankjes van die avond mee wissen */
+  try{const e1=h?(h.end||t0+16*3.6e6):t0+16*3.6e6;Object.values(CNT).forEach(p=>{if(p&&p.d)p.d=p.d.filter(x=>x.t<t0||x.t>e1)});saveC()}catch(e){}
   /* foto's van die avond mee wissen (lokaal en in de groep) */
   photoAll().then(l=>{const ks=l.filter(p=>p.t>=t0&&p.t<=t1).map(p=>p.t);if(ks.length)photoDel(ks)}).catch(()=>{});
   try{if(window.ZG&&ZG.on())ZG.photos().filter(p=>p.t>=t0&&p.t<=t1).forEach(p=>ZG.delPhoto(p.t))}catch(e){}};
@@ -1677,12 +1679,12 @@ try{const L=JSON.parse(localStorage.getItem('kp_last')||'null'),m=L&&META.find(x
 
 /* ===== soundboard ===== */
 const AC=()=>{ac=ac||new (window.AudioContext||window.webkitAudioContext)();try{ac.resume()}catch(e){}return ac};
-const tone=(f,t0,d,type='sawtooth',v=.25,f2)=>{const a=AC(),o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.linearRampToValueAtTime(f2,a.currentTime+t0+d);
+const tone=(f,t0,d,type='sawtooth',v=.25,f2)=>{if(MUTE)return;const a=AC(),o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,a.currentTime+t0);if(f2)o.frequency.linearRampToValueAtTime(f2,a.currentTime+t0+d);
   g.gain.setValueAtTime(0,a.currentTime+t0);g.gain.linearRampToValueAtTime(v,a.currentTime+t0+.02);g.gain.setValueAtTime(v,a.currentTime+t0+d*.8);g.gain.linearRampToValueAtTime(0,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d+.05)};
-const noise=(t0,d,v=.4,fq=1200,decay=2)=>{const a=AC(),len=a.sampleRate*d,b=a.createBuffer(1,len,a.sampleRate),x=b.getChannelData(0);for(let i=0;i<len;i++)x[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);
+const noise=(t0,d,v=.4,fq=1200,decay=2)=>{if(MUTE)return;const a=AC(),len=a.sampleRate*d,b=a.createBuffer(1,len,a.sampleRate),x=b.getChannelData(0);for(let i=0;i<len;i++)x[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);
   const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();f.type='bandpass';f.frequency.value=fq;g.gain.value=v;s.buffer=b;s.connect(f);f.connect(g);g.connect(a.destination);s.start(a.currentTime+t0)};
 const SB=[
- {k:'JOEGNEE!',e:'🐷',f(){try{const u=new SpeechSynthesisUtterance('Joegnee!');u.lang='nl-BE';u.rate=.9;u.pitch=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}tone(220,0,.12,'square',.15);tone(330,.12,.2,'square',.15);joeg('JOEGNEE!')}},
+ {k:'JOEGNEE!',e:'🐷',f(){if(MUTE)return;try{const u=new SpeechSynthesisUtterance('Joegnee!');u.lang='nl-BE';u.rate=.9;u.pitch=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}tone(220,0,.12,'square',.15);tone(330,.12,.2,'square',.15);joeg('JOEGNEE!')}},
  {k:'Airhorn',e:'📯',f(){[0,.35,.7].forEach(t=>{tone(415,t,.28,'sawtooth',.22);tone(523,t,.28,'sawtooth',.16);tone(622,t,.28,'square',.08)})}},
  {k:'Tromgeroffel',e:'🥁',f(){for(let i=0;i<34;i++)noise(i*.045,.06,.35,1800,3);noise(1.6,.6,.7,3000,1.5);tone(90,1.6,.3,'sine',.5)}},
  {k:'Applaus',e:'👏',f(){for(let i=0;i<90;i++)noise(Math.random()*2.4,.05,.25,2200+Math.random()*1500,4)}},
@@ -1983,7 +1985,9 @@ Object.assign(G,{
    const adv=()=>{while(cur<H.length&&H[cur].done)cur++;if(cur>=H.length)return end();view()};
    const table=(hide)=>`<div class="bjt"><div class="bjs"><div class="mono">Bank · ${hide?val([dh[0]])+'+?':val(dh)}</div>${hand(dh,hide)}</div>${H.map((x,i)=>`<div class="bjs ${i===cur&&hide?'me':''}"><div class="mono"><b>${esc(x.a.n)}</b> · ${val(x.h)}${val(x.h)>21?' 💥':''}</div>${hand(x.h)}</div>`).join('')}</div>`;
    const view=()=>{const x=H[cur];scr(`<div class="mono">Aan de beurt: <b style="color:var(--acc)">${esc(x.a.n)}</b></div>${table(1)}<div class="row bjb"><button class="btn ghost" id="bs">Pas</button><button class="btn" id="bh">Kaart</button></div>`);
-     $('#bh').onclick=()=>{x.h.push(dk.pop());const v=val(x.h);if(v>=21){x.done=true;cur++;return adv()}view()};$('#bs').onclick=()=>{x.done=true;cur++;adv()}};
+     const pass=msg=>{x.done=true;cur++;while(cur<H.length&&H[cur].done)cur++;const nx=H[cur];scr(`${table(1)}<div class="pr" style="font-size:clamp(26px,4.4vw,48px)">${esc(x.a.n)}: ${msg}</div><button class="btn" id="bnx">${nx?'Geef door · '+esc(nx.a.n):'🃏 De bank speelt'}</button>`);
+       const b=$('#bnx');b.disabled=true;timers.push(setTimeout(()=>{b.disabled=false},600));b.onclick=()=>{if(cur>=H.length)end();else view()}};
+     $('#bh').onclick=()=>{x.h.push(dk.pop());const v=val(x.h);if(v>21){beep(160,.25,.12,'sawtooth');return pass('💥 over 21!')}if(v===21){beep(1100,.1,.12);return pass('🎯 21!')}view()};$('#bs').onclick=()=>pass('past op '+val(x.h))};
    const end=()=>{const any=H.some(x=>val(x.h)<=21);if(any)while(val(dh)<17)dh.push(dk.pop());const d=val(dh),DR=[],UI=[];
      const res=H.map(x=>{const p=val(x.h),me=x.a.id==='_s'?null:x.a;let m;
        if(p>21){m='over 21, drink 2';lose(me,2);DR.push([x.a.n,'2'])}else if(p===21&&x.h.length===2){m='BLACKJACK, deel 4 uit';award(me,4,'Blackjack');UI.push([x.a.n,'4'])}
@@ -2339,7 +2343,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795097783';
+const APPVER='1795104319';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
