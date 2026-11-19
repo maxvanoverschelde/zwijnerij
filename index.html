@@ -1635,7 +1635,7 @@ const setLayout=k=>{PREM=['latem','ski','casino','gf','retro'].includes(k)?k:nul
 const openLayouts=()=>{clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Layout';$('#gc').textContent='';$('#ov').classList.add('open');
   const cur=curLayout();
   scr(`<div class="pr nofit" style="font-size:clamp(32px,5vw,58px)">Kies een layout</div><div class="hint">Premium-layouts open je met een wachtwoord. Eén keer ingeven per toestel volstaat.</div>
-    <div class="lys">${LAYOUTS.map(l=>{const lock=l.premium&&!UNL.includes(l.k);return `<button class="ly ${l.premium?'prem':''} ${lock?'lock':''} ${cur===l.k?'on':''}" data-ly="${l.k}">
+    <div class="lys">${LAYOUTS.filter(l=>l.premium).concat(LAYOUTS.filter(l=>!l.premium)).map(l=>{const lock=l.premium&&!UNL.includes(l.k);return `<button class="ly ${l.premium?'prem':''} ${lock?'lock':''} ${cur===l.k?'on':''}" data-ly="${l.k}">
       <span class="lysw">${l.sw.map(c=>`<i style="background:${c}"></i>`).join('')}${l.img?`<img src="${l.img}" alt="">`:l.em?`<em>${l.em}</em>`:''}</span>
       <span class="lyt"><b>${l.n}</b><span class="small">${l.d}</span></span>
       <span class="lyb2">${lock?'🔒 Premium':l.premium?(cur===l.k?'★ Premium · actief':'★ Premium'):cur===l.k?'✓ Actief':'Gratis'}</span></button>`}).join('')}</div>
@@ -2337,7 +2337,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795096299';
+const APPVER='1795097284';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
