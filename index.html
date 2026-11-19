@@ -1206,9 +1206,12 @@ const META=[
 const LV={chill:{n:'Chill',s:'Rustig aan · af en toe een slok',d:1},hard:{n:'Full Send',s:'Er wordt constant gedronken',d:3}};
 let lvSel='chill';try{lvSel=localStorage.getItem('kp_lv')||'chill'}catch(e){}
 const drops=n=>'<span class="drops">'+[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
+const GDEF=['quiz','fles','kings','kara','wbi','bom','dod','hl','wed','nooit','cat','duel','rad','lot','wie','reflex','derby','chaos','mex'];
+const gPlays=()=>{const c={};try{allHist().forEach(h=>Object.entries((h.stats&&h.stats.games)||{}).forEach(([k,v])=>c[k]=(c[k]||0)+v));if(AV&&!AV.end)Object.entries(STATS.games||{}).forEach(([k,v])=>c[k]=(c[k]||0)+v)}catch(e){}return c};
+const byPop=L=>{const c=gPlays(),d=k=>{const i=GDEF.indexOf(k);return i<0?99:i};return L.slice().sort((a,b)=>(c[b.k]||0)-(c[a.k]||0)||d(a.k)-d(b.k))};
 function renderGames(){$('#gn').textContent=String(META.filter(m=>m.lvl==='chill'||m.lvl==='hard').length).padStart(2,'0')+' spellen';
-  const list=META.filter(m=>m.lvl===lvSel);
-  $('#gl').outerHTML=`<div id="gl">${(()=>{const k=isSki()?'ski':isCas()?'cas':isL()?'ltm':isGF()?'gf':null;if(!k)return '';const L=META.filter(m=>m.lvl===k);
+  const list=byPop(META.filter(m=>m.lvl===lvSel));
+  $('#gl').outerHTML=`<div id="gl">${(()=>{const k=isSki()?'ski':isCas()?'cas':isL()?'ltm':isGF()?'gf':null;if(!k)return '';const L=byPop(META.filter(m=>m.lvl===k));
       return `<div class="spec ${k}"><div class="spech"><span class="mono">${k==='ski'?'🎄 Onder de kerstboom':k==='ltm'?'⚽ Uit de kantine van FC Latem':k==='gf'?'🎡 Kraampjes op de Korenmarkt':'🎰 Huisspellen van het casino'}</span><b>${k==='ski'?'Kerst specials':k==='ltm'?'FC Latem specials':k==='gf'?'Gentse Feesten specials':'Casino specials'}</b></div><div class="specg">${L.map(m=>`<button class="game spg" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s} · <b style="color:var(--acct)">Premium</b></span></button>`).join('')}</div></div>`})()}<div class="srow"><button class="surprise" id="rnd"><span class="mono">Geen zin om te kiezen?</span><b>Verras ons</b><span class="ar">↻</span></button><button class="surprise alt" id="pla"><span class="mono">Spellen na elkaar</span><b>Speelreeks</b><span class="ar">▶</span></button></div><div class="lvsw">${Object.entries(LV).map(([k,v])=>`<button data-lv="${k}" class="${k===lvSel?'on':''} ${k}"><div class="lvn">${v.n} ${drops(v.d)}</div><div class="lvs">${v.s} · ${META.filter(m=>m.lvl===k).length} spellen</div></button>`).join('')}</div>
     <section class="games">${list.map(m=>`<button class="game" data-g="${m.k}"><span class="ic"><svg viewBox="0 0 24 24">${IC[m.ic]}</svg></span><span class="nm">${m.n}</span><span class="ar">→</span><span class="sub mono">${m.s}${m.tag?' · <b style="color:var(--acct)">'+m.tag+'</b>':''}</span></button>`).join('')}</section></div>`;
   document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{lvSel=b.dataset.lv;try{localStorage.setItem('kp_lv',lvSel)}catch(e){}renderGames()});
@@ -1247,7 +1250,7 @@ const wraak=()=>{const P=active();if(P.length<2){joeg('WRAAK?','Eerst minstens 2
 const otherGame=()=>{const lv=CURG&&CURG.lvl,same=['chill','hard'].includes(lv),pool=META.filter(m=>m.k!==(CURG&&CURG.k)&&['chill','hard'].includes(m.lvl)&&(!same||m.lvl===lv));
   const m=pool[Math.random()*pool.length|0];if(!m)return;try{localStorage.removeItem('kp_last')}catch(e){}camStop();clr();$('#ov').classList.remove('boom','ticking');PL=null;openGame(m.k)};
 $('#wrk').onclick=wraak;$('#rgm').onclick=otherGame;
-$('#bk').onclick=()=>{document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));CURG=null;$('#ov').classList.remove('ingame');try{localStorage.removeItem('kp_last')}catch(e){}const jg=document.getElementById('jg');if(jg)jg.classList.remove('go');camStop();clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
+$('#bk').onclick=()=>{document.querySelectorAll('#wr.open,#qs.open').forEach(e=>e.classList.remove('open'));CURG=null;try{setTimeout(renderGames,50)}catch(e){}$('#ov').classList.remove('ingame');try{localStorage.removeItem('kp_last')}catch(e){}const jg=document.getElementById('jg');if(jg)jg.classList.remove('go');camStop();clr();PL=null;plBar();$('#ov').classList.remove('open','boom','ticking');st.innerHTML=''};
 
 /* ===== tabs ===== */
 const showTab=t=>{document.body.classList.toggle('compact',t!=='music');document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));
@@ -2164,7 +2167,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795090962';
+const APPVER='1795091409';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
