@@ -1273,7 +1273,7 @@ document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showTab(b.data
 const DSHOW=[0,1,3];const DRINKS=[{k:'Pint',s:'25cl · 5,2%',g:10.3},{k:'Speciaal',s:'33cl · 8%',g:20.8},{k:'Wijn',s:'15cl · 12%',g:14.2},{k:'Shot',s:'3cl · 40%',g:9.5},{k:'Long',s:'4cl sterk',g:12.6}];
 const BETA=0.15;
 let CNT={};try{CNT=JSON.parse(localStorage.getItem('kp_count')||'{}')}catch(e){}
-const saveC=()=>{try{localStorage.setItem('kp_count',JSON.stringify(CNT))}catch(e){}};
+const saveC=()=>{try{const old=Date.now()-2*864e5;Object.values(CNT).forEach(p=>{if(p&&p.d&&p.d.length&&p.d[0].t<old)p.d=p.d.filter(x=>x.t>=old)});localStorage.setItem('kp_count',JSON.stringify(CNT))}catch(e){}};
 const BODY={m:{w:80,r:.68},v:{w:61,r:.55}};/* gemiddelde ±20-jarige; onbekend = vrouw-waarden (voorzichtigst) */
 const prof=id=>{const p=CNT[id]||(CNT[id]={d:[]});if(p.d.length&&Date.now()-p.d[p.d.length-1].t>24*3.6e6)p.d=[];return p};
 const bacOf=(p,a)=>{if(!p.d.length)return 0;const B=BODY[a&&a.g]||BODY.v,L=p.d.slice().sort((x,y)=>x.t-y.t);let b=0,t=L[0].t;L.forEach(x=>{b=Math.max(0,b-BETA*(x.t-t)/3.6e6)+x.g/(B.w*B.r);t=x.t});return Math.max(0,b-BETA*(Date.now()-t)/3.6e6)};
@@ -1284,8 +1284,8 @@ const level=(b,L=.5)=>b<.2?[0,'Bijna nuchter, maar na drinken rijden blijft een 
   :[3,'Stop met drinken. Water, iets eten, en laat iemand een oogje in het zeil houden.'];
 const LC0=['#d4ff3a','#ededed','#ffffff','#ffffff'],LC1=['#3d8a00','#a86f00','#c2410c','#be123c'];const LCc=()=>document.body.classList.contains('light')?LC1:document.body.classList.contains('latem')?['#ffffff','#ffffff','#ffd6d6','#ffd6d6']:document.body.classList.contains('ski')?['#9fe0b9','#fff8f0','#ff6b6b','#ff6b6b']:document.body.classList.contains('casino')?['#d4af37','#f5ecd0','#ff6b5a','#ff6b5a']:document.body.classList.contains('gf')?['#ffc93c','#fff7e6','#ff6b5a','#ff6b5a']:document.body.classList.contains('retro')?['#2de2e6','#ff3ea5','#ff5470','#ff5470']:LC0;
 const NOV_START=new Date('2027-01-01').getTime();const limOf=a=>.5;
-const card=a=>{const p=prof(a.id),b=bacOf(p,a),L=limOf(a),[lv,msg]=level(b,L),zero=Date.now()+b/BETA*3.6e6,legal=Date.now()+Math.max(0,b-L)/BETA*3.6e6,cnt=glOf(p.d),
-  std=(p.d.reduce((s,x)=>s+x.g,0)/10).toFixed(1).replace('.',',');
+const card=a=>{const p=prof(a.id),b=bacOf(p,a),L=limOf(a),[lv,msg]=level(b,L),zero=Date.now()+b/BETA*3.6e6,legal=Date.now()+Math.max(0,b-L)/BETA*3.6e6,dn=p.d.filter(x=>x.t>=since()),cnt=glOf(dn),
+  std=(dn.reduce((s,x)=>s+x.g,0)/10).toFixed(1).replace('.',',');
   return `<div class="pc" style="border-color:color-mix(in srgb,${MC(a.c)} 30%,var(--line))"><div class="h"><div style="display:flex;gap:14px;align-items:center">${av(a,48)}<div><div class="nmx">${esc(a.n)}</div><div class="small" style="margin-top:6px">${glTxt(cnt)} ${cnt===1?'drankje':'drankjes'} · ${std} std.glazen${a.g?'':' · <span style="opacity:.7">man/vrouw niet ingesteld</span>'}</div></div></div>
     <div><div class="bac" style="color:${LCc()[lv]}">${b.toFixed(2).replace('.',',')}</div><div class="small" style="text-align:right">‰ geschat</div></div></div>
     <div class="dr">${DSHOW.map(i=>{const d=DRINKS[i];return `<button data-n="${a.id}" data-d="${i}"><b>+</b>${d.k}<span class="small">${d.s}</span></button>`}).join('')}</div>
@@ -1307,7 +1307,7 @@ function renderCount(){const el=$('#t-count'),P=active();
   el.querySelectorAll('[data-sl]').forEach(b=>b.onclick=()=>{const[id,n]=b.dataset.sl.split('|');prof(id).d.push({t:Date.now(),g:DRINKS[0].g*n/SLOK,s:+n});saveC();beep(700,.04,.08,'triangle');renderCount()});
   el.querySelectorAll('[data-wt]').forEach(b=>b.onclick=()=>{prof(b.dataset.wt).w=Date.now();saveC();bump('water',b.dataset.wt);beep(1200,.05,.08,'sine');renderCount()});}
 function overview(){/* iedereen die vanavond iets dronk, ook wie al vertrokken is */
-  const rows=ACC.filter(a=>ACT.ids.includes(a.id)||(CNT[a.id]&&prof(a.id).d.length)).map(a=>{const p=prof(a.id),b=bacOf(p,a);const L=limOf(a);return{a,b,L,c:glTxt(glOf(p.d)),z:Date.now()+b/BETA*3.6e6,l:Date.now()+Math.max(0,b-L)/BETA*3.6e6}}).sort((x,y)=>y.b-x.b);
+  const rows=ACC.filter(a=>ACT.ids.includes(a.id)||(CNT[a.id]&&prof(a.id).d.length)).map(a=>{const p=prof(a.id),b=bacOf(p,a);const L=limOf(a);return{a,b,L,c:glTxt(glOf(p.d.filter(x=>x.t>=since()))),z:Date.now()+b/BETA*3.6e6,l:Date.now()+Math.max(0,b-L)/BETA*3.6e6}}).sort((x,y)=>y.b-x.b);
   clr();CURG=null;$('#ov').classList.remove('ingame');$('#gt').textContent='Einde avond';$('#gc').textContent='';$('#ov').classList.add('open');
   scr(`<div class="pr" style="font-size:clamp(34px,5vw,60px)">Wie blaast er<br>nog positief?</div>
    <table class="lb" style="max-width:860px">${rows.map(r=>{const[lv]=level(r.b,r.L);return `<tr><td>${av(r.a,40)}</td><td class="n">${esc(r.a.n)}${ACT.ids.includes(r.a.id)?'':' <span class="small">(vertrokken)</span>'}</td><td>${r.c} ${r.c===1?'drankje':'drankjes'}</td>
@@ -1657,7 +1657,7 @@ renderHead();
 try{drawBet()}catch(e){}
 $('#hs').onclick=e=>{const q=e.target.closest('[data-q]');if(!q){showTab('players');return}openQuick(q.dataset.q)};
 const openQuick=id=>{const a=ACC.find(x=>x.id===id);if(!a)return;let s=document.getElementById('qs');if(!s){s=document.createElement('div');s.id='qs';document.body.appendChild(s)}
-  const draw=msg=>{const p=prof(id),b=bacOf(p,a);s.innerHTML=`<div class="qsb"><div class="row" style="justify-content:space-between;align-items:center;width:100%">${av(a,44)}<div style="flex:1;text-align:left;margin-left:12px"><div class="nmx" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;line-height:1">${esc(a.n)}</div><div class="small">${glTxt(glOf(p.d))} ${glOf(p.d)===1?'drankje':'drankjes'} · ${b.toFixed(2).replace('.',',')}‰ geschat</div></div><button class="tbtn" id="qx">Sluit</button></div>
+  const draw=msg=>{const p=prof(id),b=bacOf(p,a);s.innerHTML=`<div class="qsb"><div class="row" style="justify-content:space-between;align-items:center;width:100%">${av(a,44)}<div style="flex:1;text-align:left;margin-left:12px"><div class="nmx" style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;line-height:1">${esc(a.n)}</div><div class="small">${glTxt(glOf(p.d.filter(x=>x.t>=since())))} vanavond · ${b.toFixed(2).replace('.',',')}‰ geschat</div></div><button class="tbtn" id="qx">Sluit</button></div>
     <div class="dr" style="width:100%">${DSHOW.map(i=>{const d=DRINKS[i];return `<button data-qd="${i}"><b>+</b>${d.k}<span class="small">${d.s}</span></button>`}).join('')}</div><div class="row slk"><span class="mono">Slokken</span>${[1,2,4].map(n=>`<button class="tbtn" data-qs="${n}">+${n}${n===4?' · ½ glas':''}</button>`).join('')}</div>
     ${AV&&!AV.end&&AV.jok&&AV.jok[id]?`<div class="jkb"><div class="mono">🃏 Wraakkaart: kaats een slok terug naar</div><div class="row">${active().filter(x=>x.id!==id).map(x=>`<button class="tbtn" data-jk="${x.id}">${esc(x.n)}</button>`).join('')}</div></div>`:''}${msg?`<div class="small" style="color:var(--acct)">${msg}</div>`:''}<div class="row"><button class="tbtn" id="qu">Laatste ongedaan</button><button class="tbtn" id="qt">Naar teller</button></div></div>`;
     s.querySelectorAll('[data-jk]').forEach(b=>b.onclick=()=>{const t=ACC.find(x=>x.id===b.dataset.jk);if(!t)return;delete AV.jok[id];saveAV();lose(t,1);renderHead();joeg('TERUG !',t.n+' drinkt 1');draw('🃏 '+t.n+' drinkt 1 slok')});
@@ -2337,7 +2337,7 @@ Object.assign(G,{
 renderGames();
 try{if(localStorage.getItem('kp_pl_back')==='1'){localStorage.removeItem('kp_pl_back');const s=JSON.parse(localStorage.getItem('kp_pl')||'null');if(s&&Date.now()-s.t<8*3.6e6){PL={list:s.list,i:s.i};showTab('games');$('#ov').classList.add('open');plBar();plNext()}}}catch(e){}
 /* ===== automatisch updaten ===== */
-const APPVER='1795097358';
+const APPVER='1795097783';
 const checkUpd=async()=>{try{const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();
   if(v&&+v>+APPVER&&!$('#ov').classList.contains('open')){location.replace(location.pathname+'?v='+v)}}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpd()});setInterval(checkUpd,3*60000);setTimeout(checkUpd,3000);
